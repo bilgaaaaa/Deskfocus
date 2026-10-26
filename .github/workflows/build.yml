@@ -8,8 +8,6 @@ on:
 jobs:
   build:
     runs-on: macos-15
-    permissions:
-      contents: write
     steps:
       - uses: actions/checkout@v4
 
@@ -54,15 +52,3 @@ jobs:
           name: extracted-strings
           path: extracted-strings
           if-no-files-found: ignore
-
-      # Temporary: publish the extracted strings on a scratch branch so they can be fetched with git.
-      - name: Publish extracted strings
-        if: always() && github.ref == 'refs/heads/tasks-and-italian'
-        run: |
-          git config user.name "Deskfocus CI"
-          git config user.email "ci@users.noreply.github.com"
-          git checkout --orphan ci-extracted-strings
-          git rm -rf --cached . > /dev/null
-          git add -f extracted-strings
-          git commit -q -m "Extracted strings"
-          git push -f origin ci-extracted-strings

@@ -1,6 +1,1726 @@
 {
-  "sourceLanguage" : "en",
-  "strings" : {
+  "sourceLanguage": "en",
+  "strings": {
+    "%@ is blocked while you focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ è bloccata mentre ti concentri"
+          }
+        }
+      }
+    },
+    "%@ left": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ rimanenti"
+          }
+        }
+      }
+    },
+    "%@ left · focusing": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ rimanenti · concentrazione"
+          }
+        }
+      }
+    },
+    "%@ left · paused": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ rimanenti · in pausa"
+          }
+        }
+      }
+    },
+    "%@ — mark it done or start another round.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ — segnala come fatta o inizia un altro giro."
+          }
+        }
+      }
+    },
+    "%lld apps blocked": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld app bloccate"
+          }
+        }
+      }
+    },
+    "%lld apps hidden": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld app nascoste"
+          }
+        }
+      }
+    },
+    "%lld h": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld h"
+          }
+        }
+      }
+    },
+    "%lld h %lld min": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld h %2$lld min"
+          }
+        }
+      }
+    },
+    "%lld min": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
+    "%lld of %lld done": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld di %2$lld completate"
+          }
+        }
+      }
+    },
+    "%lld/%lld": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld/%2$lld"
+          }
+        }
+      }
+    },
+    "(No title)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "(Senza titolo)"
+          }
+        }
+      }
+    },
+    "+%lld more": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+ altri %lld"
+          }
+        }
+      }
+    },
+    "1 app blocked": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 app bloccata"
+          }
+        }
+      }
+    },
+    "1 app hidden": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 app nascosta"
+          }
+        }
+      }
+    },
+    "Accent": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colore accento"
+          }
+        }
+      }
+    },
+    "Accounts": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account"
+          }
+        }
+      }
+    },
+    "Add": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi"
+          }
+        }
+      }
+    },
+    "Add Account…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi account…"
+          }
+        }
+      }
+    },
+    "Add to": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi a"
+          }
+        }
+      }
+    },
+    "Adding…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiunta in corso…"
+          }
+        }
+      }
+    },
+    "Again": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora"
+          }
+        }
+      }
+    },
+    "All clear": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto libero"
+          }
+        }
+      }
+    },
+    "All day · %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tutto il giorno · %@"
+          }
+        }
+      }
+    },
+    "Allow Access": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consenti accesso"
+          }
+        }
+      }
+    },
+    "Allow Calendars or Reminders in Settings › Accounts first.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prima consenti Calendari o Promemoria in Impostazioni › Account."
+          }
+        }
+      }
+    },
+    "Allowed": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consentito"
+          }
+        }
+      }
+    },
+    "Amber": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambra"
+          }
+        }
+      }
+    },
+    "Another round": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un altro giro"
+          }
+        }
+      }
+    },
+    "Apps to block while focusing": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "App da bloccare durante la concentrazione"
+          }
+        }
+      }
+    },
+    "Blue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blu"
+          }
+        }
+      }
+    },
+    "Calendars": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calendari"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annulla"
+          }
+        }
+      }
+    },
+    "Chosen apps are hidden when a session starts, hidden again if you switch to them, and shown again when it ends.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le app scelte vengono nascoste all'inizio della sessione, nascoste di nuovo se passi a loro e mostrate di nuovo alla fine."
+          }
+        }
+      }
+    },
+    "Clear glass": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vetro trasparente"
+          }
+        }
+      }
+    },
+    "Close to Day": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiudi sul giorno"
+          }
+        }
+      }
+    },
+    "Close to day": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiudi sul giorno"
+          }
+        }
+      }
+    },
+    "Closed (Day)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiuso (giorno)"
+          }
+        }
+      }
+    },
+    "Color": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colore"
+          }
+        }
+      }
+    },
+    "Complete Task": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Completa attività"
+          }
+        }
+      }
+    },
+    "Connect Google Tasks": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collega Google Tasks"
+          }
+        }
+      }
+    },
+    "Connect your calendars in Settings to see your tasks.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collega i tuoi calendari nelle Impostazioni per vedere le attività."
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collegato"
+          }
+        }
+      }
+    },
+    "Connecting…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collegamento…"
+          }
+        }
+      }
+    },
+    "Coral": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corallo"
+          }
+        }
+      }
+    },
+    "Could not build the Google API URL.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile creare l'URL dell'API Google."
+          }
+        }
+      }
+    },
+    "Could not update %@.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impossibile aggiornare %@."
+          }
+        }
+      }
+    },
+    "Create two Shortcuts that turn your \"Deskfocus\" Focus mode on and off, then enter their names here. Choose which apps may notify you in System Settings › Focus.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crea due Comandi Rapidi che attivano e disattivano la tua modalità Full immersion \"Deskfocus\", poi inserisci qui i loro nomi. Scegli quali app possono inviarti notifiche in Impostazioni di Sistema › Full immersion."
+          }
+        }
+      }
+    },
+    "Day": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giorno"
+          }
+        }
+      }
+    },
+    "Default for to-dos": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Predefinito per le attività"
+          }
+        }
+      }
+    },
+    "Deskfocus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus"
+          }
+        }
+      }
+    },
+    "Disconnect": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scollega"
+          }
+        }
+      }
+    },
+    "Dismiss": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiudi"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fatto"
+          }
+        }
+      }
+    },
+    "Done?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fatto?"
+          }
+        }
+      }
+    },
+    "Drag the widget to move it; it stays below your windows on every desktop. Open and close it, or change its colors, from the widget itself too (right-click).": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina il widget per spostarlo; resta sotto le finestre su ogni scrivania. Puoi aprirlo, chiuderlo o cambiarne i colori anche dal widget stesso (clic destro)."
+          }
+        }
+      }
+    },
+    "Due": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scadenza"
+          }
+        }
+      }
+    },
+    "Due %@ · %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scade alle %1$@ · %2$@"
+          }
+        }
+      }
+    },
+    "Due date": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Data di scadenza"
+          }
+        }
+      }
+    },
+    "During focus, blocked apps are": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante la concentrazione, le app bloccate vengono"
+          }
+        }
+      }
+    },
+    "End session": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termina sessione"
+          }
+        }
+      }
+    },
+    "End session without finishing": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termina la sessione senza completare"
+          }
+        }
+      }
+    },
+    "Ends the focus session without completing the task.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termina la sessione di concentrazione senza completare l'attività."
+          }
+        }
+      }
+    },
+    "Events focus for their own length. To-dos ask how long when you press ▶ and remember your choice; this default is used from the widget until you pick one.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gli eventi durano quanto il loro orario. Per le attività ti chiediamo quanto tempo quando premi ▶ e ricordiamo la scelta; questo valore si usa dal widget finché non ne scegli uno."
+          }
+        }
+      }
+    },
+    "Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Concentrazione"
+          }
+        }
+      }
+    },
+    "Focus for": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Concentrati per"
+          }
+        }
+      }
+    },
+    "Focus mode on": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Full immersion attiva"
+          }
+        }
+      }
+    },
+    "Focus time": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo di concentrazione"
+          }
+        }
+      }
+    },
+    "Focus time is up": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo di concentrazione finito"
+          }
+        }
+      }
+    },
+    "FOCUSING": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CONCENTRAZIONE"
+          }
+        }
+      }
+    },
+    "Free": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Libero"
+          }
+        }
+      }
+    },
+    "General": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generali"
+          }
+        }
+      }
+    },
+    "Glass color": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colore del vetro"
+          }
+        }
+      }
+    },
+    "Google account is not connected.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "L'account Google non è collegato."
+          }
+        }
+      }
+    },
+    "Google API error %lld: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Errore API Google %1$lld: %2$@"
+          }
+        }
+      }
+    },
+    "Google Calendar (direct)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Calendar (diretto)"
+          }
+        }
+      }
+    },
+    "Google client id is missing. Add it to Config/Secrets.xcconfig.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manca il client ID di Google. Aggiungilo in Config/Secrets.xcconfig."
+          }
+        }
+      }
+    },
+    "Google did not confirm the new task. Please try again.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google non ha confermato la nuova attività. Riprova."
+          }
+        }
+      }
+    },
+    "Google did not return a refresh token. Remove Deskfocus from your Google account permissions and try again.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google non ha restituito un token di aggiornamento. Rimuovi Deskfocus dalle autorizzazioni del tuo account Google e riprova."
+          }
+        }
+      }
+    },
+    "Google returned an invalid sign-in response.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google ha restituito una risposta di accesso non valida."
+          }
+        }
+      }
+    },
+    "Google Tasks": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google Tasks"
+          }
+        }
+      }
+    },
+    "Google, Outlook and more": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Google, Outlook e altri"
+          }
+        }
+      }
+    },
+    "Graphite": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grafite"
+          }
+        }
+      }
+    },
+    "Green": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verde"
+          }
+        }
+      }
+    },
+    "Happening now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In corso"
+          }
+        }
+      }
+    },
+    "Hide them": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nascoste"
+          }
+        }
+      }
+    },
+    "Hide Widget": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nascondi widget"
+          }
+        }
+      }
+    },
+    "If access was denied before, allow Deskfocus in System Settings › Privacy & Security.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se in passato hai negato l'accesso, consenti Deskfocus in Impostazioni di Sistema › Privacy e sicurezza."
+          }
+        }
+      }
+    },
+    "Indigo": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indaco"
+          }
+        }
+      }
+    },
+    "It will reopen when the session ends.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si riaprirà alla fine della sessione."
+          }
+        }
+      }
+    },
+    "Keep this on so the timer and app hiding work even when you start focus from the widget.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lascialo attivo così il timer e il blocco delle app funzionano anche quando avvii la concentrazione dal widget."
+          }
+        }
+      }
+    },
+    "Keychain error %lld: %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Errore del portachiavi %1$lld: %2$@"
+          }
+        }
+      }
+    },
+    "Length": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durata"
+          }
+        }
+      }
+    },
+    "Lime": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lime"
+          }
+        }
+      }
+    },
+    "Mark as done": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segna come fatta"
+          }
+        }
+      }
+    },
+    "Marks a task from today's list as done.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Segna come completata un'attività della lista di oggi."
+          }
+        }
+      }
+    },
+    "Mint": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menta"
+          }
+        }
+      }
+    },
+    "New Task": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova attività"
+          }
+        }
+      }
+    },
+    "New task": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova attività"
+          }
+        }
+      }
+    },
+    "Next day": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giorno successivo"
+          }
+        }
+      }
+    },
+    "Next week": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settimana successiva"
+          }
+        }
+      }
+    },
+    "Nice work": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ottimo lavoro"
+          }
+        }
+      }
+    },
+    "Nothing planned for this day.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niente in programma per questo giorno."
+          }
+        }
+      }
+    },
+    "of %lld min": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "su %lld min"
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sì"
+          }
+        }
+      }
+    },
+    "Open (Week)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aperto (settimana)"
+          }
+        }
+      }
+    },
+    "Open Deskfocus at login": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Deskfocus al login"
+          }
+        }
+      }
+    },
+    "Open this day": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri questo giorno"
+          }
+        }
+      }
+    },
+    "Open Week": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri la settimana"
+          }
+        }
+      }
+    },
+    "Open week": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri la settimana"
+          }
+        }
+      }
+    },
+    "Orange": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arancione"
+          }
+        }
+      }
+    },
+    "Overdue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In ritardo"
+          }
+        }
+      }
+    },
+    "Overdue · %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In ritardo · %@"
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausa"
+          }
+        }
+      }
+    },
+    "Pause Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Metti in pausa"
+          }
+        }
+      }
+    },
+    "PAUSED": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "IN PAUSA"
+          }
+        }
+      }
+    },
+    "Pauses the running focus timer.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mette in pausa il timer di concentrazione."
+          }
+        }
+      }
+    },
+    "Pink": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rosa"
+          }
+        }
+      }
+    },
+    "Previous day": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giorno precedente"
+          }
+        }
+      }
+    },
+    "Previous week": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settimana precedente"
+          }
+        }
+      }
+    },
+    "Purple": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viola"
+          }
+        }
+      }
+    },
+    "Quit Deskfocus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esci da Deskfocus"
+          }
+        }
+      }
+    },
+    "Quit them (strict)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chiuse (rigido)"
+          }
+        }
+      }
+    },
+    "Refresh": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiorna"
+          }
+        }
+      }
+    },
+    "Reminders": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promemoria"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprendi"
+          }
+        }
+      }
+    },
+    "Resume Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprendi concentrazione"
+          }
+        }
+      }
+    },
+    "Resume focus on this task": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprendi la concentrazione su questa attività"
+          }
+        }
+      }
+    },
+    "Resumes a paused focus timer.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riprende un timer di concentrazione in pausa."
+          }
+        }
+      }
+    },
+    "Rose": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rosa antico"
+          }
+        }
+      }
+    },
+    "Search apps": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca app"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni"
+          }
+        }
+      }
+    },
+    "Show glass widget on the desktop": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra il widget in vetro sulla scrivania"
+          }
+        }
+      }
+    },
+    "Show in your list": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra nella tua lista"
+          }
+        }
+      }
+    },
+    "Sign in once in System Settings; their calendars appear here automatically.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accedi una volta in Impostazioni di Sistema; i loro calendari appariranno qui automaticamente."
+          }
+        }
+      }
+    },
+    "Sign-in response did not match the request.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La risposta di accesso non corrisponde alla richiesta."
+          }
+        }
+      }
+    },
+    "Sign-in was cancelled.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accesso annullato."
+          }
+        }
+      }
+    },
+    "Silence notifications with a Focus mode": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Silenzia le notifiche con una modalità Full immersion"
+          }
+        }
+      }
+    },
+    "Sky": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cielo"
+          }
+        }
+      }
+    },
+    "Start": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvia"
+          }
+        }
+      }
+    },
+    "Start Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvia concentrazione"
+          }
+        }
+      }
+    },
+    "Start focus on this task": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvia la concentrazione su questa attività"
+          }
+        }
+      }
+    },
+    "Starts": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inizio"
+          }
+        }
+      }
+    },
+    "Starts a focus timer for a task from today's list.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvia un timer di concentrazione per un'attività della lista di oggi."
+          }
+        }
+      }
+    },
+    "Stop Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Interrompi concentrazione"
+          }
+        }
+      }
+    },
+    "Strict: chosen apps are quit when a session starts, quit again if you open them, and reopened when it ends. Apps with unsaved work may ask before closing.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rigido: le app scelte vengono chiuse all'inizio della sessione, chiuse di nuovo se le apri e riaperte alla fine. Le app con modifiche non salvate potrebbero chiedere conferma prima di chiudersi."
+          }
+        }
+      }
+    },
+    "Task ID": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ID attività"
+          }
+        }
+      }
+    },
+    "Teal": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verde acqua"
+          }
+        }
+      }
+    },
+    "That calendar or list is no longer available.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quel calendario o quella lista non è più disponibile."
+          }
+        }
+      }
+    },
+    "The reminder no longer exists.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il promemoria non esiste più."
+          }
+        }
+      }
+    },
+    "TIME'S UP": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TEMPO SCADUTO"
+          }
+        }
+      }
+    },
+    "Time's up": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo scaduto"
+          }
+        }
+      }
+    },
+    "Title": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titolo"
+          }
+        }
+      }
+    },
+    "To-do · %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attività · %@"
+          }
+        }
+      }
+    },
+    "To-dos without a due date": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attività senza scadenza"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oggi"
+          }
+        }
+      }
+    },
+    "Today's tasks and your focus timer in one place.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le attività di oggi e il timer di concentrazione in un unico posto."
+          }
+        }
+      }
+    },
+    "Turn off (e.g. Deskfocus Off)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disattiva (es. Deskfocus Off)"
+          }
+        }
+      }
+    },
+    "Turn on (e.g. Deskfocus On)": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attiva (es. Deskfocus On)"
+          }
+        }
+      }
+    },
+    "Up next": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prossimo"
+          }
+        }
+      }
+    },
+    "Up next · at %@": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prossimo · alle %@"
+          }
+        }
+      }
+    },
+    "Up next · in %lld min": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prossimo · tra %lld min"
+          }
+        }
+      }
+    },
+    "Updated %@ ago": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornato %@ fa"
+          }
+        }
+      }
+    },
+    "Violet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lilla"
+          }
+        }
+      }
+    },
+    "Week": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Settimana"
+          }
+        }
+      }
+    },
+    "WEEK": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SETTIMANA"
+          }
+        }
+      }
+    },
+    "What do you want to do?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cosa vuoi fare?"
+          }
+        }
+      }
+    },
+    "White": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bianco"
+          }
+        }
+      }
+    },
+    "Widget is": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il widget è"
+          }
+        }
+      }
+    },
+    "Your accounts": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I tuoi account"
+          }
+        }
+      }
+    }
   },
-  "version" : "1.0"
+  "version": "1.0"
 }
