@@ -1,3 +1,4 @@
+import AppKit
 import SwiftUI
 
 /// Settings window: accounts, focus behaviour and general options.
@@ -15,62 +16,78 @@ struct SettingsView: View {
     }
 }
 
-/// iCloud permissions, the Google account and which sources feed today's list.
+/// The user's accounts and which of them feed the list; no developer setup is ever shown here.
 private struct AccountsSettingsView: View {
     @Environment(AppModel.self) private var model
     @State private var isConnectingGoogle = false
 
+    /// macOS Internet Accounts, where people add Google, Outlook, Exchange or Yahoo with Apple's own sign-in.
+    private static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
+
     var body: some View {
         Form {
-            Section("iCloud") {
-                permissionRow(title: "Calendar", isGranted: model.eventKit.hasCalendarAccess) {
+            Section {
+                permissionRow(title: "Calendars", isGranted: model.eventKit.hasCalendarAccess) {
                     Task { await model.requestCalendarAccess() }
                 }
                 permissionRow(title: "Reminders", isGranted: model.eventKit.hasRemindersAccess) {
                     Task { await model.requestRemindersAccess() }
                 }
+                LabeledContent {
+                    Button("Add Account…") { NSWorkspace.shared.open(Self.internetAccountsURL) }
+                } label: {
+                    Text("Google, Outlook and more")
+                    Text("Sign in once in System Settings; their calendars appear here automatically.")
+                }
+            } header: {
+                Text("Your accounts")
+            } footer: {
                 Text("If access was denied before, allow Deskfocus in System Settings › Privacy & Security.")
-                    .font(.caption)
-                    .foregroundStyle(.secondary)
             }
 
-            Section("Google") {
-                if model.googleAuth.isConnected {
-                    LabeledContent("Connected", value: model.googleAuth.connectedEmail ?? "Google account")
-                    Button("Disconnect", role: .destructive) {
-                        Task { await model.disconnectGoogle() }
-                    }
-                } else if !GoogleConfig.isConfigured {
-                    Text("Add your Google OAuth client id to Config/Secrets.xcconfig and rebuild. See README.")
-                        .foregroundStyle(.secondary)
-                } else {
-                    Button(isConnectingGoogle ? "Connecting…" : "Connect Google Calendar & Tasks") {
-                        isConnectingGoogle = true
-                        Task {
-                            await model.connectGoogle()
-                            isConnectingGoogle = false
+            // Only offered when this build can sign in to Google directly.
+            if GoogleConfig.isConfigured || model.googleAuth.isConnected {
+                Section("Google Tasks") {
+                    if model.googleAuth.isConnected {
+                        LabeledContent("Connected", value: model.googleAuth.connectedEmail ?? "Google account")
+                        Button("Disconnect", role: .destructive) {
+                            Task { await model.disconnectGoogle() }
                         }
+                    } else {
+                        Button(isConnectingGoogle ? "Connecting…" : "Connect Google Tasks") {
+                            isConnectingGoogle = true
+                            Task {
+                                await model.connectGoogle()
+                                isConnectingGoogle = false
+                            }
+                        }
+                        .disabled(isConnectingGoogle)
                     }
-                    .disabled(isConnectingGoogle)
-                }
-                if let message = model.googleErrorMessage {
-                    Text(message)
-                        .font(.caption)
-                        .foregroundStyle(.red)
+                    if let message = model.googleErrorMessage {
+                        Text(message)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                    }
                 }
             }
 
-            Section("Show in today's list") {
-                ForEach(TaskSourceKind.allCases, id: \.self) { kind in
+            Section("Show in your list") {
+                ForEach(visibleSources, id: \.self) { kind in
                     Toggle(kind.displayName, isOn: model.sourceBinding(kind))
                 }
-                Toggle("Include to-dos without a due date", isOn: model.binding(\.includeUndatedTasks))
+                Toggle("To-dos without a due date", isOn: model.binding(\.includeUndatedTasks))
                     .onChange(of: model.snapshot.settings.includeUndatedTasks) {
                         Task { await model.refresh() }
                     }
             }
         }
         .formStyle(.grouped)
+        .toggleStyle(ColorfulSwitchToggleStyle())
+    }
+
+    /// Google's own sources only appear once a Google account is connected.
+    private var visibleSources: [TaskSourceKind] {
+        TaskSourceKind.allCases.filter { !$0.requiresGoogleSignIn || model.googleAuth.isConnected }
     }
 
     private func permissionRow(title: String, isGranted: Bool, request: @escaping () -> Void) -> some View {
@@ -82,6 +99,36 @@ private struct AccountsSettingsView: View {
                 Button("Allow Access", action: request)
             }
         }
+    }
+}
+
+/// Switch that is clearly green and labelled "On" when enabled, grey and "Off" when not.
+struct ColorfulSwitchToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.label
+            Spacer(minLength: 12)
+            Text(configuration.isOn ? "On" : "Off")
+                .font(.system(size: 11, weight: .semibold))
+                .foregroundStyle(configuration.isOn ? Color.green : Color.secondary)
+                .frame(minWidth: 24, alignment: .trailing)
+            Button {
+                withAnimation(.spring(response: 0.25, dampingFraction: 0.8)) { configuration.isOn.toggle() }
+            } label: {
+                Capsule()
+                    .fill(configuration.isOn ? Color.green : Color.gray.opacity(0.35))
+                    .frame(width: 40, height: 24)
+                    .overlay(alignment: configuration.isOn ? .trailing : .leading) {
+                        Circle()
+                            .fill(.white)
+                            .shadow(color: .black.opacity(0.25), radius: 1, y: 1)
+                            .padding(2)
+                    }
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(configuration.isOn ? "On" : "Off")
+        }
+        .opacity(configuration.isOn ? 1 : 0.85)
     }
 }
 
@@ -155,5 +202,6 @@ private struct GeneralSettingsView: View {
                 .foregroundStyle(.secondary)
         }
         .formStyle(.grouped)
+        .toggleStyle(ColorfulSwitchToggleStyle())
     }
 }

@@ -12,12 +12,18 @@ enum TaskSourceKind: String, Codable, CaseIterable, Hashable {
         self == .appleCalendar || self == .googleCalendar
     }
 
+    /// Calendars and Reminders include every account added in macOS, not only iCloud.
     var displayName: String {
         switch self {
-        case .appleCalendar: return "iCloud Calendar"
-        case .appleReminders: return "iCloud Reminders"
-        case .googleCalendar: return "Google Calendar"
+        case .appleCalendar: return "Calendars"
+        case .appleReminders: return "Reminders"
+        case .googleCalendar: return "Google Calendar (direct)"
         case .googleTasks: return "Google Tasks"
         }
+    }
+
+    /// Sources that need Deskfocus' own Google sign-in, rather than the accounts added in macOS.
+    var requiresGoogleSignIn: Bool {
+        self == .googleCalendar || self == .googleTasks
     }
 }

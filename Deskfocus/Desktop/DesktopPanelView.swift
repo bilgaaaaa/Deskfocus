@@ -80,11 +80,10 @@ private struct PanelContextMenu: View {
 }
 
 /// Closed layout, styled like the purple widget: weekday, big date, progress ring, then the day's items.
-/// Day arrows and the open button appear while the pointer is over the card.
+/// Day arrows and the open button stay visible at the top right.
 private struct DayPanelContent: View {
     @Environment(AppModel.self) private var model
     let now: Date
-    @State private var isHovered = false
 
     var body: some View {
         let agenda = model.agenda
@@ -92,9 +91,17 @@ private struct DayPanelContent: View {
 
         VStack(alignment: .leading, spacing: 14) {
             DayHeaderView(date: agenda.selectedDay) {
-                if agenda.isShowingToday {
-                    let done = model.snapshot.completedCount(on: now)
-                    DayProgressRing(done: done, total: done + tasks.count)
+                VStack(alignment: .trailing, spacing: 10) {
+                    PanelNavigation(
+                        onPrevious: { agenda.moveDay(by: -1) },
+                        onNext: { agenda.moveDay(by: 1) },
+                        onToday: agenda.isShowingToday ? nil : { agenda.goToToday() },
+                        layout: .day
+                    )
+                    if agenda.isShowingToday {
+                        let done = model.snapshot.completedCount(on: now)
+                        DayProgressRing(done: done, total: done + tasks.count)
+                    }
                 }
             }
 
@@ -115,22 +122,6 @@ private struct DayPanelContent: View {
                 )
             }
             .scrollIndicators(.never)
-        }
-        .overlay(alignment: .bottomTrailing) {
-            if isHovered {
-                PanelNavigation(
-                    onPrevious: { agenda.moveDay(by: -1) },
-                    onNext: { agenda.moveDay(by: 1) },
-                    onToday: agenda.isShowingToday ? nil : { agenda.goToToday() },
-                    layout: .day
-                )
-                .padding(6)
-                .background(.ultraThinMaterial, in: Capsule())
-                .transition(.opacity.combined(with: .move(edge: .bottom)))
-            }
-        }
-        .onHover { hovering in
-            withAnimation(.easeOut(duration: 0.18)) { isHovered = hovering }
         }
     }
 }
@@ -341,17 +332,27 @@ struct PanelNavigation: View {
             iconButton(
                 layout == .day ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left",
                 label: layout == .day ? "Open week" : "Close to day",
+                isProminent: true,
                 action: { model.setPanelLayout(layout == .day ? .week : .day) }
             )
+            .padding(.leading, 4)
         }
     }
 
-    private func iconButton(_ systemName: String, label: String, action: @escaping () -> Void) -> some View {
+    /// Round icon button; the prominent one (open/close) is amber so it reads differently from the arrows.
+    private func iconButton(_ systemName: String, label: String, isProminent: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
-                .font(.system(size: 12, weight: .semibold))
+                .font(.system(size: 12, weight: .bold))
+                .foregroundStyle(isProminent ? DeskfocusTheme.ink : Color.primary)
                 .frame(width: 28, height: 28)
-                .background(Color.white.opacity(0.1), in: Circle())
+                .background {
+                    if isProminent {
+                        Circle().fill(DeskfocusTheme.focusGradient)
+                    } else {
+                        Circle().fill(Color.white.opacity(0.14))
+                    }
+                }
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)
