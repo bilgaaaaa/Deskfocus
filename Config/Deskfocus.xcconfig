@@ -1,0 +1,9 @@
+// Shared build settings. Personal values live in Secrets.xcconfig, which is git-ignored.
+
+// Apple Developer Team ID, needed for signing and the App Group shared with the widget.
+DESKFOCUS_TEAM_ID =
+
+// Google OAuth client id of type "iOS" (e.g. 1234-abcd.apps.googleusercontent.com).
+GOOGLE_CLIENT_ID =
+
+#include? "Secrets.xcconfig"

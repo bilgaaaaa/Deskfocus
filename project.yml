@@ -1,0 +1,80 @@
+# XcodeGen spec: run `xcodegen generate` to create Deskfocus.xcodeproj (the project file is not committed).
+name: Deskfocus
+
+options:
+  bundleIdPrefix: com.bilgaaaaa
+  deploymentTarget:
+    macOS: "14.0"
+  createIntermediateGroups: true
+
+configFiles:
+  Debug: Config/Deskfocus.xcconfig
+  Release: Config/Deskfocus.xcconfig
+
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: $(DESKFOCUS_TEAM_ID)
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_HARDENED_RUNTIME: YES
+
+targets:
+  Deskfocus:
+    type: application
+    platform: macOS
+    sources:
+      - Deskfocus
+      - Shared
+    dependencies:
+      - target: DeskfocusWidget
+    info:
+      path: Deskfocus/Info.plist
+      properties:
+        CFBundleDisplayName: Deskfocus
+        LSApplicationCategoryType: public.app-category.productivity
+        LSUIElement: true
+        NSCalendarsUsageDescription: Deskfocus shows today's events so you can focus on them.
+        NSCalendarsFullAccessUsageDescription: Deskfocus shows today's events so you can focus on them.
+        NSRemindersUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
+        NSRemindersFullAccessUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
+        GoogleClientID: $(GOOGLE_CLIENT_ID)
+        DeskfocusAppGroupIdentifier: $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
+    entitlements:
+      path: Deskfocus/Deskfocus.entitlements
+      properties:
+        com.apple.security.app-sandbox: false
+        com.apple.security.application-groups:
+          - $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
+        com.apple.security.personal-information.calendars: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bilgaaaaa.deskfocus
+        PRODUCT_NAME: Deskfocus
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+
+  DeskfocusWidget:
+    type: app-extension
+    platform: macOS
+    sources:
+      - DeskfocusWidget
+      - Shared
+    info:
+      path: DeskfocusWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Deskfocus
+        DeskfocusAppGroupIdentifier: $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: DeskfocusWidget/DeskfocusWidget.entitlements
+      properties:
+        com.apple.security.app-sandbox: true
+        com.apple.security.application-groups:
+          - $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bilgaaaaa.deskfocus.widget
+        PRODUCT_NAME: DeskfocusWidget
+        SKIP_INSTALL: YES
