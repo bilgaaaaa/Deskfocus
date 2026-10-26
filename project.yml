@@ -52,7 +52,7 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.bilgaaaaa.deskfocus
         PRODUCT_NAME: Deskfocus
-        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
   DeskfocusWidget:
     type: app-extension

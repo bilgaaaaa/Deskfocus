@@ -17,6 +17,7 @@ Requirements: macOS 14 Sonoma or later, Xcode 16 or later.
 | `Deskfocus/` | The menu bar app: task sources, Google sign-in, focus coordinator, distraction guard, views |
 | `DeskfocusWidget/` | The combined desktop widget |
 | `Config/` | Build settings; your personal values go in `Secrets.xcconfig` |
+| `Design/` | `AppIcon.svg`, the source of the app icon in `Deskfocus/Assets.xcassets` |
 | `project.yml` | XcodeGen spec that generates `Deskfocus.xcodeproj` |
 
 ### How the pieces talk
