@@ -142,14 +142,21 @@ struct AddTaskView: View {
         }
     }
 
-    /// Next half hour today, or 9:00 on another day.
+    /// Next :00 or :30 today (kept on today even late at night), or 9:00 on another day.
     private static func suggestedStart(on day: Date, now: Date = .now) -> Date {
         let calendar = Calendar.current
-        if calendar.isDate(day, inSameDayAs: now) {
-            let minute = calendar.component(.minute, from: now)
-            let rounded = calendar.date(byAdding: .minute, value: minute < 30 ? 30 - minute : 60 - minute, to: now) ?? now
-            return calendar.date(bySetting: .second, value: 0, of: rounded) ?? rounded
+        guard calendar.isDate(day, inSameDayAs: now) else {
+            return calendar.date(bySettingHour: 9, minute: 0, second: 0, of: day) ?? day
         }
-        return calendar.date(bySettingHour: 9, minute: 0, second: 0, of: day) ?? day
+        let minute = calendar.component(.minute, from: now)
+        let next = calendar.date(byAdding: .minute, value: minute < 30 ? 30 - minute : 60 - minute, to: now) ?? now
+        let candidate = next.isOnSameDay(as: now, in: calendar) ? next : now
+        return calendar.date(from: calendar.dateComponents([.year, .month, .day, .hour, .minute], from: candidate)) ?? candidate
+    }
+}
+
+private extension Date {
+    func isOnSameDay(as other: Date, in calendar: Calendar) -> Bool {
+        calendar.isDate(self, inSameDayAs: other)
     }
 }

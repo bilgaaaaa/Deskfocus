@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// The ▶ button for a task. Timed events and resumable tasks start right away with their own length;
+/// The ▶ button for a task. Timed events, resumable and paused tasks start right away;
 /// other to-dos first ask how long to focus, and the choice is remembered for that task.
+/// Right-click offers "Choose length…" to start over with a new length.
 struct StartFocusControl: View {
     @Environment(AppModel.self) private var model
     let task: DeskTask
@@ -9,9 +10,14 @@ struct StartFocusControl: View {
     var isProminent = false
     @State private var isChoosingLength = false
 
+    /// True when ▶ continues earlier work: saved progress, or the session currently on this task.
+    private var resumes: Bool {
+        model.snapshot.savedProgress[task.id] != nil || model.snapshot.focus?.taskId == task.id
+    }
+
     private var startsDirectly: Bool {
         let hasOwnLength = task.isEvent && !task.isAllDay && task.startDate != nil && task.endDate != nil
-        return hasOwnLength || model.snapshot.savedProgress[task.id] != nil
+        return hasOwnLength || resumes
     }
 
     var body: some View {
@@ -25,7 +31,10 @@ struct StartFocusControl: View {
             PlayGlyph(size: size, isProminent: isProminent)
         }
         .buttonStyle(.plain)
-        .help(model.snapshot.savedProgress[task.id] != nil ? String(localized: "Resume focus on this task") : String(localized: "Start focus on this task"))
+        .help(resumes ? String(localized: "Resume focus on this task") : String(localized: "Start focus on this task"))
+        .contextMenu {
+            Button("Choose length…") { isChoosingLength = true }
+        }
         .popover(isPresented: $isChoosingLength, arrowEdge: .bottom) {
             FocusLengthPicker(remembered: model.snapshot.taskFocusMinutes[task.id] ?? model.snapshot.settings.focusMinutes) { minutes in
                 isChoosingLength = false

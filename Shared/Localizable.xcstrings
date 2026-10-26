@@ -341,6 +341,16 @@
         }
       }
     },
+    "Choose length…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scegli durata…"
+          }
+        }
+      }
+    },
     "Chosen apps are hidden when a session starts, hidden again if you switch to them, and shown again when it ends.": {
       "localizations": {
         "it": {

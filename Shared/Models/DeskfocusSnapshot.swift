@@ -21,6 +21,8 @@ struct DeskfocusSnapshot: Codable, Equatable {
     var completionDates: [String: Date] = [:]
     /// Focus time the user picked for a to-do, in minutes.
     var taskFocusMinutes: [String: Int] = [:]
+    /// When each focus time was last picked, so unused ones can be cleaned up.
+    var taskFocusMinutesUpdated: [String: Date] = [:]
     /// Unfinished sessions by task id, resumed by the next ▶ on that task.
     var savedProgress: [String: SavedFocusProgress] = [:]
     var focus: FocusSession?
@@ -37,6 +39,7 @@ struct DeskfocusSnapshot: Codable, Equatable {
         pendingCompletionIds = try container.decodeIfPresent(Set<String>.self, forKey: .pendingCompletionIds) ?? []
         completionDates = try container.decodeIfPresent([String: Date].self, forKey: .completionDates) ?? [:]
         taskFocusMinutes = try container.decodeIfPresent([String: Int].self, forKey: .taskFocusMinutes) ?? [:]
+        taskFocusMinutesUpdated = try container.decodeIfPresent([String: Date].self, forKey: .taskFocusMinutesUpdated) ?? [:]
         savedProgress = try container.decodeIfPresent([String: SavedFocusProgress].self, forKey: .savedProgress) ?? [:]
         focus = try container.decodeIfPresent(FocusSession.self, forKey: .focus)
         settings = try container.decodeIfPresent(DeskfocusSettings.self, forKey: .settings) ?? DeskfocusSettings()
@@ -55,6 +58,28 @@ struct DeskfocusSnapshot: Codable, Equatable {
     /// How many items were checked off today, for the progress ring.
     func completedCount(on day: Date) -> Int {
         completionDates.values.filter { Calendar.current.isDate($0, inSameDayAs: day) }.count
+    }
+
+    mutating func rememberFocusMinutes(_ minutes: Int, for taskId: String, now: Date) {
+        taskFocusMinutes[taskId] = minutes
+        taskFocusMinutesUpdated[taskId] = now
+    }
+
+    mutating func forgetFocusMinutes(for taskId: String) {
+        taskFocusMinutes[taskId] = nil
+        taskFocusMinutesUpdated[taskId] = nil
+    }
+
+    /// Drops focus times not picked again within the limit; entries without a date get one now.
+    mutating func pruneFocusMinutes(olderThan limit: Date, now: Date) {
+        for taskId in taskFocusMinutes.keys {
+            let updated = taskFocusMinutesUpdated[taskId] ?? now
+            if updated < limit {
+                forgetFocusMinutes(for: taskId)
+            } else {
+                taskFocusMinutesUpdated[taskId] = updated
+            }
+        }
     }
 
     /// Remembers a task from another day so focus and completion can find it later.

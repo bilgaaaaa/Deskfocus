@@ -82,14 +82,15 @@ final class AppModel {
         addTaskWindow.show(model: self, day: agenda.selectedDay)
     }
 
-    /// Creates the task in the chosen calendar or list, remembers its focus time and the list, then re-syncs.
+    /// Creates the task in the chosen calendar or list and remembers its focus time and the list.
+    /// The re-sync runs in the background so the window can close right away.
     func createTask(_ draft: NewTaskDraft) async throws {
         let taskId = try await taskCreator.create(draft)
         updateSettings { $0.lastAddTargetId = draft.target.id }
         if !draft.target.createsEvent {
-            SharedStore.shared.update { $0.taskFocusMinutes[taskId] = draft.focusMinutes }
+            SharedStore.shared.update { $0.rememberFocusMinutes(draft.focusMinutes, for: taskId, now: .now) }
         }
-        await refresh()
+        Task { await refresh() }
     }
 
     /// Opens one day in the day layout, e.g. from a week column.

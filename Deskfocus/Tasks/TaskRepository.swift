@@ -74,6 +74,8 @@ final class TaskRepository {
             // Unfinished sessions can be resumed for a week.
             let resumeLimit = today.start.addingTimeInterval(-7 * 86_400)
             snapshot.savedProgress = snapshot.savedProgress.filter { $0.value.savedAt >= resumeLimit }
+            // Focus times are kept for two months after they were last picked.
+            snapshot.pruneFocusMinutes(olderThan: today.start.addingTimeInterval(-60 * 86_400), now: now)
             snapshot.lastSyncDate = now
         }
         WidgetCenter.shared.reloadTimelines(ofKind: DeskfocusConstants.widgetKind)

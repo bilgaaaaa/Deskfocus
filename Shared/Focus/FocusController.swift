@@ -28,7 +28,7 @@ enum FocusController {
 
             saveProgressOfCurrentSession(in: &snapshot, now: now)
             if let minutes {
-                snapshot.taskFocusMinutes[task.id] = minutes
+                snapshot.rememberFocusMinutes(minutes, for: task.id, now: now)
                 snapshot.savedProgress[task.id] = nil
             }
 
@@ -127,7 +127,7 @@ enum FocusController {
                 snapshot.focus = nil
             }
             snapshot.savedProgress[task.id] = nil
-            snapshot.taskFocusMinutes[task.id] = nil
+            snapshot.forgetFocusMinutes(for: task.id)
             Log.focus.info("Task completed from \(task.source.rawValue, privacy: .public)")
         }
         notifyChange()
@@ -141,8 +141,8 @@ enum FocusController {
 
     // MARK: Focus time
 
-    /// How long to focus, in order: saved progress, the event's own length (or what is left of it),
-    /// the minutes chosen for this to-do, then the default from Settings.
+    /// How long to focus, in order: saved progress, the minutes chosen for this task,
+    /// the event's own length (or what is left of it), then the default from Settings.
     static func focusTime(for task: DeskTask, in snapshot: DeskfocusSnapshot, now: Date) -> (remaining: TimeInterval, planned: TimeInterval) {
         if let saved = snapshot.savedProgress[task.id] {
             return (saved.remaining, saved.planned)
