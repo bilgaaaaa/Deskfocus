@@ -164,7 +164,10 @@ private struct MenuTaskRow: View {
             .buttonStyle(.plain)
             .help("Mark as done")
         } trailing: {
-            StartFocusControl(task: task, size: 28, isProminent: isHovered)
+            HStack(spacing: 4) {
+                EndSessionButton(task: task, size: 24)
+                StartFocusControl(task: task, size: 28, isProminent: isHovered)
+            }
         }
         .padding(.horizontal, 8)
         .background(Color.primary.opacity(isHovered ? 0.07 : 0), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
@@ -222,16 +225,21 @@ private struct FocusBanner: View {
                 iconButton("arrow.clockwise", help: "Another round", intent: StartFocusIntent(taskId: session.taskId))
             }
             iconButton("checkmark", help: "Done", intent: CompleteTaskIntent(taskId: session.taskId))
-            iconButton("xmark", help: session.phase(at: now) == .finished ? "Dismiss" : "End session", intent: StopFocusIntent())
+            if session.phase(at: now) == .finished {
+                iconButton("xmark", help: "Dismiss", intent: EndFocusIntent())
+            } else {
+                iconButton("stop.fill", help: "End Session", intent: EndFocusIntent(), isDanger: true)
+            }
         }
     }
 
-    private func iconButton(_ systemName: String, help: LocalizedStringKey, intent: some AppIntent) -> some View {
+    private func iconButton(_ systemName: String, help: LocalizedStringKey, intent: some AppIntent, isDanger: Bool = false) -> some View {
         Button(intent: intent) {
             Image(systemName: systemName)
                 .font(.system(size: 11, weight: .bold))
+                .foregroundStyle(isDanger ? Color.white : Color.primary)
                 .frame(width: 26, height: 26)
-                .background(Color.primary.opacity(0.1), in: Circle())
+                .background(isDanger ? DeskfocusTheme.danger.opacity(0.9) : Color.primary.opacity(0.1), in: Circle())
                 .contentShape(Circle())
         }
         .buttonStyle(.plain)

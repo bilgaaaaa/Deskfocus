@@ -62,12 +62,22 @@ struct ResumeFocusIntent: AppIntent {
     }
 }
 
-struct StopFocusIntent: AppIntent {
-    static let title: LocalizedStringResource = "Stop Focus"
+/// Ends a session without completing the task; with no task ID it ends the current one.
+struct EndFocusIntent: AppIntent {
+    static let title: LocalizedStringResource = "End Focus"
     static let description = IntentDescription("Ends the focus session without completing the task.")
 
+    @Parameter(title: "Task ID")
+    var taskId: String?
+
+    init() {}
+
+    init(taskId: String?) {
+        self.taskId = taskId
+    }
+
     func perform() async throws -> some IntentResult {
-        FocusController.stop()
+        FocusController.end(taskId: taskId)
         return .result()
     }
 }

@@ -97,6 +97,12 @@ final class AppModel {
         stateDidChange()
     }
 
+    /// Ends focus on a task without completing it; its time left is forgotten.
+    func endFocus(on task: DeskTask) {
+        FocusController.end(taskId: task.id)
+        stateDidChange()
+    }
+
     /// Checks off a task from any day.
     func complete(_ task: DeskTask) {
         SharedStore.shared.update { $0.reference(task) }

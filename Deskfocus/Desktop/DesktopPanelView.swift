@@ -101,12 +101,14 @@ private struct DayPanelContent: View {
                     PanelNavigation(
                         onPrevious: { agenda.moveDay(by: -1) },
                         onNext: { agenda.moveDay(by: 1) },
-                        onToday: agenda.isShowingToday ? nil : { agenda.goToToday() },
                         layout: .day
                     )
+                    // Today shows its progress ring; other days offer the way back in the same spot.
                     if agenda.isShowingToday {
                         let done = model.snapshot.completedCount(on: now)
                         DayProgressRing(done: done, total: done + tasks.count)
+                    } else {
+                        TodayButton(help: "Back to today") { agenda.goToToday() }
                     }
                 }
             }
@@ -152,10 +154,13 @@ private struct WeekPanelContent: View {
                         .font(.system(size: 26, weight: .bold))
                 }
                 Spacer()
+                if !agenda.isShowingThisWeek {
+                    TodayButton(help: "Back to this week") { agenda.goToToday() }
+                        .padding(.trailing, 8)
+                }
                 PanelNavigation(
                     onPrevious: { agenda.moveWeek(by: -1) },
                     onNext: { agenda.moveWeek(by: 1) },
-                    onToday: agenda.isShowingThisWeek ? nil : { agenda.goToToday() },
                     layout: .week
                 )
             }
@@ -308,36 +313,54 @@ private struct FocusStrip: View {
                 Button(intent: ResumeFocusIntent()) { Label("Resume", systemImage: "play.fill") }
                     .buttonStyle(DeskfocusGlassButtonStyle())
             case .finished:
-                Button(intent: StopFocusIntent()) { Label("Dismiss", systemImage: "xmark") }
+                Button(intent: EndFocusIntent()) { Label("Dismiss", systemImage: "xmark") }
                     .buttonStyle(DeskfocusGlassButtonStyle())
             }
             Button(intent: CompleteTaskIntent(taskId: session.taskId)) { Label("Done", systemImage: "checkmark") }
                 .buttonStyle(DeskfocusPrimaryButtonStyle())
+            if session.phase(at: now) != .finished {
+                Button(intent: EndFocusIntent()) { Label("End Session", systemImage: "stop.fill") }
+                    .buttonStyle(DeskfocusDangerButtonStyle())
+            }
         }
     }
 }
 
-/// ‹ Today › controls plus the open/close button, shared by both layouts.
+/// "Today" pill shown when browsing another day or week; it never wraps or shrinks.
+struct TodayButton: View {
+    @Environment(\.deskfocusAccent) private var accent
+    let help: LocalizedStringKey
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Label("Today", systemImage: "arrow.uturn.backward")
+                .font(.system(size: 12, weight: .semibold))
+                .lineLimit(1)
+                .foregroundStyle(accent.onAccent)
+                .padding(.horizontal, 12)
+                .frame(height: 28)
+                .background(accent.gradient, in: Capsule())
+                .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .fixedSize()
+        .help(help)
+    }
+}
+
+/// New task, ‹ › and the open/close button, shared by both layouts.
 struct PanelNavigation: View {
     @Environment(\.deskfocusAccent) private var accent
     @Environment(AppModel.self) private var model
     let onPrevious: () -> Void
     let onNext: () -> Void
-    /// Nil when already showing the current day or week.
-    let onToday: (() -> Void)?
     let layout: PanelLayout
 
     var body: some View {
         HStack(spacing: 4) {
             iconButton("plus", label: "New task", action: { model.showAddTask() })
                 .padding(.trailing, 4)
-            if let onToday {
-                Button("Today", action: onToday)
-                    .buttonStyle(.plain)
-                    .font(.system(size: 11.5, weight: .semibold))
-                    .foregroundStyle(accent.color)
-                    .padding(.trailing, 4)
-            }
             iconButton("chevron.left", label: layout == .day ? "Previous day" : "Previous week", action: onPrevious)
             iconButton("chevron.right", label: layout == .day ? "Next day" : "Next week", action: onNext)
             iconButton(
@@ -348,6 +371,7 @@ struct PanelNavigation: View {
             )
             .padding(.leading, 4)
         }
+        .fixedSize()
     }
 
     /// Round icon button; the prominent one (open/close) uses the accent so it reads differently from the arrows.
@@ -372,7 +396,8 @@ struct PanelNavigation: View {
     }
 }
 
-/// Done and start buttons for a task from any day, used in rows and on hover.
+/// Done and start buttons for a task from any day, used in rows and on hover;
+/// a red stop button appears while the task has time left to resume.
 struct TaskActionButtons: View {
     @Environment(AppModel.self) private var model
     let task: DeskTask
@@ -380,6 +405,8 @@ struct TaskActionButtons: View {
 
     var body: some View {
         HStack(spacing: 4) {
+            EndSessionButton(task: task, size: size)
+
             Button { model.complete(task) } label: {
                 Image(systemName: "checkmark")
                     .font(.system(size: size * 0.4, weight: .bold))

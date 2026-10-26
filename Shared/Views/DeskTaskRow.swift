@@ -26,6 +26,8 @@ struct DeskTaskRow<Leading: View, Trailing: View>: View {
                     if let resumeRemaining {
                         Label(DeskTaskFormatter.timeLeft(resumeRemaining), systemImage: "pause.circle.fill")
                             .foregroundStyle(accent.color)
+                        Text(verbatim: "·")
+                            .foregroundStyle(.secondary)
                     }
                     Text(DeskTaskFormatter.subtitle(for: task, now: now))
                         .foregroundStyle(.secondary)

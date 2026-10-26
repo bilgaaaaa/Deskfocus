@@ -31,7 +31,7 @@ struct FocusSessionView: View {
                         .font(.system(size: 14, weight: .semibold))
                         .lineLimit(2)
                     Spacer(minLength: 0)
-                    controls(showsEndSession: false)
+                    controls(isCompact: true)
                 }
             }
         case .regular:
@@ -59,7 +59,7 @@ struct FocusSessionView: View {
                             .foregroundStyle(.secondary)
                     }
                 }
-                controls(showsEndSession: true)
+                controls(isCompact: false)
             }
         }
     }
@@ -123,7 +123,8 @@ struct FocusSessionView: View {
         return 1 - session.remaining(at: now) / session.plannedDuration
     }
 
-    private func controls(showsEndSession: Bool) -> some View {
+    /// Compact puts a red stop icon next to the buttons; regular adds a full-width red "End Session" row.
+    private func controls(isCompact: Bool) -> some View {
         VStack(spacing: 8) {
             HStack(spacing: 8) {
                 switch phase {
@@ -148,15 +149,28 @@ struct FocusSessionView: View {
                     Label("Done", systemImage: "checkmark").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(DeskfocusPrimaryButtonStyle())
+
+                if isCompact {
+                    Button(intent: EndFocusIntent()) {
+                        Image(systemName: phase == .finished ? "xmark" : "stop.fill")
+                    }
+                    .buttonStyle(DeskfocusDangerButtonStyle())
+                    .help(phase == .finished ? "Dismiss" : "End Session")
+                }
             }
 
-            if showsEndSession {
-                Button(intent: StopFocusIntent()) {
-                    Text(phase == .finished ? String(localized: "Dismiss") : String(localized: "End session without finishing"))
-                        .font(.system(size: 11.5))
-                        .foregroundStyle(accent.color)
+            if !isCompact {
+                if phase == .finished {
+                    Button(intent: EndFocusIntent()) {
+                        Label("Dismiss", systemImage: "xmark").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(DeskfocusGlassButtonStyle())
+                } else {
+                    Button(intent: EndFocusIntent()) {
+                        Label("End Session", systemImage: "stop.fill").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(DeskfocusDangerButtonStyle())
                 }
-                .buttonStyle(.plain)
             }
         }
     }

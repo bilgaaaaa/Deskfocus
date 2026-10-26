@@ -311,6 +311,26 @@
         }
       }
     },
+    "Back to this week": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torna a questa settimana"
+          }
+        }
+      }
+    },
+    "Back to today": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Torna a oggi"
+          }
+        }
+      }
+    },
     "Blue": {
       "localizations": {
         "it": {
@@ -621,22 +641,22 @@
         }
       }
     },
-    "End session": {
+    "End Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termina concentrazione"
+          }
+        }
+      }
+    },
+    "End Session": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Termina sessione"
-          }
-        }
-      }
-    },
-    "End session without finishing": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Termina la sessione senza completare"
           }
         }
       }
@@ -1507,16 +1527,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avvia un timer di concentrazione per un'attività della lista di oggi."
-          }
-        }
-      }
-    },
-    "Stop Focus": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Interrompi concentrazione"
           }
         }
       }

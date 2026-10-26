@@ -78,13 +78,15 @@ enum FocusController {
         notifyChange()
     }
 
-    /// Ends the session without completing the task; time left is kept so the task can be resumed later.
-    static func stop(now: Date = .now) {
+    /// Ends focus on a task without completing it and forgets its time left; nil means the current session.
+    static func end(taskId: String? = nil) {
         SharedStore.shared.update { snapshot in
-            guard snapshot.focus != nil else { return }
-            saveProgressOfCurrentSession(in: &snapshot, now: now)
-            snapshot.focus = nil
-            Log.focus.info("Focus stopped")
+            guard let taskId = taskId ?? snapshot.focus?.taskId else { return }
+            if snapshot.focus?.taskId == taskId {
+                snapshot.focus = nil
+            }
+            snapshot.savedProgress[taskId] = nil
+            Log.focus.info("Focus session ended")
         }
         notifyChange()
     }
