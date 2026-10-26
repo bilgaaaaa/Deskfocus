@@ -19,7 +19,7 @@ final class DesktopPanelController {
     /// Size of the glass card for each layout; the week layout is wide enough for seven columns.
     static func cardSize(for layout: PanelLayout) -> NSSize {
         switch layout {
-        case .day: return NSSize(width: 380, height: 500)
+        case .day: return NSSize(width: 380, height: 460)
         case .week: return NSSize(width: 980, height: 500)
         }
     }

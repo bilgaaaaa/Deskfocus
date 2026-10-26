@@ -1,8 +1,8 @@
 import AppIntents
 import SwiftUI
 
-/// Content of the glass desktop panel: the day or week agenda, or the focus session while one runs.
-/// Switching day and week morphs the glass card with a spring while the content cross-fades.
+/// The glass desktop widget: closed it shows the day like the purple widget, open it shows the week.
+/// Opening and closing morphs the glass card with a spring while the content cross-fades.
 struct DesktopPanelView: View {
     @Environment(AppModel.self) private var model
 
@@ -10,7 +10,8 @@ struct DesktopPanelView: View {
     static let morphAnimation = Animation.spring(response: 0.45, dampingFraction: 0.86)
 
     var body: some View {
-        let layout = model.snapshot.settings.panelLayout
+        let settings = model.snapshot.settings
+        let layout = settings.panelLayout
         let cardSize = DesktopPanelController.cardSize(for: layout)
         let shape = RoundedRectangle(cornerRadius: DesktopGlassBackground.cornerRadius, style: .continuous)
 
@@ -30,12 +31,15 @@ struct DesktopPanelView: View {
             .padding(Self.contentPadding)
             .frame(width: cardSize.width, height: cardSize.height, alignment: .topLeading)
             .clipShape(shape)
-            .modifier(DesktopGlassBackground())
+            // Closed: strong color like the purple widget. Open: light tint so the glass shows.
+            .modifier(DesktopGlassBackground(tint: settings.glassTint, intensity: layout == .day ? 0.9 : 0.3))
             .shadow(color: .black.opacity(0.28), radius: 18, y: 10)
+            .contextMenu { PanelContextMenu() }
             .padding(DesktopPanelController.shadowInset)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .environment(\.colorScheme, .dark)
             .animation(Self.morphAnimation, value: layout)
+            .animation(.easeInOut(duration: 0.3), value: settings.glassTint)
         }
     }
 
@@ -54,30 +58,44 @@ struct DesktopPanelView: View {
     }
 }
 
-/// Day layout: header with arrows, then the selected day's list with an "Up next" card on today.
+/// Right-click menu on the widget: open or close, color, and hide.
+private struct PanelContextMenu: View {
+    @Environment(AppModel.self) private var model
+
+    var body: some View {
+        let layout = model.snapshot.settings.panelLayout
+        Button(layout == .day ? "Open Week" : "Close to Day") {
+            model.setPanelLayout(layout == .day ? .week : .day)
+        }
+        Picker("Color", selection: model.binding(\.glassTint)) {
+            ForEach(GlassTint.allCases, id: \.self) { tint in
+                Text(tint.displayName).tag(tint)
+            }
+        }
+        Divider()
+        Button("Hide Widget") {
+            model.updateSettings { $0.showDesktopPanel = false }
+        }
+    }
+}
+
+/// Closed layout, styled like the purple widget: weekday, big date, progress ring, then the day's items.
+/// Day arrows and the open button appear while the pointer is over the card.
 private struct DayPanelContent: View {
     @Environment(AppModel.self) private var model
     let now: Date
+    @State private var isHovered = false
 
     var body: some View {
         let agenda = model.agenda
         let tasks = agenda.tasks(on: agenda.selectedDay, snapshot: model.snapshot, now: now)
 
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 14) {
             DayHeaderView(date: agenda.selectedDay) {
-                PanelNavigation(
-                    onPrevious: { agenda.moveDay(by: -1) },
-                    onNext: { agenda.moveDay(by: 1) },
-                    onToday: agenda.isShowingToday ? nil : { agenda.goToToday() },
-                    layout: .day
-                )
-            }
-
-            if agenda.isShowingToday {
-                let done = model.snapshot.completedCount(on: now)
-                ProgressView(value: Double(done), total: Double(max(done + tasks.count, 1)))
-                    .tint(DeskfocusTheme.amber)
-                    .accessibilityLabel("\(done) of \(done + tasks.count) done today")
+                if agenda.isShowingToday {
+                    let done = model.snapshot.completedCount(on: now)
+                    DayProgressRing(done: done, total: done + tasks.count)
+                }
             }
 
             ScrollView {
@@ -90,13 +108,29 @@ private struct DayPanelContent: View {
                         TaskActionButtons(task: task)
                     },
                     upNextAction: { task in
-                        Button { model.startFocus(on: task) } label: { PlayGlyph(size: 40, isProminent: true) }
+                        Button { model.startFocus(on: task) } label: { PlayGlyph(size: 44, isProminent: true) }
                             .buttonStyle(.plain)
                             .help("Start focus on this task")
                     }
                 )
             }
             .scrollIndicators(.never)
+        }
+        .overlay(alignment: .bottomTrailing) {
+            if isHovered {
+                PanelNavigation(
+                    onPrevious: { agenda.moveDay(by: -1) },
+                    onNext: { agenda.moveDay(by: 1) },
+                    onToday: agenda.isShowingToday ? nil : { agenda.goToToday() },
+                    layout: .day
+                )
+                .padding(6)
+                .background(.ultraThinMaterial, in: Capsule())
+                .transition(.opacity.combined(with: .move(edge: .bottom)))
+            }
+        }
+        .onHover { hovering in
+            withAnimation(.easeOut(duration: 0.18)) { isHovered = hovering }
         }
     }
 }
@@ -284,7 +318,7 @@ private struct FocusStrip: View {
     }
 }
 
-/// ‹ Today › controls plus the day/week switch, shared by both layouts.
+/// ‹ Today › controls plus the open/close button, shared by both layouts.
 struct PanelNavigation: View {
     @Environment(AppModel.self) private var model
     let onPrevious: () -> Void
@@ -305,8 +339,8 @@ struct PanelNavigation: View {
             iconButton("chevron.left", label: layout == .day ? "Previous day" : "Previous week", action: onPrevious)
             iconButton("chevron.right", label: layout == .day ? "Next day" : "Next week", action: onNext)
             iconButton(
-                layout == .day ? "rectangle.split.3x1" : "list.bullet",
-                label: layout == .day ? "Show week" : "Show day",
+                layout == .day ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left",
+                label: layout == .day ? "Open week" : "Close to day",
                 action: { model.setPanelLayout(layout == .day ? .week : .day) }
             )
         }

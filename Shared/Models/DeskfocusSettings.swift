@@ -13,6 +13,33 @@ enum PanelLayout: String, Codable, CaseIterable {
     }
 }
 
+/// Color of the glass widgets and the WidgetKit widget, picked from swatches in Settings or the panel's menu.
+enum GlassTint: String, Codable, CaseIterable {
+    case purple
+    case indigo
+    case blue
+    case teal
+    case green
+    case orange
+    case rose
+    case graphite
+    case clear
+
+    var displayName: String {
+        switch self {
+        case .purple: return "Purple"
+        case .indigo: return "Indigo"
+        case .blue: return "Blue"
+        case .teal: return "Teal"
+        case .green: return "Green"
+        case .orange: return "Orange"
+        case .rose: return "Rose"
+        case .graphite: return "Graphite"
+        case .clear: return "Clear glass"
+        }
+    }
+}
+
 /// What happens to blocked apps during focus.
 enum BlockingMode: String, Codable, CaseIterable {
     /// Hide the apps and hide them again whenever they come to the front.
@@ -42,6 +69,7 @@ struct DeskfocusSettings: Codable, Equatable {
     var enabledSources: Set<TaskSourceKind> = Set(TaskSourceKind.allCases)
     var showDesktopPanel: Bool = true
     var panelLayout: PanelLayout = .day
+    var glassTint: GlassTint = .purple
 
     init() {}
 
@@ -57,6 +85,7 @@ struct DeskfocusSettings: Codable, Equatable {
         enabledSources = try container.decodeIfPresent(Set<TaskSourceKind>.self, forKey: .enabledSources) ?? defaults.enabledSources
         showDesktopPanel = try container.decodeIfPresent(Bool.self, forKey: .showDesktopPanel) ?? defaults.showDesktopPanel
         panelLayout = (try? container.decodeIfPresent(PanelLayout.self, forKey: .panelLayout)) ?? defaults.panelLayout
+        glassTint = (try? container.decodeIfPresent(GlassTint.self, forKey: .glassTint)) ?? defaults.glassTint
     }
 
     /// Focus length clamped to a sane range, in seconds.

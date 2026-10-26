@@ -1,35 +1,37 @@
 import AppKit
 import SwiftUI
 
-/// Indigo-tinted glass behind the desktop panel: Liquid Glass on macOS 26, a behind-window blur on macOS 14 and 15.
+/// Tinted glass behind the desktop widget: Liquid Glass on macOS 26, a behind-window blur on macOS 14 and 15.
+/// `intensity` sets how much color covers the glass: strong when closed (day), light when open (week).
 struct DesktopGlassBackground: ViewModifier {
     static let cornerRadius: CGFloat = 26
-    private static let tint = DeskfocusTheme.ink.opacity(0.38)
-    private let shape = RoundedRectangle(cornerRadius: Self.cornerRadius, style: .continuous)
+
+    let tint: GlassTint
+    let intensity: Double
+
+    private var shape: RoundedRectangle {
+        RoundedRectangle(cornerRadius: Self.cornerRadius, style: .continuous)
+    }
 
     @ViewBuilder
     func body(content: Content) -> some View {
+        let tinted = content.background(tint.gradient.opacity(intensity), in: shape)
+
         // The Liquid Glass API only exists in the macOS 26 SDK (Swift 6.2), so older Xcodes compile the fallback.
         #if compiler(>=6.2)
         if #available(macOS 26.0, *) {
-            content.glassEffect(.regular.tint(Self.tint), in: shape)
+            tinted.glassEffect(.regular, in: shape)
         } else {
-            blurredBackground(content)
+            blurredBackground(tinted)
         }
         #else
-        blurredBackground(content)
+        blurredBackground(tinted)
         #endif
     }
 
-    private func blurredBackground(_ content: Content) -> some View {
+    private func blurredBackground(_ content: some View) -> some View {
         content
-            .background {
-                ZStack {
-                    BehindWindowBlur()
-                    Self.tint
-                }
-                .clipShape(shape)
-            }
+            .background(BehindWindowBlur().clipShape(shape))
             .overlay(shape.strokeBorder(.white.opacity(0.2), lineWidth: 1))
     }
 }

@@ -14,8 +14,8 @@ struct DeskfocusWidget: Widget {
         StaticConfiguration(kind: DeskfocusConstants.widgetKind, provider: DeskfocusTimelineProvider()) { entry in
             DeskfocusWidgetView(entry: entry)
                 .containerBackground(for: .widget) {
-                    // Same indigo as the app icon, so the widget matches the glass panel's tint.
-                    LinearGradient(colors: [DeskfocusTheme.indigo.opacity(0.85), DeskfocusTheme.ink], startPoint: .topLeading, endPoint: .bottomTrailing)
+                    // Same color the user picked for the glass widget on the desktop.
+                    entry.snapshot.settings.glassTint.gradient
                 }
                 .environment(\.colorScheme, .dark)
         }

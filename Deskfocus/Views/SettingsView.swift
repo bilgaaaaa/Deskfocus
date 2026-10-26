@@ -131,15 +131,17 @@ private struct GeneralSettingsView: View {
 
     var body: some View {
         Form {
-            Toggle("Show glass panel on the desktop", isOn: model.binding(\.showDesktopPanel))
-            Picker("Panel shows", selection: model.binding(\.panelLayout)) {
-                ForEach(PanelLayout.allCases, id: \.self) { layout in
-                    Text(layout.displayName).tag(layout)
-                }
+            Toggle("Show glass widget on the desktop", isOn: model.binding(\.showDesktopPanel))
+            Picker("Widget is", selection: model.binding(\.panelLayout)) {
+                Text("Closed (Day)").tag(PanelLayout.day)
+                Text("Open (Week)").tag(PanelLayout.week)
             }
             .pickerStyle(.segmented)
             .disabled(!model.snapshot.settings.showDesktopPanel)
-            Text("Drag the panel to move it; it stays below your windows on every desktop. Switch between day and week from its header too.")
+            LabeledContent("Color") {
+                GlassTintPicker(selection: model.binding(\.glassTint))
+            }
+            Text("Drag the widget to move it; it stays below your windows on every desktop. Open and close it, or change its color, from the widget itself too (right-click).")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 
