@@ -19,12 +19,12 @@ final class GoogleAuthService {
 
         var errorDescription: String? {
             switch self {
-            case .notConfigured: return "Google client id is missing. Add it to Config/Secrets.xcconfig."
-            case .notConnected: return "Google account is not connected."
-            case .cancelled: return "Sign-in was cancelled."
-            case .invalidCallback: return "Google returned an invalid sign-in response."
-            case .stateMismatch: return "Sign-in response did not match the request."
-            case .missingRefreshToken: return "Google did not return a refresh token. Remove Deskfocus from your Google account permissions and try again."
+            case .notConfigured: return String(localized: "Google client id is missing. Add it to Config/Secrets.xcconfig.")
+            case .notConnected: return String(localized: "Google account is not connected.")
+            case .cancelled: return String(localized: "Sign-in was cancelled.")
+            case .invalidCallback: return String(localized: "Google returned an invalid sign-in response.")
+            case .stateMismatch: return String(localized: "Sign-in response did not match the request.")
+            case .missingRefreshToken: return String(localized: "Google did not return a refresh token. Remove Deskfocus from your Google account permissions and try again.")
             case .server(let message): return message
             }
         }

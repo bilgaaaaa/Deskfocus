@@ -24,6 +24,6 @@ extension DeskTask {
     /// Same placeholder for untitled items across every source.
     static func displayTitle(_ rawTitle: String?) -> String {
         let trimmed = rawTitle?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return trimmed.isEmpty ? "(No title)" : trimmed
+        return trimmed.isEmpty ? String(localized: "(No title)") : trimmed
     }
 }

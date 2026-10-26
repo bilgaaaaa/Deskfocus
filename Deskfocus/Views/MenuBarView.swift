@@ -49,7 +49,7 @@ struct MenuBarView: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: 1) {
-                Text(agenda.isShowingToday ? "Today" : DeskTaskFormatter.weekday(agenda.selectedDay))
+                Text(agenda.isShowingToday ? String(localized: "Today") : DeskTaskFormatter.weekday(agenda.selectedDay))
                     .font(.system(size: 15, weight: .bold))
                 Text(DeskTaskFormatter.dayMonth(agenda.selectedDay))
                     .font(.system(size: 11.5))
@@ -131,7 +131,7 @@ struct MenuBarView: View {
         }
     }
 
-    private func footerButton(_ systemName: String, help: String, action: @escaping () -> Void) -> some View {
+    private func footerButton(_ systemName: String, help: LocalizedStringKey, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .frame(width: 26, height: 26)
@@ -142,7 +142,7 @@ struct MenuBarView: View {
 
     private var emptyMessage: String {
         let hasAccess = model.eventKit.hasCalendarAccess || model.eventKit.hasRemindersAccess || model.googleAuth.isConnected
-        return hasAccess ? "Nothing planned for this day." : "Connect your calendars in Settings to see your tasks."
+        return hasAccess ? String(localized: "Nothing planned for this day.") : String(localized: "Connect your calendars in Settings to see your tasks.")
     }
 }
 
@@ -204,9 +204,9 @@ private struct FocusBanner: View {
 
     private var statusLine: String {
         switch session.phase(at: now) {
-        case .running: return "\(DeskTaskFormatter.clock(session.remaining(at: now))) left · focusing"
-        case .paused(let remaining): return "\(DeskTaskFormatter.clock(remaining)) left · paused"
-        case .finished: return "Time's up"
+        case .running: return String(localized: "\(DeskTaskFormatter.clock(session.remaining(at: now))) left · focusing")
+        case .paused(let remaining): return String(localized: "\(DeskTaskFormatter.clock(remaining)) left · paused")
+        case .finished: return String(localized: "Time's up")
         }
     }
 
@@ -226,7 +226,7 @@ private struct FocusBanner: View {
         }
     }
 
-    private func iconButton(_ systemName: String, help: String, intent: some AppIntent) -> some View {
+    private func iconButton(_ systemName: String, help: LocalizedStringKey, intent: some AppIntent) -> some View {
         Button(intent: intent) {
             Image(systemName: systemName)
                 .font(.system(size: 11, weight: .bold))

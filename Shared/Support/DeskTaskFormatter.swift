@@ -38,7 +38,7 @@ enum DeskTaskFormatter {
         let calendar = Calendar.current
 
         if task.isEvent {
-            if task.isAllDay { return "All day · \(task.listName)" }
+            if task.isAllDay { return String(localized: "All day · \(task.listName)") }
             guard let start = task.startDate else { return task.listName }
             let startText = timeFormatter.string(from: start)
             guard let end = task.endDate else { return "\(startText) · \(task.listName)" }
@@ -47,10 +47,10 @@ enum DeskTaskFormatter {
 
         guard let due = task.dueDate else { return task.listName }
         if calendar.startOfDay(for: due) < calendar.startOfDay(for: now) {
-            return "Overdue · \(task.listName)"
+            return String(localized: "Overdue · \(task.listName)")
         }
-        if task.isAllDay { return "To-do · \(task.listName)" }
-        return "Due \(timeFormatter.string(from: due)) · \(task.listName)"
+        if task.isAllDay { return String(localized: "To-do · \(task.listName)") }
+        return String(localized: "Due \(timeFormatter.string(from: due)) · \(task.listName)")
     }
 
     /// Start time for compact week rows, or nil for all-day items and to-dos.
@@ -62,15 +62,15 @@ enum DeskTaskFormatter {
     /// Label above the "Up next" card, e.g. "Up next · in 25 min", "Happening now" or "Overdue".
     static func upNextLabel(for task: DeskTask, now: Date = .now) -> String {
         if task.isEvent, !task.isAllDay, let start = task.startDate {
-            if start <= now { return "Happening now" }
+            if start <= now { return String(localized: "Happening now") }
             let minutes = Int((start.timeIntervalSince(now) / 60).rounded(.up))
-            if minutes < 60 { return "Up next · in \(minutes) min" }
-            return "Up next · at \(timeFormatter.string(from: start))"
+            if minutes < 60 { return String(localized: "Up next · in \(minutes) min") }
+            return String(localized: "Up next · at \(timeFormatter.string(from: start))")
         }
         if let due = task.dueDate, Calendar.current.startOfDay(for: due) < Calendar.current.startOfDay(for: now) {
-            return "Overdue"
+            return String(localized: "Overdue")
         }
-        return "Up next"
+        return String(localized: "Up next")
     }
 
     /// "Monday" style weekday, the small amber label above the date.
@@ -98,14 +98,14 @@ enum DeskTaskFormatter {
     static func duration(minutes: Int) -> String {
         let hours = minutes / 60
         let rest = minutes % 60
-        if hours == 0 { return "\(rest) min" }
-        if rest == 0 { return "\(hours) h" }
-        return "\(hours) h \(rest) min"
+        if hours == 0 { return String(localized: "\(rest) min") }
+        if rest == 0 { return String(localized: "\(hours) h") }
+        return String(localized: "\(hours) h \(rest) min")
     }
 
     /// "12:30 left" for a session that can be resumed.
     static func timeLeft(_ remaining: TimeInterval) -> String {
-        "\(clock(remaining)) left"
+        String(localized: "\(clock(remaining)) left")
     }
 
     /// Remaining time as "mm:ss", or "h:mm:ss" for an hour or more.

@@ -14,8 +14,8 @@ enum FocusNotifier {
 
     static func notifyFinished(_ session: FocusSession) {
         let content = UNMutableNotificationContent()
-        content.title = "Focus time is up"
-        content.body = "\(session.taskTitle) — mark it done or start another round."
+        content.title = String(localized: "Focus time is up")
+        content.body = String(localized: "\(session.taskTitle) — mark it done or start another round.")
         content.sound = .default
 
         post(identifier: session.id.uuidString, content: content)
@@ -24,8 +24,8 @@ enum FocusNotifier {
     /// Explains why a blocked app closed when the user opened it during strict focus.
     static func notifyBlocked(appName: String) {
         let content = UNMutableNotificationContent()
-        content.title = "\(appName) is blocked while you focus"
-        content.body = "It will reopen when the session ends."
+        content.title = String(localized: "\(appName) is blocked while you focus")
+        content.body = String(localized: "It will reopen when the session ends.")
 
         post(identifier: "blocked-\(appName)", content: content)
     }

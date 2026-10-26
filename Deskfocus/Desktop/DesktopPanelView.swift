@@ -65,7 +65,7 @@ private struct PanelContextMenu: View {
 
     var body: some View {
         let layout = model.snapshot.settings.panelLayout
-        Button(layout == .day ? "Open Week" : "Close to Day") {
+        Button(layout == .day ? String(localized: "Open Week") : String(localized: "Close to Day")) {
             model.setPanelLayout(layout == .day ? .week : .day)
         }
         Picker("Color", selection: model.binding(\.glassTint)) {
@@ -291,9 +291,9 @@ private struct FocusStrip: View {
 
     private var statusLine: String {
         switch session.phase(at: now) {
-        case .running: return "\(DeskTaskFormatter.clock(session.remaining(at: now))) left · focusing"
-        case .paused(let remaining): return "\(DeskTaskFormatter.clock(remaining)) left · paused"
-        case .finished: return "Time's up"
+        case .running: return String(localized: "\(DeskTaskFormatter.clock(session.remaining(at: now))) left · focusing")
+        case .paused(let remaining): return String(localized: "\(DeskTaskFormatter.clock(remaining)) left · paused")
+        case .finished: return String(localized: "Time's up")
         }
     }
 
@@ -351,7 +351,7 @@ struct PanelNavigation: View {
     }
 
     /// Round icon button; the prominent one (open/close) uses the accent so it reads differently from the arrows.
-    private func iconButton(_ systemName: String, label: String, isProminent: Bool = false, action: @escaping () -> Void) -> some View {
+    private func iconButton(_ systemName: String, label: LocalizedStringKey, isProminent: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: 12, weight: .bold))

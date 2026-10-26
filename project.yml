@@ -3,6 +3,7 @@ name: Deskfocus
 
 options:
   bundleIdPrefix: com.bilgaaaaa
+  developmentLanguage: en
   deploymentTarget:
     macOS: "14.0"
   createIntermediateGroups: true
@@ -19,6 +20,9 @@ settings:
     DEVELOPMENT_TEAM: $(DESKFOCUS_TEAM_ID)
     CODE_SIGN_STYLE: Automatic
     ENABLE_HARDENED_RUNTIME: YES
+    # English and Italian via String Catalogs; texts are extracted from code at build time.
+    SWIFT_EMIT_LOC_STRINGS: YES
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
 
 targets:
   Deskfocus:
@@ -33,6 +37,8 @@ targets:
       path: Deskfocus/Info.plist
       properties:
         CFBundleDisplayName: Deskfocus
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, it]
         LSApplicationCategoryType: public.app-category.productivity
         LSUIElement: true
         NSCalendarsUsageDescription: Deskfocus shows today's events so you can focus on them.
@@ -64,6 +70,8 @@ targets:
       path: DeskfocusWidget/Info.plist
       properties:
         CFBundleDisplayName: Deskfocus
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, it]
         DeskfocusAppGroupIdentifier: $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension

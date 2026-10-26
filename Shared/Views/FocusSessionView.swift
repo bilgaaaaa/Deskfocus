@@ -75,17 +75,19 @@ struct FocusSessionView: View {
 
     private var statusText: String {
         switch phase {
-        case .running: return "FOCUSING"
-        case .paused: return "PAUSED"
-        case .finished: return "TIME'S UP"
+        case .running: return String(localized: "FOCUSING")
+        case .paused: return String(localized: "PAUSED")
+        case .finished: return String(localized: "TIME'S UP")
         }
     }
 
     private var blockedLine: String? {
         guard phase != .finished, !settings.blockedBundleIds.isEmpty else { return nil }
         let count = settings.blockedBundleIds.count
-        let verb = settings.blockingMode == .quit ? "blocked" : "hidden"
-        return count == 1 ? "1 app \(verb)" : "\(count) apps \(verb)"
+        switch settings.blockingMode {
+        case .quit: return count == 1 ? String(localized: "1 app blocked") : String(localized: "\(count) apps blocked")
+        case .hide: return count == 1 ? String(localized: "1 app hidden") : String(localized: "\(count) apps hidden")
+        }
     }
 
     private func ring(diameter: CGFloat, lineWidth: CGFloat, timeFontSize: CGFloat) -> some View {
@@ -95,7 +97,7 @@ struct FocusSessionView: View {
                     .font(.system(size: timeFontSize, weight: .bold, design: .rounded))
                     .monospacedDigit()
                     .multilineTextAlignment(.center)
-                Text(phase == .finished ? "Nice work" : "of \(Int(session.plannedDuration / 60)) min")
+                Text(phase == .finished ? String(localized: "Nice work") : String(localized: "of \(Int(session.plannedDuration / 60)) min"))
                     .font(.system(size: max(10, timeFontSize * 0.27)))
                     .foregroundStyle(.secondary)
             }
@@ -150,7 +152,7 @@ struct FocusSessionView: View {
 
             if showsEndSession {
                 Button(intent: StopFocusIntent()) {
-                    Text(phase == .finished ? "Dismiss" : "End session without finishing")
+                    Text(phase == .finished ? String(localized: "Dismiss") : String(localized: "End session without finishing"))
                         .font(.system(size: 11.5))
                         .foregroundStyle(accent.color)
                 }

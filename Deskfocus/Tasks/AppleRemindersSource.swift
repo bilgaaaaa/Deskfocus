@@ -6,7 +6,7 @@ final class AppleRemindersSource: TaskSource {
     enum RemindersError: LocalizedError {
         case reminderNotFound
 
-        var errorDescription: String? { "The reminder no longer exists." }
+        var errorDescription: String? { String(localized: "The reminder no longer exists.") }
     }
 
     let kind: TaskSourceKind = .appleReminders

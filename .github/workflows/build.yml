@@ -36,3 +36,19 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             | tee build.log
           exit ${PIPESTATUS[0]}
+
+      # Texts the compiler extracted, used to keep the String Catalogs complete.
+      - name: Collect extracted strings
+        if: always()
+        run: |
+          mkdir -p extracted-strings
+          find ~/Library/Developer/Xcode/DerivedData -name "*.stringsdata" -exec cp {} extracted-strings/ \; || true
+          cp Shared/Localizable.xcstrings extracted-strings/ || true
+
+      - name: Upload extracted strings
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: extracted-strings
+          path: extracted-strings
+          if-no-files-found: ignore

@@ -79,7 +79,7 @@ final class TaskRepository {
         WidgetCenter.shared.reloadTimelines(ofKind: DeskfocusConstants.widgetKind)
 
         let failedNames = result.failedSources.map(\.displayName)
-        lastErrorMessage = failedNames.isEmpty ? nil : "Could not update \(failedNames.joined(separator: ", "))."
+        lastErrorMessage = failedNames.isEmpty ? nil : String(localized: "Could not update \(failedNames.joined(separator: ", ")).")
         Log.sync.info("Synced \(tasks.count) items for today, \(failedNames.count) source failures")
 
         await processPendingCompletions()

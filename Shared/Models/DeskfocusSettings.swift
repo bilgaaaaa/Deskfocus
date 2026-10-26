@@ -7,8 +7,8 @@ enum PanelLayout: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .day: return "Day"
-        case .week: return "Week"
+        case .day: return String(localized: "Day")
+        case .week: return String(localized: "Week")
         }
     }
 }
@@ -27,15 +27,15 @@ enum GlassTint: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .purple: return "Purple"
-        case .indigo: return "Indigo"
-        case .blue: return "Blue"
-        case .teal: return "Teal"
-        case .green: return "Green"
-        case .orange: return "Orange"
-        case .rose: return "Rose"
-        case .graphite: return "Graphite"
-        case .clear: return "Clear glass"
+        case .purple: return String(localized: "Purple")
+        case .indigo: return String(localized: "Indigo")
+        case .blue: return String(localized: "Blue")
+        case .teal: return String(localized: "Teal")
+        case .green: return String(localized: "Green")
+        case .orange: return String(localized: "Orange")
+        case .rose: return String(localized: "Rose")
+        case .graphite: return String(localized: "Graphite")
+        case .clear: return String(localized: "Clear glass")
         }
     }
 }
@@ -53,14 +53,14 @@ enum AccentChoice: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .amber: return "Amber"
-        case .coral: return "Coral"
-        case .pink: return "Pink"
-        case .violet: return "Violet"
-        case .sky: return "Sky"
-        case .mint: return "Mint"
-        case .lime: return "Lime"
-        case .white: return "White"
+        case .amber: return String(localized: "Amber")
+        case .coral: return String(localized: "Coral")
+        case .pink: return String(localized: "Pink")
+        case .violet: return String(localized: "Violet")
+        case .sky: return String(localized: "Sky")
+        case .mint: return String(localized: "Mint")
+        case .lime: return String(localized: "Lime")
+        case .white: return String(localized: "White")
         }
     }
 }
@@ -74,8 +74,8 @@ enum BlockingMode: String, Codable, CaseIterable {
 
     var displayName: String {
         switch self {
-        case .hide: return "Hide them"
-        case .quit: return "Quit them (strict)"
+        case .hide: return String(localized: "Hide them")
+        case .quit: return String(localized: "Quit them (strict)")
         }
     }
 }

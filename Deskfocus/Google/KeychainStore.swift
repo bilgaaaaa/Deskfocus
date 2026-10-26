@@ -9,7 +9,7 @@ enum KeychainStore {
         var errorDescription: String? {
             switch self {
             case .unexpectedStatus(let status):
-                return "Keychain error \(status): \(SecCopyErrorMessageString(status, nil) as String? ?? "unknown")"
+                return String(localized: "Keychain error \(Int(status)): \(SecCopyErrorMessageString(status, nil) as String? ?? "unknown")")
             }
         }
     }

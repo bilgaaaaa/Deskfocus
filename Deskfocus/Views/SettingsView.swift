@@ -54,7 +54,7 @@ private struct AccountsSettingsView: View {
                             Task { await model.disconnectGoogle() }
                         }
                     } else {
-                        Button(isConnectingGoogle ? "Connecting…" : "Connect Google Tasks") {
+                        Button(isConnectingGoogle ? String(localized: "Connecting…") : String(localized: "Connect Google Tasks")) {
                             isConnectingGoogle = true
                             Task {
                                 await model.connectGoogle()
@@ -108,7 +108,7 @@ struct ColorfulSwitchToggleStyle: ToggleStyle {
         HStack {
             configuration.label
             Spacer(minLength: 12)
-            Text(configuration.isOn ? "On" : "Off")
+            Text(configuration.isOn ? String(localized: "On") : String(localized: "Off"))
                 .font(.system(size: 11, weight: .semibold))
                 .foregroundStyle(configuration.isOn ? Color.green : Color.secondary)
                 .frame(minWidth: 24, alignment: .trailing)
@@ -126,7 +126,7 @@ struct ColorfulSwitchToggleStyle: ToggleStyle {
                     }
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(configuration.isOn ? "On" : "Off")
+            .accessibilityLabel(configuration.isOn ? String(localized: "On") : String(localized: "Off"))
         }
         .opacity(configuration.isOn ? 1 : 0.85)
     }

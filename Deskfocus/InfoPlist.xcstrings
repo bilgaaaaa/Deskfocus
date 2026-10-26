@@ -1,0 +1,74 @@
+{
+  "sourceLanguage": "en",
+  "version": "1.0",
+  "strings": {
+    "NSCalendarsUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus shows today's events so you can focus on them."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus mostra gli eventi di oggi per aiutarti a concentrarti."
+          }
+        }
+      }
+    },
+    "NSCalendarsFullAccessUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus shows today's events so you can focus on them."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus mostra gli eventi di oggi per aiutarti a concentrarti."
+          }
+        }
+      }
+    },
+    "NSRemindersUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus shows today's reminders and marks them done when you finish."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus mostra i promemoria di oggi e li segna come completati quando hai finito."
+          }
+        }
+      }
+    },
+    "NSRemindersFullAccessUsageDescription": {
+      "extractionState": "manual",
+      "localizations": {
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus shows today's reminders and marks them done when you finish."
+          }
+        },
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus mostra i promemoria di oggi e li segna come completati quando hai finito."
+          }
+        }
+      }
+    }
+  }
+}

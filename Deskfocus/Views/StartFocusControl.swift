@@ -25,7 +25,7 @@ struct StartFocusControl: View {
             PlayGlyph(size: size, isProminent: isProminent)
         }
         .buttonStyle(.plain)
-        .help(model.snapshot.savedProgress[task.id] != nil ? "Resume focus on this task" : "Start focus on this task")
+        .help(model.snapshot.savedProgress[task.id] != nil ? String(localized: "Resume focus on this task") : String(localized: "Start focus on this task"))
         .popover(isPresented: $isChoosingLength, arrowEdge: .bottom) {
             FocusLengthPicker(remembered: model.snapshot.taskFocusMinutes[task.id] ?? model.snapshot.settings.focusMinutes) { minutes in
                 isChoosingLength = false

@@ -9,8 +9,8 @@ final class GoogleAPIClient {
 
         var errorDescription: String? {
             switch self {
-            case .http(let status, let body): return "Google API error \(status): \(body.prefix(200))"
-            case .invalidURL: return "Could not build the Google API URL."
+            case .http(let status, let body): return String(localized: "Google API error \(status): \(String(body.prefix(200)))")
+            case .invalidURL: return String(localized: "Could not build the Google API URL.")
             }
         }
     }

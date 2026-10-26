@@ -70,7 +70,7 @@ struct AddTaskView: View {
                 Spacer()
                 Button("Cancel", role: .cancel, action: onClose)
                     .keyboardShortcut(.cancelAction)
-                Button(isSaving ? "Adding…" : "Add") { save() }
+                Button(isSaving ? String(localized: "Adding…") : String(localized: "Add")) { save() }
                     .keyboardShortcut(.defaultAction)
                     .disabled(!canSave)
             }

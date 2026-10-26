@@ -15,10 +15,10 @@ enum TaskSourceKind: String, Codable, CaseIterable, Hashable {
     /// Calendars and Reminders include every account added in macOS, not only iCloud.
     var displayName: String {
         switch self {
-        case .appleCalendar: return "Calendars"
-        case .appleReminders: return "Reminders"
-        case .googleCalendar: return "Google Calendar (direct)"
-        case .googleTasks: return "Google Tasks"
+        case .appleCalendar: return String(localized: "Calendars")
+        case .appleReminders: return String(localized: "Reminders")
+        case .googleCalendar: return String(localized: "Google Calendar (direct)")
+        case .googleTasks: return String(localized: "Google Tasks")
         }
     }
 
