@@ -95,6 +95,29 @@ macOS does not let apps block other apps' notifications directly, so Deskfocus s
 
 The Focus mode turns on when a session starts or resumes, and off when it is paused, stopped, completed or the time is up.
 
+## Share Deskfocus as a download
+
+Needs the paid Apple Developer Program. The result is a signed, notarized `Deskfocus-<version>.dmg` that opens normally on any Mac with macOS 14 or later.
+
+### One-time setup
+
+1. Set `DESKFOCUS_TEAM_ID` in `Config/Secrets.xcconfig` to your **paid** team ID (developer.apple.com › Account › Membership details). It differs from the free Personal Team ID.
+2. Xcode › Settings › Accounts › your team › **Manage Certificates…** › **+** › **Developer ID Application**.
+3. Create an app-specific password at [account.apple.com](https://account.apple.com) › Sign-In and Security › App-Specific Passwords, then store it for the notary tool:
+   ```bash
+   xcrun notarytool store-credentials "deskfocus-notary" --apple-id YOUR_APPLE_ID_EMAIL --team-id YOUR_TEAM_ID
+   ```
+   Paste the app-specific password when asked. It is saved in your Keychain, never in the repo.
+
+### Each release
+
+1. Raise `MARKETING_VERSION` in `project.yml` (for example `0.2.0`).
+2. Run:
+   ```bash
+   ./Scripts/release.sh
+   ```
+3. Send `build/Deskfocus-<version>.dmg`. The other person opens it and drags Deskfocus into Applications.
+
 ## Logs
 
 Every module logs with `os.Logger` under the subsystem `com.bilgaaaaa.deskfocus` (categories: `store`, `sync`, `google`, `focus`, `distraction`, `widget`, `app`). In Console.app, filter by `subsystem:com.bilgaaaaa.deskfocus`.
