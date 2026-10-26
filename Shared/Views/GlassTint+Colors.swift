@@ -37,25 +37,28 @@ extension GlassTint {
 }
 
 /// Row of round color swatches; the selected one gets a ring, like a widget color picker.
-struct GlassTintPicker: View {
-    @Binding var selection: GlassTint
+struct SwatchPicker<Value: Hashable>: View {
+    let options: [Value]
+    @Binding var selection: Value
+    let color: (Value) -> Color
+    let name: (Value) -> String
 
     var body: some View {
         HStack(spacing: 10) {
-            ForEach(GlassTint.allCases, id: \.self) { tint in
-                Button { selection = tint } label: {
+            ForEach(options, id: \.self) { option in
+                Button { selection = option } label: {
                     Circle()
-                        .fill(tint.swatch)
-                        .overlay(Circle().strokeBorder(Color.white.opacity(tint == .clear ? 0.6 : 0.15), lineWidth: 1))
+                        .fill(color(option))
+                        .overlay(Circle().strokeBorder(Color.white.opacity(0.35), lineWidth: 1))
                         .frame(width: 22, height: 22)
                         .padding(3)
-                        .overlay(Circle().strokeBorder(Color.accentColor, lineWidth: selection == tint ? 2 : 0))
+                        .overlay(Circle().strokeBorder(Color.primary, lineWidth: selection == option ? 2 : 0))
                         .contentShape(Circle())
                 }
                 .buttonStyle(.plain)
-                .help(tint.displayName)
-                .accessibilityLabel(tint.displayName)
-                .accessibilityAddTraits(selection == tint ? .isSelected : [])
+                .help(name(option))
+                .accessibilityLabel(name(option))
+                .accessibilityAddTraits(selection == option ? .isSelected : [])
             }
         }
     }

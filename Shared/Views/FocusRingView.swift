@@ -1,7 +1,8 @@
 import SwiftUI
 
-/// Circular progress in the app icon's amber-to-orange gradient, with any content in the middle.
+/// Circular progress in the user's accent gradient, with any content in the middle.
 struct FocusRingView<Center: View>: View {
+    @Environment(\.deskfocusAccent) private var accent
     let progress: Double
     var lineWidth: CGFloat = 12
     @ViewBuilder var center: () -> Center
@@ -13,7 +14,7 @@ struct FocusRingView<Center: View>: View {
             Circle()
                 .trim(from: 0, to: min(max(progress, 0), 1))
                 .stroke(
-                    AngularGradient(colors: [DeskfocusTheme.amber, DeskfocusTheme.orange], center: .center, startAngle: .degrees(0), endAngle: .degrees(360 * max(progress, 0.01))),
+                    AngularGradient(colors: [accent.colors.light, accent.colors.deep], center: .center, startAngle: .degrees(0), endAngle: .degrees(360 * max(progress, 0.01))),
                     style: StrokeStyle(lineWidth: lineWidth, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))

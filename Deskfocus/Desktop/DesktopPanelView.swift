@@ -38,6 +38,7 @@ struct DesktopPanelView: View {
             .padding(DesktopPanelController.shadowInset)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .environment(\.colorScheme, .dark)
+            .environment(\.deskfocusAccent, settings.accentColor)
             .animation(Self.morphAnimation, value: layout)
             .animation(.easeInOut(duration: 0.3), value: settings.glassTint)
         }
@@ -70,6 +71,11 @@ private struct PanelContextMenu: View {
         Picker("Color", selection: model.binding(\.glassTint)) {
             ForEach(GlassTint.allCases, id: \.self) { tint in
                 Text(tint.displayName).tag(tint)
+            }
+        }
+        Picker("Accent", selection: model.binding(\.accentColor)) {
+            ForEach(AccentChoice.allCases, id: \.self) { accent in
+                Text(accent.displayName).tag(accent)
             }
         }
         Divider()
@@ -128,6 +134,7 @@ private struct DayPanelContent: View {
 
 /// Week layout: header with week arrows, an optional focus strip, then seven day columns.
 private struct WeekPanelContent: View {
+    @Environment(\.deskfocusAccent) private var accent
     @Environment(AppModel.self) private var model
     let now: Date
 
@@ -141,7 +148,7 @@ private struct WeekPanelContent: View {
                     Text("WEEK")
                         .font(.system(size: 11, weight: .bold))
                         .tracking(0.8)
-                        .foregroundStyle(DeskfocusTheme.amber)
+                        .foregroundStyle(accent.color)
                     Text(DeskTaskFormatter.weekRange(agenda.selectedWeek))
                         .font(.system(size: 26, weight: .bold))
                 }
@@ -170,6 +177,7 @@ private struct WeekPanelContent: View {
 
 /// One day in the week layout; the header opens that day in the day layout.
 private struct WeekDayColumn: View {
+    @Environment(\.deskfocusAccent) private var accent
     @Environment(AppModel.self) private var model
     let day: Date
     let tasks: [DeskTask]
@@ -185,13 +193,13 @@ private struct WeekDayColumn: View {
                     Text(DeskTaskFormatter.shortWeekday(day).uppercased())
                         .font(.system(size: 10.5, weight: .bold))
                         .tracking(0.6)
-                        .foregroundStyle(isToday ? DeskfocusTheme.amber : .secondary)
+                        .foregroundStyle(isToday ? accent.color : .secondary)
                     Text(day.formatted(.dateTime.day()))
                         .font(.system(size: 13, weight: .bold))
-                        .foregroundStyle(isToday ? DeskfocusTheme.ink : .primary)
+                        .foregroundStyle(isToday ? accent.onAccent : .primary)
                         .frame(width: 24, height: 24)
                         .background {
-                            if isToday { Circle().fill(DeskfocusTheme.focusGradient) }
+                            if isToday { Circle().fill(accent.gradient) }
                         }
                 }
             }
@@ -257,6 +265,7 @@ private struct WeekTaskCard: View {
 
 /// Running session squeezed into one line above the week columns.
 private struct FocusStrip: View {
+    @Environment(\.deskfocusAccent) private var accent
     let session: FocusSession
     let now: Date
 
@@ -271,14 +280,14 @@ private struct FocusStrip: View {
                 Text(statusLine)
                     .font(.system(size: 11.5))
                     .monospacedDigit()
-                    .foregroundStyle(DeskfocusTheme.amber)
+                    .foregroundStyle(accent.color)
             }
             Spacer()
             stripControls
         }
         .padding(10)
-        .background(DeskfocusTheme.amber.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(DeskfocusTheme.amber.opacity(0.3)))
+        .background(accent.color.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(accent.color.opacity(0.3)))
     }
 
     private var statusLine: String {
@@ -311,6 +320,7 @@ private struct FocusStrip: View {
 
 /// ‹ Today › controls plus the open/close button, shared by both layouts.
 struct PanelNavigation: View {
+    @Environment(\.deskfocusAccent) private var accent
     @Environment(AppModel.self) private var model
     let onPrevious: () -> Void
     let onNext: () -> Void
@@ -324,7 +334,7 @@ struct PanelNavigation: View {
                 Button("Today", action: onToday)
                     .buttonStyle(.plain)
                     .font(.system(size: 11.5, weight: .semibold))
-                    .foregroundStyle(DeskfocusTheme.amber)
+                    .foregroundStyle(accent.color)
                     .padding(.trailing, 4)
             }
             iconButton("chevron.left", label: layout == .day ? "Previous day" : "Previous week", action: onPrevious)
@@ -339,16 +349,16 @@ struct PanelNavigation: View {
         }
     }
 
-    /// Round icon button; the prominent one (open/close) is amber so it reads differently from the arrows.
+    /// Round icon button; the prominent one (open/close) uses the accent so it reads differently from the arrows.
     private func iconButton(_ systemName: String, label: String, isProminent: Bool = false, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(isProminent ? DeskfocusTheme.ink : Color.primary)
+                .foregroundStyle(isProminent ? accent.onAccent : Color.primary)
                 .frame(width: 28, height: 28)
                 .background {
                     if isProminent {
-                        Circle().fill(DeskfocusTheme.focusGradient)
+                        Circle().fill(accent.gradient)
                     } else {
                         Circle().fill(Color.white.opacity(0.14))
                     }

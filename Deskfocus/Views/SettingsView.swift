@@ -185,10 +185,23 @@ private struct GeneralSettingsView: View {
             }
             .pickerStyle(.segmented)
             .disabled(!model.snapshot.settings.showDesktopPanel)
-            LabeledContent("Color") {
-                GlassTintPicker(selection: model.binding(\.glassTint))
+            LabeledContent("Glass color") {
+                SwatchPicker(
+                    options: GlassTint.allCases,
+                    selection: model.binding(\.glassTint),
+                    color: \.swatch,
+                    name: \.displayName
+                )
             }
-            Text("Drag the widget to move it; it stays below your windows on every desktop. Open and close it, or change its color, from the widget itself too (right-click).")
+            LabeledContent("Accent") {
+                SwatchPicker(
+                    options: AccentChoice.allCases,
+                    selection: model.binding(\.accentColor),
+                    color: \.color,
+                    name: \.displayName
+                )
+            }
+            Text("Drag the widget to move it; it stays below your windows on every desktop. Open and close it, or change its colors, from the widget itself too (right-click).")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 

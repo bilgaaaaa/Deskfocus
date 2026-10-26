@@ -12,5 +12,6 @@ struct DeskfocusWidgetView: View {
             date: entry.date,
             layout: family == .systemLarge ? .expanded : .compact
         )
+        .environment(\.deskfocusAccent, entry.snapshot.settings.accentColor)
     }
 }

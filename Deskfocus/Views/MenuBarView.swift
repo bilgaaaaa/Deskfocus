@@ -36,6 +36,7 @@ struct MenuBarView: View {
                     .padding(.vertical, 8)
             }
             .frame(width: 340)
+            .environment(\.deskfocusAccent, model.snapshot.settings.accentColor)
         }
     }
 
@@ -172,6 +173,7 @@ private struct MenuTaskRow: View {
 
 /// Compact running-session card at the top of the popover.
 private struct FocusBanner: View {
+    @Environment(\.deskfocusAccent) private var accent
     let session: FocusSession
     let now: Date
 
@@ -187,7 +189,7 @@ private struct FocusBanner: View {
                 Text(statusLine)
                     .font(.system(size: 11.5))
                     .monospacedDigit()
-                    .foregroundStyle(DeskfocusTheme.orange)
+                    .foregroundStyle(accent.colors.deep)
             }
 
             Spacer(minLength: 4)
@@ -195,8 +197,8 @@ private struct FocusBanner: View {
             controls
         }
         .padding(10)
-        .background(DeskfocusTheme.amber.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(DeskfocusTheme.amber.opacity(0.35)))
+        .background(accent.color.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).strokeBorder(accent.color.opacity(0.35)))
     }
 
     private var statusLine: String {

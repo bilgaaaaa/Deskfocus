@@ -42,17 +42,18 @@ extension DeskTaskRow where Leading == EmptyView {
 
 /// Round play symbol used for "start focus" everywhere.
 struct PlayGlyph: View {
+    @Environment(\.deskfocusAccent) private var accent
     var size: CGFloat = 30
     var isProminent = false
 
     var body: some View {
         Image(systemName: "play.fill")
             .font(.system(size: size * 0.36, weight: .bold))
-            .foregroundStyle(isProminent ? AnyShapeStyle(DeskfocusTheme.ink) : AnyShapeStyle(Color.primary))
+            .foregroundStyle(isProminent ? accent.onAccent : Color.primary)
             .frame(width: size, height: size)
             .background {
                 if isProminent {
-                    Circle().fill(DeskfocusTheme.focusGradient)
+                    Circle().fill(accent.gradient)
                 } else {
                     Circle().fill(Color.primary.opacity(0.1))
                 }

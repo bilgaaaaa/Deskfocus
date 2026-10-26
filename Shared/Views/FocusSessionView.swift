@@ -4,6 +4,8 @@ import SwiftUI
 /// The running, paused or finished session: amber ring with the countdown, task title and controls.
 /// Controls are App Intents so they work the same in the widget and the app.
 struct FocusSessionView: View {
+    @Environment(\.deskfocusAccent) private var accent
+
     enum Size {
         /// Side-by-side layout for the medium widget.
         case compact
@@ -68,7 +70,7 @@ struct FocusSessionView: View {
         Label(statusText, systemImage: "scope")
             .font(.system(size: 11, weight: .bold))
             .tracking(0.8)
-            .foregroundStyle(DeskfocusTheme.amber)
+            .foregroundStyle(accent.color)
     }
 
     private var statusText: String {
@@ -150,7 +152,7 @@ struct FocusSessionView: View {
                 Button(intent: StopFocusIntent()) {
                     Text(phase == .finished ? "Dismiss" : "End session without finishing")
                         .font(.system(size: 11.5))
-                        .foregroundStyle(DeskfocusTheme.amber)
+                        .foregroundStyle(accent.color)
                 }
                 .buttonStyle(.plain)
             }

@@ -2,6 +2,7 @@ import SwiftUI
 
 /// Big weekday + date header with any trailing control (progress ring, day arrows).
 struct DayHeaderView<Trailing: View>: View {
+    @Environment(\.deskfocusAccent) private var accent
     let date: Date
     @ViewBuilder var trailing: () -> Trailing
 
@@ -11,7 +12,7 @@ struct DayHeaderView<Trailing: View>: View {
                 Text(DeskTaskFormatter.weekday(date).uppercased())
                     .font(.system(size: 11, weight: .bold))
                     .tracking(0.8)
-                    .foregroundStyle(DeskfocusTheme.amber)
+                    .foregroundStyle(accent.color)
                 Text(DeskTaskFormatter.dayMonth(date))
                     .font(.system(size: 26, weight: .bold))
                     .lineLimit(1)
@@ -42,6 +43,7 @@ struct DayProgressRing: View {
 
 /// A day's list: optional "Up next" card for the first item, then the rest as rows.
 struct DayAgendaView<RowAction: View, UpNextAction: View>: View {
+    @Environment(\.deskfocusAccent) private var accent
     let tasks: [DeskTask]
     let now: Date
     let maxRows: Int
@@ -104,7 +106,7 @@ struct DayAgendaView<RowAction: View, UpNextAction: View>: View {
         VStack(spacing: 6) {
             Image(systemName: "checkmark.circle")
                 .font(.system(size: 26, weight: .light))
-                .foregroundStyle(DeskfocusTheme.amber)
+                .foregroundStyle(accent.color)
             Text("All clear")
                 .font(.system(size: 14, weight: .semibold))
             Text("Nothing planned for this day.")

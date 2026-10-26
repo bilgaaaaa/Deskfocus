@@ -40,6 +40,31 @@ enum GlassTint: String, Codable, CaseIterable {
     }
 }
 
+/// Accent for buttons, the focus ring and highlights, chosen separately from the glass color.
+enum AccentChoice: String, Codable, CaseIterable {
+    case amber
+    case coral
+    case pink
+    case violet
+    case sky
+    case mint
+    case lime
+    case white
+
+    var displayName: String {
+        switch self {
+        case .amber: return "Amber"
+        case .coral: return "Coral"
+        case .pink: return "Pink"
+        case .violet: return "Violet"
+        case .sky: return "Sky"
+        case .mint: return "Mint"
+        case .lime: return "Lime"
+        case .white: return "White"
+        }
+    }
+}
+
 /// What happens to blocked apps during focus.
 enum BlockingMode: String, Codable, CaseIterable {
     /// Hide the apps and hide them again whenever they come to the front.
@@ -70,6 +95,7 @@ struct DeskfocusSettings: Codable, Equatable {
     var showDesktopPanel: Bool = true
     var panelLayout: PanelLayout = .day
     var glassTint: GlassTint = .purple
+    var accentColor: AccentChoice = .amber
 
     init() {}
 
@@ -86,6 +112,7 @@ struct DeskfocusSettings: Codable, Equatable {
         showDesktopPanel = try container.decodeIfPresent(Bool.self, forKey: .showDesktopPanel) ?? defaults.showDesktopPanel
         panelLayout = (try? container.decodeIfPresent(PanelLayout.self, forKey: .panelLayout)) ?? defaults.panelLayout
         glassTint = (try? container.decodeIfPresent(GlassTint.self, forKey: .glassTint)) ?? defaults.glassTint
+        accentColor = (try? container.decodeIfPresent(AccentChoice.self, forKey: .accentColor)) ?? defaults.accentColor
     }
 
     /// Focus length clamped to a sane range, in seconds.
