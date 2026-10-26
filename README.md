@@ -4,8 +4,10 @@ A macOS menu bar app and desktop widget that puts **today's tasks and a focus ti
 
 - Today's list merges **iCloud Calendar, iCloud Reminders, Google Calendar and Google Tasks**.
 - Shown as a **glass panel on the desktop** (Liquid Glass on macOS 26), as a WidgetKit widget, and in the menu bar; the panel and the widget share the same view.
-- Press ▶ on any task (in the widget or the menu bar) to start a focus timer for it.
-- While the timer runs, the apps you chose are hidden (and hidden again if you open them), and an optional macOS Focus mode silences their notifications.
+- Browse **any day** with the ‹ › arrows, or switch the desktop panel to the wider **week view** with seven columns.
+- Press ▶ on any task, on any day, to start a focus timer for it.
+- While the timer runs, the apps you chose are **hidden** or, in strict mode, **quit** (and quit again if you open them, then reopened when the session ends). An optional macOS Focus mode silences notifications.
+- Apple's Screen Time API (FamilyControls) only works on iOS and iPadOS, so blocking on the Mac is done by hiding or quitting apps.
 - When the time is up you get a notification; press **Done** and the task is completed in Reminders or Google Tasks.
 
 Requirements: macOS 14 Sonoma or later, Xcode 16 or later.
