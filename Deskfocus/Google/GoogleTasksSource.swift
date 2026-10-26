@@ -1,6 +1,6 @@
 import Foundation
 
-/// Open Google Tasks due today or earlier (and undated ones when enabled), across all task lists.
+/// Open Google Tasks due in the interval (plus overdue and undated ones for today), across all task lists.
 @MainActor
 final class GoogleTasksSource: TaskSource {
     let kind: TaskSourceKind = .googleTasks
@@ -17,7 +17,7 @@ final class GoogleTasksSource: TaskSource {
 
     var isAvailable: Bool { auth.isConnected }
 
-    func fetchTasks(in day: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
+    func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
         let lists = try await client.getAll(baseURL.appendingPathComponent("users/@me/lists"), as: GoogleTaskList.self)
         let query = [
             URLQueryItem(name: "showCompleted", value: "false"),
@@ -32,7 +32,7 @@ final class GoogleTasksSource: TaskSource {
             tasks += items.compactMap { item in
                 guard item.status != "completed" else { return nil }
                 let dueDate = GoogleDateParser.taskDueDay(item.due)
-                guard DeskTask.isDueForToday(dueDate, day: day, includeUndated: settings.includeUndatedTasks) else { return nil }
+                guard DeskTask.isDue(dueDate, in: interval, includeUndated: settings.includeUndatedTasks) else { return nil }
                 return DeskTask(
                     id: DeskTask.makeId(source: kind, containerIdentifier: list.id, sourceIdentifier: item.id),
                     source: kind,

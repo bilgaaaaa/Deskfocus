@@ -90,13 +90,14 @@ enum FocusController {
     }
 
     /// Checks a task off; to-dos are queued so the app completes them in their source.
-    static func complete(taskId: String) {
+    static func complete(taskId: String, now: Date = .now) {
         SharedStore.shared.update { snapshot in
             guard let task = snapshot.task(withId: taskId) else {
                 Log.focus.error("Complete ignored, unknown task \(taskId, privacy: .public)")
                 return
             }
             snapshot.completedTaskIds.insert(task.id)
+            snapshot.completionDates[task.id] = now
             if !task.isEvent {
                 snapshot.pendingCompletionIds.insert(task.id)
             }

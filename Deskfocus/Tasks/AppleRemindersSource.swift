@@ -1,6 +1,6 @@
 import EventKit
 
-/// Incomplete reminders due today or earlier (and undated ones when enabled) from macOS Reminders.
+/// Incomplete reminders due in the interval (plus overdue and undated ones for today) from macOS Reminders.
 @MainActor
 final class AppleRemindersSource: TaskSource {
     enum RemindersError: LocalizedError {
@@ -18,7 +18,7 @@ final class AppleRemindersSource: TaskSource {
 
     var isAvailable: Bool { access.hasRemindersAccess }
 
-    func fetchTasks(in day: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
+    func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
         let predicate = access.store.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil, calendars: nil)
         let kind = kind
         let includeUndated = settings.includeUndatedTasks
@@ -29,7 +29,7 @@ final class AppleRemindersSource: TaskSource {
                 let calendar = Calendar.current
                 let mapped = (reminders ?? []).compactMap { reminder -> DeskTask? in
                     let dueDate = reminder.dueDateComponents.flatMap { calendar.date(from: $0) }
-                    guard DeskTask.isDueForToday(dueDate, day: day, includeUndated: includeUndated) else { return nil }
+                    guard DeskTask.isDue(dueDate, in: interval, includeUndated: includeUndated) else { return nil }
                     return DeskTask(
                         id: DeskTask.makeId(source: kind, containerIdentifier: reminder.calendar.calendarIdentifier, sourceIdentifier: reminder.calendarItemIdentifier),
                         source: kind,

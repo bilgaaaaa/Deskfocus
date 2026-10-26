@@ -2,10 +2,16 @@ import Foundation
 import Observation
 import WidgetKit
 
-/// Merges every task source into today's list, saves it for the widget and pushes completions back to the sources.
+/// Merges every task source, keeps today's list in the shared state for the widget and pushes completions back.
 @MainActor
 @Observable
 final class TaskRepository {
+    /// Tasks from every available source for an interval, plus the names of sources that failed.
+    struct FetchResult {
+        let tasks: [DeskTask]
+        let failedSources: [TaskSourceKind]
+    }
+
     private(set) var isSyncing = false
     private(set) var lastErrorMessage: String?
 
@@ -16,7 +22,24 @@ final class TaskRepository {
         self.sources = sources
     }
 
-    /// Reloads today's tasks; a failing source keeps its previous tasks so one outage never empties the list.
+    /// Fetches any interval without saving it; used for browsing other days and weeks.
+    func fetchTasks(in interval: DateInterval) async -> FetchResult {
+        let settings = SharedStore.shared.load().settings
+        var merged: [DeskTask] = []
+        var failed: [TaskSourceKind] = []
+
+        for source in sources where settings.enabledSources.contains(source.kind) && source.isAvailable {
+            do {
+                merged += try await source.fetchTasks(in: interval, settings: settings)
+            } catch {
+                Log.sync.error("\(source.kind.rawValue, privacy: .public) failed: \(error.localizedDescription, privacy: .public)")
+                failed.append(source.kind)
+            }
+        }
+        return FetchResult(tasks: Self.removingDuplicateEvents(merged).sortedForToday(), failedSources: failed)
+    }
+
+    /// Reloads today's list; a failing source keeps its previous tasks so one outage never empties the list.
     func refresh(now: Date = .now) async {
         guard !isSyncing else {
             Log.sync.debug("Refresh skipped, already syncing")
@@ -26,34 +49,32 @@ final class TaskRepository {
         defer { isSyncing = false }
 
         let previous = SharedStore.shared.load()
-        let settings = previous.settings
-        let day = DateInterval.day(containing: now)
-        var merged: [DeskTask] = []
-        var failures: [String] = []
-
-        for source in sources where settings.enabledSources.contains(source.kind) && source.isAvailable {
-            do {
-                merged += try await source.fetchTasks(in: day, settings: settings)
-            } catch {
-                Log.sync.error("\(source.kind.rawValue, privacy: .public) failed: \(error.localizedDescription, privacy: .public)")
-                failures.append(source.kind.displayName)
-                merged += previous.tasks.filter { $0.source == source.kind }
-            }
-        }
-
-        let tasks = Self.removingDuplicateEvents(merged).sortedForToday()
+        let today = DateInterval.day(containing: now)
+        let result = await fetchTasks(in: today)
+        let kept = previous.tasks.filter { result.failedSources.contains($0.source) }
+        let tasks = (result.tasks + kept).sortedForToday()
         let taskIds = Set(tasks.map(\.id))
+
         SharedStore.shared.update { snapshot in
             snapshot.tasks = tasks
-            // Keep a checked-off mark only while its item is still listed or still waiting to sync.
             let pending = snapshot.pendingCompletionIds
-            snapshot.completedTaskIds = snapshot.completedTaskIds.filter { taskIds.contains($0) || pending.contains($0) }
+            let focusTaskId = snapshot.focus?.taskId
+            // Other-day items stay only while something still needs them.
+            snapshot.referencedTasks = snapshot.referencedTasks.filter { task in
+                pending.contains(task.id) || task.id == focusTaskId || Self.isUpcoming(task, today: today)
+            }
+            let referencedIds = Set(snapshot.referencedTasks.map(\.id))
+            snapshot.completedTaskIds = snapshot.completedTaskIds.filter {
+                taskIds.contains($0) || pending.contains($0) || referencedIds.contains($0)
+            }
+            snapshot.completionDates = snapshot.completionDates.filter { $0.value >= today.start }
             snapshot.lastSyncDate = now
         }
         WidgetCenter.shared.reloadTimelines(ofKind: DeskfocusConstants.widgetKind)
 
-        lastErrorMessage = failures.isEmpty ? nil : "Could not update \(failures.joined(separator: ", "))."
-        Log.sync.info("Synced \(tasks.count) items, \(failures.count) source failures")
+        let failedNames = result.failedSources.map(\.displayName)
+        lastErrorMessage = failedNames.isEmpty ? nil : "Could not update \(failedNames.joined(separator: ", "))."
+        Log.sync.info("Synced \(tasks.count) items for today, \(failedNames.count) source failures")
 
         await processPendingCompletions()
     }
@@ -93,6 +114,12 @@ final class TaskRepository {
             snapshot.pendingCompletionIds.subtract(done.union(dropped))
             snapshot.completedTaskIds.subtract(dropped)
         }
+    }
+
+    /// True for items dated today or later; past items no longer need to be remembered.
+    private static func isUpcoming(_ task: DeskTask, today: DateInterval) -> Bool {
+        guard let date = task.endDate ?? task.dueDate ?? task.startDate else { return false }
+        return date >= today.start
     }
 
     /// The same Google event can arrive through macOS Calendar and through Google directly; keep the first one.

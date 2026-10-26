@@ -1,6 +1,6 @@
 import EventKit
 
-/// Today's events from every calendar in macOS Calendar (iCloud and any accounts added in System Settings).
+/// Events in the interval from every calendar in macOS Calendar (iCloud and any accounts added in System Settings).
 @MainActor
 final class AppleCalendarSource: TaskSource {
     let kind: TaskSourceKind = .appleCalendar
@@ -12,9 +12,9 @@ final class AppleCalendarSource: TaskSource {
 
     var isAvailable: Bool { access.hasCalendarAccess }
 
-    func fetchTasks(in day: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
+    func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
         let calendars = access.store.calendars(for: .event)
-        let predicate = access.store.predicateForEvents(withStart: day.start, end: day.end, calendars: calendars)
+        let predicate = access.store.predicateForEvents(withStart: interval.start, end: interval.end, calendars: calendars)
         let events = access.store.events(matching: predicate).filter { $0.status != .canceled }
 
         let tasks = events.map { event in

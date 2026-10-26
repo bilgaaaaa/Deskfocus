@@ -11,6 +11,7 @@ final class AppModel {
     let eventKit: EventKitAccess
     let googleAuth: GoogleAuthService
     let repository: TaskRepository
+    let agenda: AgendaModel
     let focus: FocusCoordinator
 
     private(set) var snapshot: DeskfocusSnapshot
@@ -27,15 +28,17 @@ final class AppModel {
         let eventKit = EventKitAccess()
         let googleAuth = GoogleAuthService()
         let googleClient = GoogleAPIClient(auth: googleAuth)
-
-        self.eventKit = eventKit
-        self.googleAuth = googleAuth
-        self.repository = TaskRepository(sources: [
+        let repository = TaskRepository(sources: [
             AppleCalendarSource(access: eventKit),
             AppleRemindersSource(access: eventKit),
             GoogleCalendarSource(auth: googleAuth, client: googleClient),
             GoogleTasksSource(auth: googleAuth, client: googleClient)
         ])
+
+        self.eventKit = eventKit
+        self.googleAuth = googleAuth
+        self.repository = repository
+        self.agenda = AgendaModel(repository: repository)
         self.focus = FocusCoordinator()
         self.snapshot = SharedStore.shared.load()
 
@@ -49,34 +52,37 @@ final class AppModel {
 
     // MARK: Actions
 
+    /// Syncs today for the widget, then reloads the day or week the user is browsing.
     func refresh() async {
         await repository.refresh()
         reloadSnapshot()
+        await agenda.reload()
     }
 
+    /// Starts focus on a task from any day; tasks outside today are remembered first so actions can find them.
     func startFocus(on task: DeskTask) {
+        SharedStore.shared.update { $0.reference(task) }
         FocusController.start(taskId: task.id)
         stateDidChange()
     }
 
-    func pauseFocus() {
-        FocusController.pause()
+    /// Checks off a task from any day.
+    func complete(_ task: DeskTask) {
+        SharedStore.shared.update { $0.reference(task) }
+        FocusController.complete(taskId: task.id)
         stateDidChange()
     }
 
-    func resumeFocus() {
-        FocusController.resume()
-        stateDidChange()
+    /// Opens one day in the day layout, e.g. from a week column.
+    func showDay(_ day: Date) {
+        agenda.select(day: day)
+        setPanelLayout(.day)
     }
 
-    func stopFocus() {
-        FocusController.stop()
-        stateDidChange()
-    }
-
-    func complete(taskId: String) {
-        FocusController.complete(taskId: taskId)
-        stateDidChange()
+    func setPanelLayout(_ layout: PanelLayout) {
+        guard snapshot.settings.panelLayout != layout else { return }
+        updateSettings { $0.panelLayout = layout }
+        Log.app.info("Panel layout set to \(layout.rawValue, privacy: .public)")
     }
 
     func connectGoogle() async {
@@ -117,7 +123,7 @@ final class AppModel {
     }
 
     private func applyDesktopPanelSetting() {
-        desktopPanel.setVisible(snapshot.settings.showDesktopPanel, model: self)
+        desktopPanel.update(isVisible: snapshot.settings.showDesktopPanel, layout: snapshot.settings.panelLayout, model: self)
     }
 
     /// Two-way binding to one setting, saved to the shared state on every change.
@@ -190,6 +196,7 @@ final class AppModel {
             MainActor.assumeIsolated {
                 guard let self else { return }
                 Log.sync.info("New day, loading today's list")
+                self.agenda.goToToday()
                 Task { await self.refresh() }
             }
         })

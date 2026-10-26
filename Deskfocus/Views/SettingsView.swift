@@ -98,11 +98,18 @@ private struct FocusSettingsView: View {
             }
 
             Section {
+                Picker("During focus, blocked apps are", selection: model.binding(\.blockingMode)) {
+                    ForEach(BlockingMode.allCases, id: \.self) { mode in
+                        Text(mode.displayName).tag(mode)
+                    }
+                }
                 BlockedAppsView()
             } header: {
-                Text("Apps to hide while focusing")
+                Text("Apps to block while focusing")
             } footer: {
-                Text("Chosen apps are hidden when a session starts, hidden again if you open them, and brought back when it ends.")
+                Text(model.snapshot.settings.blockingMode == .quit
+                     ? "Strict: chosen apps are quit when a session starts, quit again if you open them, and reopened when it ends. Apps with unsaved work may ask before closing."
+                     : "Chosen apps are hidden when a session starts, hidden again if you switch to them, and shown again when it ends.")
             }
 
             Section {
@@ -125,7 +132,14 @@ private struct GeneralSettingsView: View {
     var body: some View {
         Form {
             Toggle("Show glass panel on the desktop", isOn: model.binding(\.showDesktopPanel))
-            Text("Drag the panel to move it; it stays below your windows on every desktop.")
+            Picker("Panel shows", selection: model.binding(\.panelLayout)) {
+                ForEach(PanelLayout.allCases, id: \.self) { layout in
+                    Text(layout.displayName).tag(layout)
+                }
+            }
+            .pickerStyle(.segmented)
+            .disabled(!model.snapshot.settings.showDesktopPanel)
+            Text("Drag the panel to move it; it stays below your windows on every desktop. Switch between day and week from its header too.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
 

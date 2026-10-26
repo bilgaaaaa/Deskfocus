@@ -1,29 +1,24 @@
 import Foundation
 
-/// One place tasks come from; the repository merges every available source into today's list.
+/// One place tasks come from; the repository merges every available source.
 @MainActor
 protocol TaskSource: AnyObject {
     var kind: TaskSourceKind { get }
     /// False when the user has not granted access or connected the account yet.
     var isAvailable: Bool { get }
-    func fetchTasks(in day: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask]
+    /// Events overlapping the interval and to-dos due in it; when it includes today, also overdue and undated to-dos.
+    func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask]
     func complete(_ task: DeskTask) async throws
 }
 
-extension DateInterval {
-    /// Midnight to midnight of the given day in the current calendar.
-    static func day(containing date: Date, calendar: Calendar = .current) -> DateInterval {
-        let start = calendar.startOfDay(for: date)
-        let end = calendar.date(byAdding: .day, value: 1, to: start) ?? start.addingTimeInterval(86_400)
-        return DateInterval(start: start, end: end)
-    }
-}
-
 extension DeskTask {
-    /// Shared rule for to-dos: show anything due today or overdue, plus undated items when enabled.
-    static func isDueForToday(_ dueDate: Date?, day: DateInterval, includeUndated: Bool) -> Bool {
-        guard let dueDate else { return includeUndated }
-        return dueDate < day.end
+    /// Shared to-do rule for every source, matching how `Agenda` places to-dos on days.
+    static func isDue(_ dueDate: Date?, in interval: DateInterval, includeUndated: Bool, now: Date = .now) -> Bool {
+        let today = DateInterval.day(containing: now)
+        let includesToday = interval.start <= today.start && today.start < interval.end
+        guard let dueDate else { return includeUndated && includesToday }
+        if dueDate >= interval.start && dueDate < interval.end { return true }
+        return includesToday && dueDate < today.start
     }
 
     /// Same placeholder for untitled items across every source.

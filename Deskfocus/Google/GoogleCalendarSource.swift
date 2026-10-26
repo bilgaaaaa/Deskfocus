@@ -1,6 +1,6 @@
 import Foundation
 
-/// Today's events from every calendar the user shows in Google Calendar.
+/// Events in the interval from every calendar the user shows in Google Calendar.
 @MainActor
 final class GoogleCalendarSource: TaskSource {
     let kind: TaskSourceKind = .googleCalendar
@@ -15,18 +15,18 @@ final class GoogleCalendarSource: TaskSource {
 
     var isAvailable: Bool { auth.isConnected }
 
-    func fetchTasks(in day: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
+    func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
         let calendars = try await client.getAll(
             baseURL.appendingPathComponent("users/me/calendarList"),
             as: GoogleCalendarListEntry.self
         ).filter { $0.selected != false && $0.hidden != true }
 
         let query = [
-            URLQueryItem(name: "timeMin", value: GoogleDateParser.queryString(day.start)),
-            URLQueryItem(name: "timeMax", value: GoogleDateParser.queryString(day.end)),
+            URLQueryItem(name: "timeMin", value: GoogleDateParser.queryString(interval.start)),
+            URLQueryItem(name: "timeMax", value: GoogleDateParser.queryString(interval.end)),
             URLQueryItem(name: "singleEvents", value: "true"),
             URLQueryItem(name: "orderBy", value: "startTime"),
-            URLQueryItem(name: "maxResults", value: "250")
+            URLQueryItem(name: "maxResults", value: "2500")
         ]
 
         var tasks: [DeskTask] = []
