@@ -35,6 +35,7 @@ struct DeskfocusDashboardView: View {
                     now: date,
                     maxRows: layout.maxRows,
                     showsUpNext: true,
+                    savedProgress: snapshot.savedProgress,
                     rowAction: { task in
                         Button(intent: StartFocusIntent(taskId: task.id)) { PlayGlyph(size: 26) }
                             .buttonStyle(.plain)

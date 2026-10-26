@@ -71,6 +71,9 @@ final class TaskRepository {
                 taskIds.contains($0) || pending.contains($0) || referencedEventIds.contains($0)
             }
             snapshot.completionDates = snapshot.completionDates.filter { $0.value >= today.start }
+            // Unfinished sessions can be resumed for a week.
+            let resumeLimit = today.start.addingTimeInterval(-7 * 86_400)
+            snapshot.savedProgress = snapshot.savedProgress.filter { $0.value.savedAt >= resumeLimit }
             snapshot.lastSyncDate = now
         }
         WidgetCenter.shared.reloadTimelines(ofKind: DeskfocusConstants.widgetKind)

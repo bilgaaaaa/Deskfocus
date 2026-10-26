@@ -51,6 +51,15 @@ final class GoogleAPIClient {
         return try decoder.decode(Response.self, from: data)
     }
 
+    /// Sends a JSON body and decodes the created resource.
+    func post<Response: Decodable>(_ url: URL, json: [String: Any]) async throws -> Response {
+        var request = try await authorisedRequest(url: url, method: "POST")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = try JSONSerialization.data(withJSONObject: json)
+        let data = try await send(request)
+        return try decoder.decode(Response.self, from: data)
+    }
+
     func patch(_ url: URL, json: [String: Any]) async throws {
         var request = try await authorisedRequest(url: url, method: "PATCH")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

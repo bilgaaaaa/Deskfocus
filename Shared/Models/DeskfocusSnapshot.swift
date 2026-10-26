@@ -1,5 +1,12 @@
 import Foundation
 
+/// Time left on a task whose session ended early, so ▶ resumes it instead of starting over.
+struct SavedFocusProgress: Codable, Equatable {
+    var remaining: TimeInterval
+    var planned: TimeInterval
+    var savedAt: Date
+}
+
 /// Everything the app and the widget share, persisted as one JSON file in the App Group container.
 struct DeskfocusSnapshot: Codable, Equatable {
     /// Today's list, as shown by the widget.
@@ -12,6 +19,10 @@ struct DeskfocusSnapshot: Codable, Equatable {
     var pendingCompletionIds: Set<String> = []
     /// When each item was checked off, so "done today" stays right after synced items disappear.
     var completionDates: [String: Date] = [:]
+    /// Focus time the user picked for a to-do, in minutes.
+    var taskFocusMinutes: [String: Int] = [:]
+    /// Unfinished sessions by task id, resumed by the next ▶ on that task.
+    var savedProgress: [String: SavedFocusProgress] = [:]
     var focus: FocusSession?
     var settings = DeskfocusSettings()
     var lastSyncDate: Date?
@@ -25,6 +36,8 @@ struct DeskfocusSnapshot: Codable, Equatable {
         completedTaskIds = try container.decodeIfPresent(Set<String>.self, forKey: .completedTaskIds) ?? []
         pendingCompletionIds = try container.decodeIfPresent(Set<String>.self, forKey: .pendingCompletionIds) ?? []
         completionDates = try container.decodeIfPresent([String: Date].self, forKey: .completionDates) ?? [:]
+        taskFocusMinutes = try container.decodeIfPresent([String: Int].self, forKey: .taskFocusMinutes) ?? [:]
+        savedProgress = try container.decodeIfPresent([String: SavedFocusProgress].self, forKey: .savedProgress) ?? [:]
         focus = try container.decodeIfPresent(FocusSession.self, forKey: .focus)
         settings = try container.decodeIfPresent(DeskfocusSettings.self, forKey: .settings) ?? DeskfocusSettings()
         lastSyncDate = try container.decodeIfPresent(Date.self, forKey: .lastSyncDate)

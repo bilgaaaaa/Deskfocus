@@ -117,13 +117,12 @@ private struct DayPanelContent: View {
                     now: now,
                     maxRows: .max,
                     showsUpNext: agenda.isShowingToday,
+                    savedProgress: model.snapshot.savedProgress,
                     rowAction: { task in
                         TaskActionButtons(task: task)
                     },
                     upNextAction: { task in
-                        Button { model.startFocus(on: task) } label: { PlayGlyph(size: 44, isProminent: true) }
-                            .buttonStyle(.plain)
-                            .help("Start focus on this task")
+                        StartFocusControl(task: task, size: 44, isProminent: true)
                     }
                 )
             }
@@ -330,6 +329,8 @@ struct PanelNavigation: View {
 
     var body: some View {
         HStack(spacing: 4) {
+            iconButton("plus", label: "New task", action: { model.showAddTask() })
+                .padding(.trailing, 4)
             if let onToday {
                 Button("Today", action: onToday)
                     .buttonStyle(.plain)
@@ -389,9 +390,7 @@ struct TaskActionButtons: View {
             .buttonStyle(.plain)
             .help("Mark as done")
 
-            Button { model.startFocus(on: task) } label: { PlayGlyph(size: size) }
-                .buttonStyle(.plain)
-                .help("Start focus on this task")
+            StartFocusControl(task: task, size: size)
         }
     }
 }

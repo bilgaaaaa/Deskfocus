@@ -12,6 +12,7 @@ final class AppModel {
     let googleAuth: GoogleAuthService
     let repository: TaskRepository
     let agenda: AgendaModel
+    let taskCreator: TaskCreationService
     let focus: FocusCoordinator
 
     private(set) var snapshot: DeskfocusSnapshot
@@ -20,6 +21,7 @@ final class AppModel {
     private static let refreshInterval: TimeInterval = 5 * 60
 
     private let desktopPanel = DesktopPanelController()
+    private let addTaskWindow = AddTaskWindowController()
     @ObservationIgnored private var stateObserver: DarwinObserver?
     @ObservationIgnored private var refreshTimer: Timer?
     @ObservationIgnored private var notificationTokens: [NSObjectProtocol] = []
@@ -39,6 +41,7 @@ final class AppModel {
         self.googleAuth = googleAuth
         self.repository = repository
         self.agenda = AgendaModel(repository: repository)
+        self.taskCreator = TaskCreationService(eventKit: eventKit, googleAuth: googleAuth, googleClient: googleClient)
         self.focus = FocusCoordinator()
         self.snapshot = SharedStore.shared.load()
 
@@ -59,10 +62,11 @@ final class AppModel {
         await agenda.reload()
     }
 
-    /// Starts focus on a task from any day; tasks outside today are remembered first so actions can find them.
-    func startFocus(on task: DeskTask) {
+    /// Starts or resumes focus on a task from any day; `minutes` is the length picked for a to-do.
+    /// Tasks outside today are remembered first so actions can find them.
+    func startFocus(on task: DeskTask, minutes: Int? = nil) {
         SharedStore.shared.update { $0.reference(task) }
-        FocusController.start(taskId: task.id)
+        FocusController.start(taskId: task.id, minutes: minutes)
         stateDidChange()
     }
 
@@ -71,6 +75,21 @@ final class AppModel {
         SharedStore.shared.update { $0.reference(task) }
         FocusController.complete(taskId: task.id)
         stateDidChange()
+    }
+
+    /// Opens the "New task" window, preset to the day being viewed.
+    func showAddTask() {
+        addTaskWindow.show(model: self, day: agenda.selectedDay)
+    }
+
+    /// Creates the task in the chosen calendar or list, remembers its focus time and the list, then re-syncs.
+    func createTask(_ draft: NewTaskDraft) async throws {
+        let taskId = try await taskCreator.create(draft)
+        updateSettings { $0.lastAddTargetId = draft.target.id }
+        if !draft.target.createsEvent {
+            SharedStore.shared.update { $0.taskFocusMinutes[taskId] = draft.focusMinutes }
+        }
+        await refresh()
     }
 
     /// Opens one day in the day layout, e.g. from a week column.

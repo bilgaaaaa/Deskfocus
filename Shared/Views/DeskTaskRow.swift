@@ -2,8 +2,11 @@ import SwiftUI
 
 /// One task line: calendar color bar, title, time or list, and caller-supplied actions on either side.
 struct DeskTaskRow<Leading: View, Trailing: View>: View {
+    @Environment(\.deskfocusAccent) private var accent
     let task: DeskTask
     let now: Date
+    /// Time left from an earlier, unfinished session.
+    var resumeRemaining: TimeInterval? = nil
     @ViewBuilder var leading: () -> Leading
     @ViewBuilder var trailing: () -> Trailing
 
@@ -19,10 +22,16 @@ struct DeskTaskRow<Leading: View, Trailing: View>: View {
                 Text(task.title)
                     .font(.system(size: 13.5, weight: .medium))
                     .lineLimit(1)
-                Text(DeskTaskFormatter.subtitle(for: task, now: now))
-                    .font(.system(size: 11))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                HStack(spacing: 4) {
+                    if let resumeRemaining {
+                        Label(DeskTaskFormatter.timeLeft(resumeRemaining), systemImage: "pause.circle.fill")
+                            .foregroundStyle(accent.color)
+                    }
+                    Text(DeskTaskFormatter.subtitle(for: task, now: now))
+                        .foregroundStyle(.secondary)
+                }
+                .font(.system(size: 11))
+                .lineLimit(1)
             }
 
             Spacer(minLength: 6)
@@ -35,8 +44,8 @@ struct DeskTaskRow<Leading: View, Trailing: View>: View {
 }
 
 extension DeskTaskRow where Leading == EmptyView {
-    init(task: DeskTask, now: Date, @ViewBuilder trailing: @escaping () -> Trailing) {
-        self.init(task: task, now: now, leading: { EmptyView() }, trailing: trailing)
+    init(task: DeskTask, now: Date, resumeRemaining: TimeInterval? = nil, @ViewBuilder trailing: @escaping () -> Trailing) {
+        self.init(task: task, now: now, resumeRemaining: resumeRemaining, leading: { EmptyView() }, trailing: trailing)
     }
 }
 

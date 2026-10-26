@@ -94,6 +94,20 @@ enum DeskTaskFormatter {
         return "\(shortDayMonthFormatter.string(from: week.start)) – \(shortDayMonthFormatter.string(from: lastDay))"
     }
 
+    /// "45 min", "1 h" or "1 h 30 min" for lengths chosen on the new-task form.
+    static func duration(minutes: Int) -> String {
+        let hours = minutes / 60
+        let rest = minutes % 60
+        if hours == 0 { return "\(rest) min" }
+        if rest == 0 { return "\(hours) h" }
+        return "\(hours) h \(rest) min"
+    }
+
+    /// "12:30 left" for a session that can be resumed.
+    static func timeLeft(_ remaining: TimeInterval) -> String {
+        "\(clock(remaining)) left"
+    }
+
     /// Remaining time as "mm:ss", or "h:mm:ss" for an hour or more.
     static func clock(_ interval: TimeInterval) -> String {
         let totalSeconds = max(0, Int(interval.rounded()))

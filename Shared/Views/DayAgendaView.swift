@@ -48,6 +48,8 @@ struct DayAgendaView<RowAction: View, UpNextAction: View>: View {
     let now: Date
     let maxRows: Int
     let showsUpNext: Bool
+    /// Unfinished sessions by task id, shown as "12:30 left" on their rows.
+    var savedProgress: [String: SavedFocusProgress] = [:]
     @ViewBuilder var rowAction: (DeskTask) -> RowAction
     @ViewBuilder var upNextAction: (DeskTask) -> UpNextAction
 
@@ -63,7 +65,7 @@ struct DayAgendaView<RowAction: View, UpNextAction: View>: View {
                 VStack(spacing: 0) {
                     ForEach(rows.prefix(maxRows)) { task in
                         Divider().overlay(DeskfocusTheme.hairline)
-                        DeskTaskRow(task: task, now: now) {
+                        DeskTaskRow(task: task, now: now, resumeRemaining: savedProgress[task.id]?.remaining) {
                             rowAction(task)
                         }
                     }

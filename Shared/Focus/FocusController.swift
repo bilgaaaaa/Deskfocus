@@ -3,32 +3,50 @@ import WidgetKit
 
 /// All focus and completion state changes go through here, from the app, the widget buttons or Shortcuts.
 enum FocusController {
-    /// Starts a timer for the task, replacing any current session; returns nil if the task is unknown.
+    /// Sessions with less time left than this are not worth resuming later.
+    private static let minimumResumableTime: TimeInterval = 30
+
+    /// Starts or resumes focus on a task; `minutes` overrides the task's own length and is remembered for it.
+    /// Returns nil if the task is unknown.
     @discardableResult
-    static func start(taskId: String, now: Date = .now) -> FocusSession? {
+    static func start(taskId: String, minutes: Int? = nil, now: Date = .now) -> FocusSession? {
         var started: FocusSession?
         SharedStore.shared.update { snapshot in
             guard let task = snapshot.task(withId: taskId) else {
                 Log.focus.error("Start ignored, unknown task \(taskId, privacy: .public)")
                 return
             }
-            if let current = snapshot.focus {
-                Log.focus.info("Replacing session for \(current.taskTitle, privacy: .private)")
+
+            // ▶ on the task that is already paused simply resumes it.
+            if minutes == nil, var current = snapshot.focus, current.taskId == task.id,
+               case .paused(let remaining) = current.phase(at: now) {
+                current.status = .running(endDate: now.addingTimeInterval(remaining))
+                snapshot.focus = current
+                started = current
+                return
             }
-            let duration = snapshot.settings.focusDuration
+
+            saveProgressOfCurrentSession(in: &snapshot, now: now)
+            if let minutes {
+                snapshot.taskFocusMinutes[task.id] = minutes
+                snapshot.savedProgress[task.id] = nil
+            }
+
+            let time = focusTime(for: task, in: snapshot, now: now)
+            snapshot.savedProgress[task.id] = nil
             let session = FocusSession(
                 id: UUID(),
                 taskId: task.id,
                 taskTitle: task.title,
                 startedAt: now,
-                plannedDuration: duration,
-                status: .running(endDate: now.addingTimeInterval(duration))
+                plannedDuration: time.planned,
+                status: .running(endDate: now.addingTimeInterval(time.remaining))
             )
             snapshot.focus = session
             started = session
         }
         if let started {
-            Log.focus.info("Focus started for \(Int(started.plannedDuration / 60)) min")
+            Log.focus.info("Focus started, \(Int(started.remaining(at: now) / 60)) of \(Int(started.plannedDuration / 60)) min")
         }
         notifyChange()
         return started
@@ -60,10 +78,11 @@ enum FocusController {
         notifyChange()
     }
 
-    /// Ends the session without completing the task.
-    static func stop() {
+    /// Ends the session without completing the task; time left is kept so the task can be resumed later.
+    static func stop(now: Date = .now) {
         SharedStore.shared.update { snapshot in
             guard snapshot.focus != nil else { return }
+            saveProgressOfCurrentSession(in: &snapshot, now: now)
             snapshot.focus = nil
             Log.focus.info("Focus stopped")
         }
@@ -107,6 +126,8 @@ enum FocusController {
             if snapshot.focus?.taskId == task.id {
                 snapshot.focus = nil
             }
+            snapshot.savedProgress[task.id] = nil
+            snapshot.taskFocusMinutes[task.id] = nil
             Log.focus.info("Task completed from \(task.source.rawValue, privacy: .public)")
         }
         notifyChange()
@@ -116,5 +137,36 @@ enum FocusController {
     static func notifyChange() {
         DarwinNotifier.post(DeskfocusConstants.stateChangedNotification)
         WidgetCenter.shared.reloadTimelines(ofKind: DeskfocusConstants.widgetKind)
+    }
+
+    // MARK: Focus time
+
+    /// How long to focus, in order: saved progress, the event's own length (or what is left of it),
+    /// the minutes chosen for this to-do, then the default from Settings.
+    static func focusTime(for task: DeskTask, in snapshot: DeskfocusSnapshot, now: Date) -> (remaining: TimeInterval, planned: TimeInterval) {
+        if let saved = snapshot.savedProgress[task.id] {
+            return (saved.remaining, saved.planned)
+        }
+        if let minutes = snapshot.taskFocusMinutes[task.id] {
+            let duration = DeskfocusSettings.clampedDuration(minutes: minutes)
+            return (duration, duration)
+        }
+        if task.isEvent, !task.isAllDay, let start = task.startDate, let end = task.endDate, end > start {
+            // Already happening: focus until the event ends.
+            let reference = start <= now && now < end ? now : start
+            let duration = DeskfocusSettings.clampedDuration(minutes: Int((end.timeIntervalSince(reference) / 60).rounded()))
+            return (duration, duration)
+        }
+        let duration = snapshot.settings.focusDuration
+        return (duration, duration)
+    }
+
+    /// Keeps the time left on the current session so its task can be resumed later.
+    private static func saveProgressOfCurrentSession(in snapshot: inout DeskfocusSnapshot, now: Date) {
+        guard let current = snapshot.focus else { return }
+        let remaining = current.remaining(at: now)
+        guard current.phase(at: now) != .finished, remaining >= minimumResumableTime else { return }
+        snapshot.savedProgress[current.taskId] = SavedFocusProgress(remaining: remaining, planned: current.plannedDuration, savedAt: now)
+        Log.focus.info("Saved \(Int(remaining / 60)) min to resume later")
     }
 }

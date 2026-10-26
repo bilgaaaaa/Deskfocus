@@ -58,6 +58,9 @@ struct MenuBarView: View {
 
             Spacer()
 
+            Button { model.showAddTask() } label: { Image(systemName: "plus") }
+                .buttonStyle(.borderless)
+                .help("New task")
             if !agenda.isShowingToday {
                 Button("Today") { agenda.goToToday() }
                     .buttonStyle(.borderless)
@@ -151,7 +154,7 @@ private struct MenuTaskRow: View {
     @State private var isHovered = false
 
     var body: some View {
-        DeskTaskRow(task: task, now: now) {
+        DeskTaskRow(task: task, now: now, resumeRemaining: model.snapshot.savedProgress[task.id]?.remaining) {
             Button { model.complete(task) } label: {
                 Circle()
                     .strokeBorder(Color.secondary, lineWidth: 1.5)
@@ -161,9 +164,7 @@ private struct MenuTaskRow: View {
             .buttonStyle(.plain)
             .help("Mark as done")
         } trailing: {
-            Button { model.startFocus(on: task) } label: { PlayGlyph(size: 28, isProminent: isHovered) }
-                .buttonStyle(.plain)
-                .help("Start focus on this task")
+            StartFocusControl(task: task, size: 28, isProminent: isHovered)
         }
         .padding(.horizontal, 8)
         .background(Color.primary.opacity(isHovered ? 0.07 : 0), in: RoundedRectangle(cornerRadius: 10, style: .continuous))

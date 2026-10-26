@@ -83,7 +83,7 @@ enum BlockingMode: String, Codable, CaseIterable {
 /// User settings shared with the widget; decoding tolerates missing keys so older state files keep working.
 struct DeskfocusSettings: Codable, Equatable {
     static let minimumFocusMinutes = 1
-    static let maximumFocusMinutes = 240
+    static let maximumFocusMinutes = 480
 
     var focusMinutes: Int = 25
     var blockedBundleIds: [String] = []
@@ -96,6 +96,8 @@ struct DeskfocusSettings: Codable, Equatable {
     var panelLayout: PanelLayout = .day
     var glassTint: GlassTint = .purple
     var accentColor: AccentChoice = .amber
+    /// Calendar or list picked last on the "New task" window.
+    var lastAddTargetId: String?
 
     init() {}
 
@@ -113,10 +115,19 @@ struct DeskfocusSettings: Codable, Equatable {
         panelLayout = (try? container.decodeIfPresent(PanelLayout.self, forKey: .panelLayout)) ?? defaults.panelLayout
         glassTint = (try? container.decodeIfPresent(GlassTint.self, forKey: .glassTint)) ?? defaults.glassTint
         accentColor = (try? container.decodeIfPresent(AccentChoice.self, forKey: .accentColor)) ?? defaults.accentColor
+        lastAddTargetId = try container.decodeIfPresent(String.self, forKey: .lastAddTargetId)
     }
 
-    /// Focus length clamped to a sane range, in seconds.
+    /// Fallback focus length for to-dos without a chosen time, in seconds.
     var focusDuration: TimeInterval {
-        TimeInterval(min(max(focusMinutes, Self.minimumFocusMinutes), Self.maximumFocusMinutes) * 60)
+        Self.clampedDuration(minutes: focusMinutes)
     }
+
+    /// Any focus length clamped to the allowed range, in seconds.
+    static func clampedDuration(minutes: Int) -> TimeInterval {
+        TimeInterval(min(max(minutes, minimumFocusMinutes), maximumFocusMinutes) * 60)
+    }
+
+    /// Quick choices offered when starting a to-do.
+    static let focusPresets = [15, 25, 45, 60, 90]
 }

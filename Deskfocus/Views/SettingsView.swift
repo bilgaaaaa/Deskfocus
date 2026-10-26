@@ -138,10 +138,14 @@ private struct FocusSettingsView: View {
 
     var body: some View {
         Form {
-            Section("Timer") {
+            Section {
                 Stepper(value: model.binding(\.focusMinutes), in: DeskfocusSettings.minimumFocusMinutes...DeskfocusSettings.maximumFocusMinutes, step: 5) {
-                    LabeledContent("Focus length", value: "\(model.snapshot.settings.focusMinutes) min")
+                    LabeledContent("Default for to-dos", value: "\(model.snapshot.settings.focusMinutes) min")
                 }
+            } header: {
+                Text("Focus time")
+            } footer: {
+                Text("Events focus for their own length. To-dos ask how long when you press ▶ and remember your choice; this default is used from the widget until you pick one.")
             }
 
             Section {
