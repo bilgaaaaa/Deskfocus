@@ -22,6 +22,8 @@ struct DeskfocusTimelineProvider: TimelineProvider {
     func getTimeline(in context: Context, completion: @escaping (Timeline<DeskfocusEntry>) -> Void) {
         let now = Date()
         let snapshot = SharedStore.shared.load()
+        // The widget process restarts often, so a new language shows up shortly after it is chosen.
+        LanguagePreference.apply(snapshot.settings.language)
         var entries = [DeskfocusEntry(date: now, snapshot: snapshot)]
         var nextRefresh = now.addingTimeInterval(maximumRefreshInterval)
 

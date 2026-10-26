@@ -76,7 +76,8 @@ struct AddTaskView: View {
             }
             .padding([.horizontal, .bottom], 16)
         }
-        .frame(width: 420)
+        // A grouped Form scrolls and has no natural height, so the window gets a fixed size.
+        .frame(width: 440, height: 360)
         .task { await loadTargets() }
     }
 

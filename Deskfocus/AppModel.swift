@@ -17,6 +17,8 @@ final class AppModel {
 
     private(set) var snapshot: DeskfocusSnapshot
     var googleErrorMessage: String?
+    /// Language the running app was launched with; a different choice needs a restart.
+    let launchLanguage: AppLanguage
 
     private static let refreshInterval: TimeInterval = 5 * 60
 
@@ -43,7 +45,10 @@ final class AppModel {
         self.agenda = AgendaModel(repository: repository)
         self.taskCreator = TaskCreationService(eventKit: eventKit, googleAuth: googleAuth, googleClient: googleClient)
         self.focus = FocusCoordinator()
-        self.snapshot = SharedStore.shared.load()
+        let snapshot = SharedStore.shared.load()
+        self.snapshot = snapshot
+        self.launchLanguage = snapshot.settings.language
+        LanguagePreference.apply(snapshot.settings.language)
 
         startObserving()
         FocusNotifier.requestAuthorization()
@@ -54,6 +59,28 @@ final class AppModel {
     }
 
     // MARK: Actions
+
+    /// Saves the language for the app and widgets; it is used from the next launch.
+    func setLanguage(_ language: AppLanguage) {
+        updateSettings { $0.language = language }
+        LanguagePreference.apply(language)
+    }
+
+    /// Opens a fresh copy of the app, then quits this one, so a new language takes effect.
+    func relaunch() {
+        let configuration = NSWorkspace.OpenConfiguration()
+        configuration.createsNewApplicationInstance = true
+        Log.app.info("Restarting to apply settings")
+        NSWorkspace.shared.openApplication(at: Bundle.main.bundleURL, configuration: configuration) { _, error in
+            Task { @MainActor in
+                if let error {
+                    Log.app.error("Restart failed: \(error.localizedDescription, privacy: .public)")
+                    return
+                }
+                NSApp.terminate(nil)
+            }
+        }
+    }
 
     /// Syncs today for the widget, then reloads the day or week the user is browsing.
     func refresh() async {

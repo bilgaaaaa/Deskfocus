@@ -65,6 +65,31 @@ enum AccentChoice: String, Codable, CaseIterable {
     }
 }
 
+/// Language of the app and widgets; `system` follows the Mac's language.
+enum AppLanguage: String, Codable, CaseIterable {
+    case system
+    case english
+    case italian
+
+    /// Language code passed to macOS, or nil to follow the Mac.
+    var code: String? {
+        switch self {
+        case .system: return nil
+        case .english: return "en"
+        case .italian: return "it"
+        }
+    }
+
+    /// Languages are shown in their own name so they can be found in either language.
+    var displayName: String {
+        switch self {
+        case .system: return String(localized: "Same as Mac")
+        case .english: return "English"
+        case .italian: return "Italiano"
+        }
+    }
+}
+
 /// What happens to blocked apps during focus.
 enum BlockingMode: String, Codable, CaseIterable {
     /// Hide the apps and hide them again whenever they come to the front.
@@ -98,6 +123,7 @@ struct DeskfocusSettings: Codable, Equatable {
     var accentColor: AccentChoice = .amber
     /// Calendar or list picked last on the "New task" window.
     var lastAddTargetId: String?
+    var language: AppLanguage = .system
 
     init() {}
 
@@ -116,6 +142,7 @@ struct DeskfocusSettings: Codable, Equatable {
         glassTint = (try? container.decodeIfPresent(GlassTint.self, forKey: .glassTint)) ?? defaults.glassTint
         accentColor = (try? container.decodeIfPresent(AccentChoice.self, forKey: .accentColor)) ?? defaults.accentColor
         lastAddTargetId = try container.decodeIfPresent(String.self, forKey: .lastAddTargetId)
+        language = (try? container.decodeIfPresent(AppLanguage.self, forKey: .language)) ?? defaults.language
     }
 
     /// Fallback focus length for to-dos without a chosen time, in seconds.

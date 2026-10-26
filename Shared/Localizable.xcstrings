@@ -941,6 +941,16 @@
         }
       }
     },
+    "Language": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lingua"
+          }
+        }
+      }
+    },
     "Length": {
       "localizations": {
         "it": {
@@ -1281,6 +1291,26 @@
         }
       }
     },
+    "Restart Deskfocus to switch language.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riavvia Deskfocus per cambiare lingua."
+          }
+        }
+      }
+    },
+    "Restart Now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riavvia ora"
+          }
+        }
+      }
+    },
     "Resume": {
       "localizations": {
         "it": {
@@ -1327,6 +1357,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rosa antico"
+          }
+        }
+      }
+    },
+    "Same as Mac": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Come il Mac"
           }
         }
       }
@@ -1717,6 +1757,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Il widget è"
+          }
+        }
+      }
+    },
+    "Widgets added from the widget gallery switch within a few minutes.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I widget aggiunti dalla galleria cambiano entro pochi minuti."
           }
         }
       }

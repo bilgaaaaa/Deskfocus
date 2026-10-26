@@ -182,6 +182,28 @@ private struct GeneralSettingsView: View {
 
     var body: some View {
         Form {
+            Section {
+                Picker("Language", selection: Binding(
+                    get: { model.snapshot.settings.language },
+                    set: { model.setLanguage($0) }
+                )) {
+                    ForEach(AppLanguage.allCases, id: \.self) { language in
+                        Text(verbatim: language.displayName).tag(language)
+                    }
+                }
+                if model.snapshot.settings.language != model.launchLanguage {
+                    HStack {
+                        Text("Restart Deskfocus to switch language.")
+                            .foregroundStyle(.secondary)
+                        Spacer()
+                        Button("Restart Now") { model.relaunch() }
+                            .buttonStyle(DeskfocusPrimaryButtonStyle())
+                    }
+                }
+            } footer: {
+                Text("Widgets added from the widget gallery switch within a few minutes.")
+            }
+
             Toggle("Show glass widget on the desktop", isOn: model.binding(\.showDesktopPanel))
             Picker("Widget is", selection: model.binding(\.panelLayout)) {
                 Text("Closed (Day)").tag(PanelLayout.day)
