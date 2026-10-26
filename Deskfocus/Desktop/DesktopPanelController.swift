@@ -52,12 +52,10 @@ final class DesktopPanelController {
         panel.contentView = hostingView
 
         // Only the position is restored; the size always follows the layout.
-        if panel.setFrameUsingName(Self.frameAutosaveName) {
-            let topLeft = NSPoint(x: panel.frame.minX, y: panel.frame.maxY)
-            panel.setFrame(Self.frame(size: size, topLeft: topLeft), display: false)
-        } else {
-            panel.setFrame(Self.frame(size: size, topLeft: Self.defaultTopLeft()), display: false)
-        }
+        let topLeft = panel.setFrameUsingName(Self.frameAutosaveName)
+            ? NSPoint(x: panel.frame.minX, y: panel.frame.maxY)
+            : Self.defaultTopLeft()
+        panel.setFrame(Self.clamped(Self.frame(size: size, topLeft: topLeft), to: panel.screen ?? NSScreen.main), display: false)
         panel.setFrameAutosaveName(Self.frameAutosaveName)
         panel.orderFrontRegardless()
 
@@ -70,12 +68,8 @@ final class DesktopPanelController {
     private func resize(to layout: PanelLayout) {
         guard let panel else { return }
         let topLeft = NSPoint(x: panel.frame.minX, y: panel.frame.maxY)
-        var frame = Self.frame(size: Self.size(for: layout), topLeft: topLeft)
-        if let visible = (panel.screen ?? NSScreen.main)?.visibleFrame {
-            frame.origin.x = min(max(frame.minX, visible.minX), visible.maxX - frame.width)
-            frame.origin.y = min(max(frame.minY, visible.minY), visible.maxY - frame.height)
-        }
-        panel.setFrame(frame, display: true, animate: true)
+        let frame = Self.frame(size: Self.size(for: layout), topLeft: topLeft)
+        panel.setFrame(Self.clamped(frame, to: panel.screen ?? NSScreen.main), display: true, animate: true)
         self.layout = layout
         Log.app.info("Desktop panel resized for \(layout.rawValue, privacy: .public) layout")
     }
@@ -85,6 +79,15 @@ final class DesktopPanelController {
         panel.orderOut(nil)
         self.panel = nil
         Log.app.info("Desktop panel hidden")
+    }
+
+    /// Keeps the whole panel inside the screen's visible area, e.g. after a monitor was disconnected.
+    private static func clamped(_ frame: NSRect, to screen: NSScreen?) -> NSRect {
+        guard let visible = screen?.visibleFrame else { return frame }
+        var clamped = frame
+        clamped.origin.x = min(max(frame.minX, visible.minX), visible.maxX - frame.width)
+        clamped.origin.y = min(max(frame.minY, visible.minY), visible.maxY - frame.height)
+        return clamped
     }
 
     private static func frame(size: NSSize, topLeft: NSPoint) -> NSRect {

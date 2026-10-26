@@ -7,7 +7,7 @@ struct DesktopPanelView: View {
 
     var body: some View {
         // Ticks every second while a timer runs so the ring moves; every half minute otherwise.
-        TimelineView(.periodic(from: .now, by: model.snapshot.focus == nil ? 30 : 1)) { context in
+        TimelineView(.periodic(from: .distantPast, by: model.snapshot.focus == nil ? 30 : 1)) { context in
             content(now: context.date)
                 .padding(20)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)

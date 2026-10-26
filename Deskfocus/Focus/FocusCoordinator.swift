@@ -19,13 +19,16 @@ final class FocusCoordinator {
         let snapshot = SharedStore.shared.load()
         session = snapshot.focus
 
-        let phase = snapshot.focus?.phase(at: now)
-        if case .running(let endDate) = phase {
+        switch snapshot.focus?.phase(at: now) {
+        case .running(let endDate):
             if !distractionGuard.isActive {
                 distractionGuard.activate(settings: snapshot.settings)
             }
             scheduleEnd(at: endDate)
-        } else {
+        case .paused where distractionGuard.isActive && distractionGuard.mode == .quit:
+            // Reopening and quitting every blocked app on each pause would be slow and could prompt to save.
+            cancelEndTimer()
+        default:
             if distractionGuard.isActive {
                 distractionGuard.deactivate()
             }

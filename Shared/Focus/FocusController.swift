@@ -97,7 +97,10 @@ enum FocusController {
                 return
             }
             snapshot.completedTaskIds.insert(task.id)
-            snapshot.completionDates[task.id] = now
+            // Only today's items feed the "done today" ring.
+            if snapshot.tasks.contains(where: { $0.id == task.id }) {
+                snapshot.completionDates[task.id] = now
+            }
             if !task.isEvent {
                 snapshot.pendingCompletionIds.insert(task.id)
             }

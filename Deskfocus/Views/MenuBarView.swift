@@ -7,7 +7,7 @@ struct MenuBarView: View {
     @Environment(AppModel.self) private var model
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: model.snapshot.focus == nil ? 30 : 1)) { context in
+        TimelineView(.periodic(from: .distantPast, by: model.snapshot.focus == nil ? 30 : 1)) { context in
             VStack(alignment: .leading, spacing: 0) {
                 header
                     .padding(.horizontal, 16)

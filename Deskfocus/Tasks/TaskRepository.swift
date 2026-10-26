@@ -59,13 +59,16 @@ final class TaskRepository {
             snapshot.tasks = tasks
             let pending = snapshot.pendingCompletionIds
             let focusTaskId = snapshot.focus?.taskId
-            // Other-day items stay only while something still needs them.
+            // Other-day items stay only while something still needs them. To-dos are done in their source
+            // once synced, and a recurring one keeps its id, so its mark must not outlive the pending sync.
             snapshot.referencedTasks = snapshot.referencedTasks.filter { task in
-                pending.contains(task.id) || task.id == focusTaskId || Self.isUpcoming(task, today: today)
+                pending.contains(task.id)
+                    || task.id == focusTaskId
+                    || (task.isEvent && Self.isUpcoming(task, today: today))
             }
-            let referencedIds = Set(snapshot.referencedTasks.map(\.id))
+            let referencedEventIds = Set(snapshot.referencedTasks.filter(\.isEvent).map(\.id))
             snapshot.completedTaskIds = snapshot.completedTaskIds.filter {
-                taskIds.contains($0) || pending.contains($0) || referencedIds.contains($0)
+                taskIds.contains($0) || pending.contains($0) || referencedEventIds.contains($0)
             }
             snapshot.completionDates = snapshot.completionDates.filter { $0.value >= today.start }
             snapshot.lastSyncDate = now

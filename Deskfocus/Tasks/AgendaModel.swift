@@ -52,6 +52,8 @@ final class AgendaModel {
         if Calendar.current.isDate(day, inSameDayAs: now) {
             return snapshot.visibleTasks(at: now)
         }
+        // While another week is still loading, show nothing rather than the previous week's items.
+        guard loadedWeek?.contains(dayInterval.start) == true else { return [] }
         let today = DateInterval.day(containing: now)
         return Agenda.tasks(weekTasks, on: dayInterval, today: today)
             .filter { !snapshot.completedTaskIds.contains($0.id) }
@@ -65,7 +67,12 @@ final class AgendaModel {
 
     private func loadIfNeeded() async {
         let week = selectedWeek
-        guard loadedWeek != week else { return }
+        guard loadedWeek != week else {
+            // Back on the loaded week: any load still running for another week must not replace it.
+            loadGeneration += 1
+            isLoading = false
+            return
+        }
 
         loadGeneration += 1
         let generation = loadGeneration

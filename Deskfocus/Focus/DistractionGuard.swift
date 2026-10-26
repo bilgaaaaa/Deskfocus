@@ -4,8 +4,8 @@ import AppKit
 @MainActor
 final class DistractionGuard {
     private(set) var isActive = false
+    private(set) var mode: BlockingMode = .hide
 
-    private var mode: BlockingMode = .hide
     private var blockedBundleIds: Set<String> = []
     private var focusOffShortcutName = ""
     /// Apps this guard hid, to show again at the end (hide mode).
@@ -14,6 +14,8 @@ final class DistractionGuard {
     private var appsToReopen: [String: URL] = [:]
     /// Apps the user already got a "blocked" notification for in this session.
     private var notifiedBundleIds: Set<String> = []
+    /// Apps already asked to quit that are still running, e.g. while they show a "save changes?" sheet.
+    private var quittingBundleIds: Set<String> = []
     private var observers: [NSObjectProtocol] = []
 
     func activate(settings: DeskfocusSettings) {
@@ -37,6 +39,12 @@ final class DistractionGuard {
                 }
             })
         }
+        observers.append(center.addObserver(forName: NSWorkspace.didTerminateApplicationNotification, object: nil, queue: .main) { [weak self] notification in
+            guard let bundleId = (notification.userInfo?[NSWorkspace.applicationUserInfoKey] as? NSRunningApplication)?.bundleIdentifier else { return }
+            MainActor.assumeIsolated {
+                _ = self?.quittingBundleIds.remove(bundleId)
+            }
+        })
 
         ShortcutRunner.run(named: settings.focusOnShortcutName)
         Log.distraction.info("Guard on (\(self.mode.rawValue, privacy: .public)), \(self.blockedBundleIds.count) apps blocked")
@@ -65,6 +73,7 @@ final class DistractionGuard {
         hiddenBundleIds = []
         appsToReopen = [:]
         notifiedBundleIds = []
+        quittingBundleIds = []
         blockedBundleIds = []
     }
 
@@ -87,6 +96,7 @@ final class DistractionGuard {
             if wasOpenAtStart, let url = app.bundleURL {
                 appsToReopen[bundleId] = url
             }
+            guard quittingBundleIds.insert(bundleId).inserted else { return }
             if app.terminate() {
                 Log.distraction.info("Quit \(bundleId, privacy: .public)")
             } else {
