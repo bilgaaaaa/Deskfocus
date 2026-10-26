@@ -131,6 +131,16 @@
         }
       }
     },
+    "+%lld min": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%lld min"
+          }
+        }
+      }
+    },
     "+%lld more": {
       "localizations": {
         "it": {
@@ -191,6 +201,16 @@
         }
       }
     },
+    "Add %lld minutes": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungi %lld minuti"
+          }
+        }
+      }
+    },
     "Add Account…": {
       "localizations": {
         "it": {
@@ -217,6 +237,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aggiunta in corso…"
+          }
+        }
+      }
+    },
+    "Adds five minutes to the focus timer.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiunge cinque minuti al timer di concentrazione."
           }
         }
       }
@@ -681,6 +711,16 @@
         }
       }
     },
+    "Extend Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prolunga concentrazione"
+          }
+        }
+      }
+    },
     "Focus": {
       "localizations": {
         "it": {
@@ -987,6 +1027,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lime"
+          }
+        }
+      }
+    },
+    "Loading": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caricamento"
           }
         }
       }

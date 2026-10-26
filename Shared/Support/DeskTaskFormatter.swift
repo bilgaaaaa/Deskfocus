@@ -35,8 +35,6 @@ enum DeskTaskFormatter {
 
     /// Short line under a task title, e.g. "10:00 – 11:00", "Overdue · Reminders" or the list name.
     static func subtitle(for task: DeskTask, now: Date = .now) -> String {
-        let calendar = Calendar.current
-
         if task.isEvent {
             if task.isAllDay { return String(localized: "All day · \(task.listName)") }
             guard let start = task.startDate else { return task.listName }
@@ -46,7 +44,7 @@ enum DeskTaskFormatter {
         }
 
         guard let due = task.dueDate else { return task.listName }
-        if calendar.startOfDay(for: due) < calendar.startOfDay(for: now) {
+        if task.isOverdue(at: now) {
             return String(localized: "Overdue · \(task.listName)")
         }
         if task.isAllDay { return String(localized: "To-do · \(task.listName)") }
@@ -67,7 +65,7 @@ enum DeskTaskFormatter {
             if minutes < 60 { return String(localized: "Up next · in \(minutes) min") }
             return String(localized: "Up next · at \(timeFormatter.string(from: start))")
         }
-        if let due = task.dueDate, Calendar.current.startOfDay(for: due) < Calendar.current.startOfDay(for: now) {
+        if task.isOverdue(at: now) {
             return String(localized: "Overdue")
         }
         return String(localized: "Up next")

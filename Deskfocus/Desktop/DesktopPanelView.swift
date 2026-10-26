@@ -2,7 +2,8 @@ import AppIntents
 import SwiftUI
 
 /// The glass desktop widget: closed it shows the day like the purple widget, open it shows the week.
-/// Opening and closing morphs the glass card with a spring while the content cross-fades.
+/// Opening and closing morphs the glass card with a spring while the content cross-fades;
+/// starting or ending a session swaps the agenda and the focus ring the same way.
 struct DesktopPanelView: View {
     @Environment(AppModel.self) private var model
 
@@ -39,8 +40,11 @@ struct DesktopPanelView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .environment(\.colorScheme, .dark)
             .environment(\.deskfocusAccent, settings.accentColor)
+            // The panel is a live view, unlike WidgetKit, so looping animations may run here.
+            .environment(\.deskfocusAmbientMotion, true)
             .animation(Self.morphAnimation, value: layout)
             .animation(.easeInOut(duration: 0.3), value: settings.glassTint)
+            .animation(DeskfocusMotion.reveal, value: model.snapshot.focus == nil)
         }
     }
 
@@ -50,8 +54,10 @@ struct DesktopPanelView: View {
         case .day:
             if let session = model.snapshot.focus {
                 FocusSessionView(session: session, now: now, settings: model.snapshot.settings)
+                    .transition(.scale(scale: 0.94).combined(with: .opacity))
             } else {
                 DayPanelContent(now: now)
+                    .transition(.opacity)
             }
         case .week:
             WeekPanelContent(now: now)
@@ -86,17 +92,22 @@ private struct PanelContextMenu: View {
 }
 
 /// Closed layout, styled like the purple widget: weekday, big date, progress ring, then the day's items.
-/// Day arrows and the open button stay visible at the top right.
+/// Day arrows and the open button stay visible at the top right; a new day's list slides in from the side it came from.
 private struct DayPanelContent: View {
     @Environment(AppModel.self) private var model
     let now: Date
 
+    /// Height of the fade at the bottom of the list, so rows slip under the edge instead of being cut off.
+    private static let fadeHeight: CGFloat = 18
+
     var body: some View {
         let agenda = model.agenda
-        let tasks = agenda.tasks(on: agenda.selectedDay, snapshot: model.snapshot, now: now)
+        let day = agenda.selectedDay
+        let tasks = agenda.tasks(on: day, snapshot: model.snapshot, now: now)
+        let isLoaded = agenda.hasLoaded(day, now: now)
 
         VStack(alignment: .leading, spacing: 14) {
-            DayHeaderView(date: agenda.selectedDay) {
+            DayHeaderView(date: day, movesForward: agenda.isMovingForward) {
                 VStack(alignment: .trailing, spacing: 10) {
                     PanelNavigation(
                         onPrevious: { agenda.moveDay(by: -1) },
@@ -107,28 +118,82 @@ private struct DayPanelContent: View {
                     if agenda.isShowingToday {
                         let done = model.snapshot.completedCount(on: now)
                         DayProgressRing(done: done, total: done + tasks.count)
+                            .transition(.scale(scale: 0.6).combined(with: .opacity))
                     } else {
                         TodayButton(help: "Back to today") { agenda.goToToday() }
+                            .transition(.scale(scale: 0.8, anchor: .trailing).combined(with: .opacity))
                     }
                 }
             }
 
             ScrollView {
+                // Old and new day overlap here while one fades out and the other slides in.
+                ZStack(alignment: .top) {
+                    dayList(tasks: tasks, isLoaded: isLoaded)
+                        .id(day)
+                        .transition(.asymmetric(
+                            insertion: .opacity.combined(with: .offset(x: agenda.isMovingForward ? 28 : -28)),
+                            removal: .opacity
+                        ))
+                }
+                .padding(.bottom, Self.fadeHeight)
+                .animation(DeskfocusMotion.reveal, value: isLoaded)
+            }
+            .scrollIndicators(.never)
+            .mask { bottomFade }
+        }
+    }
+
+    @ViewBuilder
+    private func dayList(tasks: [DeskTask], isLoaded: Bool) -> some View {
+        let agenda = model.agenda
+        if !isLoaded {
+            LoadingPlaceholder()
+                .padding(.horizontal, 8)
+                .padding(.top, 6)
+                .transition(.opacity)
+        } else {
+            VStack(spacing: 12) {
                 DayAgendaView(
                     tasks: tasks,
                     now: now,
                     maxRows: .max,
                     showsUpNext: agenda.isShowingToday,
                     savedProgress: model.snapshot.savedProgress,
+                    completeAction: { task in
+                        CompleteTaskButton(task: task)
+                    },
                     rowAction: { task in
-                        TaskActionButtons(task: task)
+                        HStack(spacing: 4) {
+                            EndSessionButton(task: task)
+                            StartFocusControl(task: task)
+                        }
                     },
                     upNextAction: { task in
-                        StartFocusControl(task: task, size: 44, isProminent: true)
+                        HStack(spacing: 6) {
+                            EndSessionButton(task: task, size: 32)
+                            StartFocusControl(task: task, size: 44, isProminent: true)
+                        }
                     }
                 )
+                // An empty day is an invitation to plan it.
+                if tasks.isEmpty {
+                    Button { model.showAddTask() } label: {
+                        Label("New task", systemImage: "plus")
+                    }
+                    .buttonStyle(DeskfocusGlassButtonStyle())
+                    .transition(.opacity)
+                }
             }
-            .scrollIndicators(.never)
+            .transition(.opacity)
+        }
+    }
+
+    private var bottomFade: some View {
+        VStack(spacing: 0) {
+            Color.black
+            LinearGradient(colors: [.black, .clear], startPoint: .top, endPoint: .bottom)
+                .frame(height: Self.fadeHeight)
         }
     }
 }
@@ -141,7 +206,8 @@ private struct WeekPanelContent: View {
 
     var body: some View {
         let agenda = model.agenda
-        let days = Agenda.days(in: agenda.selectedWeek)
+        let week = agenda.selectedWeek
+        let days = Agenda.days(in: week)
 
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top) {
@@ -150,13 +216,15 @@ private struct WeekPanelContent: View {
                         .font(.system(size: 11, weight: .bold))
                         .tracking(0.8)
                         .foregroundStyle(accent.color)
-                    Text(DeskTaskFormatter.weekRange(agenda.selectedWeek))
+                    Text(DeskTaskFormatter.weekRange(week))
                         .font(.system(size: 26, weight: .bold))
+                        .contentTransition(.numericText(countsDown: !agenda.isMovingForward))
                 }
                 Spacer()
                 if !agenda.isShowingThisWeek {
                     TodayButton(help: "Back to this week") { agenda.goToToday() }
                         .padding(.trailing, 8)
+                        .transition(.scale(scale: 0.8, anchor: .trailing).combined(with: .opacity))
                 }
                 PanelNavigation(
                     onPrevious: { agenda.moveWeek(by: -1) },
@@ -167,30 +235,49 @@ private struct WeekPanelContent: View {
 
             if let session = model.snapshot.focus {
                 FocusStrip(session: session, now: now)
+                    .transition(.move(edge: .top).combined(with: .opacity))
             }
 
-            HStack(alignment: .top, spacing: 8) {
-                ForEach(days, id: \.self) { day in
-                    WeekDayColumn(day: day, tasks: agenda.tasks(on: day, snapshot: model.snapshot, now: now), now: now)
+            // Old and new week overlap here while one fades out and the other slides in.
+            ZStack(alignment: .top) {
+                HStack(alignment: .top, spacing: 8) {
+                    ForEach(days, id: \.self) { day in
+                        WeekDayColumn(
+                            day: day,
+                            tasks: agenda.tasks(on: day, snapshot: model.snapshot, now: now),
+                            isLoaded: agenda.hasLoaded(day, now: now),
+                            now: now
+                        )
+                    }
                 }
+                .id(week.start)
+                .transition(.asymmetric(
+                    insertion: .opacity.combined(with: .offset(x: agenda.isMovingForward ? 40 : -40)),
+                    removal: .opacity
+                ))
             }
             .frame(maxHeight: .infinity, alignment: .top)
         }
     }
 }
 
-/// One day in the week layout; the header opens that day in the day layout.
+/// One day in the week layout; the header opens that day in the day layout. Past days are dimmed.
 private struct WeekDayColumn: View {
     @Environment(\.deskfocusAccent) private var accent
     @Environment(AppModel.self) private var model
     let day: Date
     let tasks: [DeskTask]
+    let isLoaded: Bool
     let now: Date
+    @State private var isHeaderHovered = false
 
     private let maxItems = 6
     private var isToday: Bool { Calendar.current.isDate(day, inSameDayAs: now) }
+    private var isPast: Bool { day < Calendar.current.startOfDay(for: now) }
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+
         VStack(alignment: .leading, spacing: 8) {
             Button { model.showDay(day) } label: {
                 HStack(spacing: 6) {
@@ -203,37 +290,58 @@ private struct WeekDayColumn: View {
                         .foregroundStyle(isToday ? accent.onAccent : .primary)
                         .frame(width: 24, height: 24)
                         .background {
-                            if isToday { Circle().fill(accent.gradient) }
+                            if isToday {
+                                Circle().fill(accent.gradient)
+                            } else {
+                                Circle().fill(Color.white.opacity(isHeaderHovered ? 0.16 : 0))
+                            }
                         }
                 }
+                .contentShape(Rectangle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(DeskfocusPressStyle())
+            .onHover { hovering in
+                withAnimation(DeskfocusMotion.hover) { isHeaderHovered = hovering }
+            }
             .help("Open this day")
 
             VStack(alignment: .leading, spacing: 6) {
-                ForEach(tasks.prefix(maxItems)) { task in
-                    WeekTaskCard(task: task)
-                }
-                if tasks.count > maxItems {
-                    Button("+\(tasks.count - maxItems) more") { model.showDay(day) }
-                        .buttonStyle(.plain)
-                        .font(.system(size: 11))
-                        .foregroundStyle(.secondary)
-                }
-                if tasks.isEmpty {
-                    Text("Free")
-                        .font(.system(size: 11))
-                        .foregroundStyle(.tertiary)
+                if !isLoaded {
+                    LoadingPlaceholder(lineCount: 2, lineHeight: 8)
+                } else {
+                    ForEach(tasks.prefix(maxItems)) { task in
+                        WeekTaskCard(task: task)
+                            .transition(.asymmetric(insertion: .opacity, removal: .opacity.combined(with: .scale(scale: 0.9))))
+                    }
+                    if tasks.count > maxItems {
+                        Button("+\(tasks.count - maxItems) more") { model.showDay(day) }
+                            .buttonStyle(.plain)
+                            .font(.system(size: 11))
+                            .foregroundStyle(.secondary)
+                    }
+                    if tasks.isEmpty {
+                        Text("Free")
+                            .font(.system(size: 11))
+                            .foregroundStyle(.tertiary)
+                    }
                 }
             }
+            .animation(DeskfocusMotion.list, value: tasks.map(\.id))
+            .animation(DeskfocusMotion.reveal, value: isLoaded)
         }
         .padding(10)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color.white.opacity(isToday ? 0.12 : 0.05), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .background(Color.white.opacity(isToday ? 0.12 : 0.05), in: shape)
+        .overlay {
+            if isToday {
+                shape.strokeBorder(accent.color.opacity(0.35))
+            }
+        }
+        .opacity(isPast ? 0.6 : 1)
     }
 }
 
-/// Compact item in a week column; hovering shows start and done buttons.
+/// Compact item in a week column; hovering lights it up and pops in start and done buttons.
 private struct WeekTaskCard: View {
     let task: DeskTask
     @State private var isHovered = false
@@ -256,14 +364,21 @@ private struct WeekTaskCard: View {
             Spacer(minLength: 0)
         }
         .fixedSize(horizontal: false, vertical: true)
+        // The highlight reaches past the card without moving it out of line with the day header.
+        .padding(4)
+        .background(Color.white.opacity(isHovered ? 0.1 : 0), in: RoundedRectangle(cornerRadius: 8, style: .continuous))
+        .padding(-4)
         .overlay(alignment: .topTrailing) {
             if isHovered {
                 TaskActionButtons(task: task, size: 22)
                     .padding(2)
                     .background(.ultraThinMaterial, in: Capsule())
+                    .transition(.scale(scale: 0.7, anchor: .topTrailing).combined(with: .opacity))
             }
         }
-        .onHover { isHovered = $0 }
+        .onHover { hovering in
+            withAnimation(DeskfocusMotion.hover) { isHovered = hovering }
+        }
     }
 }
 
@@ -274,9 +389,13 @@ private struct FocusStrip: View {
     let now: Date
 
     var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+        let progress = 1 - session.remaining(at: now) / max(session.plannedDuration, 1)
+
         HStack(spacing: 12) {
-            FocusRingView(progress: 1 - session.remaining(at: now) / max(session.plannedDuration, 1), lineWidth: 4)
+            FocusRingView(progress: progress, lineWidth: 4)
                 .frame(width: 30, height: 30)
+                .animation(DeskfocusMotion.ringTick, value: progress)
             VStack(alignment: .leading, spacing: 1) {
                 Text(session.taskTitle)
                     .font(.system(size: 13, weight: .semibold))
@@ -285,13 +404,15 @@ private struct FocusStrip: View {
                     .font(.system(size: 11.5))
                     .monospacedDigit()
                     .foregroundStyle(accent.color)
+                    .contentTransition(.numericText(countsDown: true))
+                    .animation(DeskfocusMotion.digitRoll, value: statusLine)
             }
             Spacer()
             stripControls
         }
         .padding(10)
-        .background(accent.color.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(accent.color.opacity(0.3)))
+        .background(accent.color.opacity(0.12), in: shape)
+        .overlay(shape.strokeBorder(accent.color.opacity(0.3)))
     }
 
     private var statusLine: String {
@@ -316,11 +437,49 @@ private struct FocusStrip: View {
                 Button(intent: EndFocusIntent()) { Label("Dismiss", systemImage: "xmark") }
                     .buttonStyle(DeskfocusGlassButtonStyle())
             }
+            Button(intent: ExtendFocusIntent()) { Text("+\(FocusController.extensionMinutes) min") }
+                .buttonStyle(DeskfocusGlassButtonStyle())
+                .help("Add \(FocusController.extensionMinutes) minutes")
             Button(intent: CompleteTaskIntent(taskId: session.taskId)) { Label("Done", systemImage: "checkmark") }
                 .buttonStyle(DeskfocusPrimaryButtonStyle())
             if session.phase(at: now) != .finished {
                 Button(intent: EndFocusIntent()) { Label("End Session", systemImage: "stop.fill") }
                     .buttonStyle(DeskfocusDangerButtonStyle())
+            }
+        }
+    }
+}
+
+/// Pulsing placeholder lines while a week loads, instead of a misleading "All clear" or "Free".
+private struct LoadingPlaceholder: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    var lineCount = 3
+    var lineHeight: CGFloat = 10
+
+    var body: some View {
+        Group {
+            if reduceMotion {
+                lines(isDim: false)
+            } else {
+                PhaseAnimator([false, true]) { isDim in
+                    lines(isDim: isDim)
+                } animation: { _ in
+                    .easeInOut(duration: 0.9)
+                }
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Loading")
+    }
+
+    /// Ragged right edges, like real titles of different lengths.
+    private func lines(isDim: Bool) -> some View {
+        VStack(alignment: .leading, spacing: lineHeight) {
+            ForEach(0..<lineCount, id: \.self) { index in
+                Capsule()
+                    .fill(Color.white.opacity(isDim ? 0.06 : 0.14))
+                    .frame(height: lineHeight)
+                    .padding(.trailing, CGFloat(index % 3) * 18)
             }
         }
     }
@@ -333,7 +492,9 @@ struct TodayButton: View {
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            withAnimation(DeskfocusMotion.navigate, action)
+        } label: {
             Label("Today", systemImage: "arrow.uturn.backward")
                 .font(.system(size: 12, weight: .semibold))
                 .lineLimit(1)
@@ -343,15 +504,14 @@ struct TodayButton: View {
                 .background(accent.gradient, in: Capsule())
                 .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(DeskfocusPressStyle())
         .fixedSize()
         .help(help)
     }
 }
 
-/// New task, ‹ › and the open/close button, shared by both layouts.
+/// New task, ‹ › and the open/close button, shared by both layouts; the arrows animate the move.
 struct PanelNavigation: View {
-    @Environment(\.deskfocusAccent) private var accent
     @Environment(AppModel.self) private var model
     let onPrevious: () -> Void
     let onNext: () -> Void
@@ -359,23 +519,37 @@ struct PanelNavigation: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            iconButton("plus", label: "New task", action: { model.showAddTask() })
+            PanelIconButton(systemName: "plus", label: "New task") { model.showAddTask() }
                 .padding(.trailing, 4)
-            iconButton("chevron.left", label: layout == .day ? "Previous day" : "Previous week", action: onPrevious)
-            iconButton("chevron.right", label: layout == .day ? "Next day" : "Next week", action: onNext)
-            iconButton(
-                layout == .day ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left",
+            PanelIconButton(systemName: "chevron.left", label: layout == .day ? "Previous day" : "Previous week") {
+                withAnimation(DeskfocusMotion.navigate, onPrevious)
+            }
+            PanelIconButton(systemName: "chevron.right", label: layout == .day ? "Next day" : "Next week") {
+                withAnimation(DeskfocusMotion.navigate, onNext)
+            }
+            PanelIconButton(
+                systemName: layout == .day ? "arrow.up.left.and.arrow.down.right" : "arrow.down.right.and.arrow.up.left",
                 label: layout == .day ? "Open week" : "Close to day",
-                isProminent: true,
-                action: { model.setPanelLayout(layout == .day ? .week : .day) }
-            )
+                isProminent: true
+            ) {
+                model.setPanelLayout(layout == .day ? .week : .day)
+            }
             .padding(.leading, 4)
         }
         .fixedSize()
     }
+}
 
-    /// Round icon button; the prominent one (open/close) uses the accent so it reads differently from the arrows.
-    private func iconButton(_ systemName: String, label: LocalizedStringKey, isProminent: Bool = false, action: @escaping () -> Void) -> some View {
+/// Round icon button in the panel header; the prominent one (open/close) uses the accent so it reads differently from the arrows.
+private struct PanelIconButton: View {
+    @Environment(\.deskfocusAccent) private var accent
+    let systemName: String
+    let label: LocalizedStringKey
+    var isProminent = false
+    let action: () -> Void
+    @State private var isHovered = false
+
+    var body: some View {
         Button(action: action) {
             Image(systemName: systemName)
                 .font(.system(size: 12, weight: .bold))
@@ -385,38 +559,31 @@ struct PanelNavigation: View {
                     if isProminent {
                         Circle().fill(accent.gradient)
                     } else {
-                        Circle().fill(Color.white.opacity(0.14))
+                        Circle().fill(Color.white.opacity(isHovered ? 0.24 : 0.14))
                     }
                 }
+                .brightness(isProminent && isHovered ? 0.06 : 0)
                 .contentShape(Circle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(DeskfocusPressStyle())
+        .onHover { hovering in
+            withAnimation(DeskfocusMotion.hover) { isHovered = hovering }
+        }
         .help(label)
         .accessibilityLabel(label)
     }
 }
 
-/// Done and start buttons for a task from any day, used in rows and on hover;
-/// a red stop button appears while the task has time left to resume.
+/// End, done and start buttons for a task from any day, shown when hovering a week card;
+/// the red stop button only appears while the task has time left to resume.
 struct TaskActionButtons: View {
-    @Environment(AppModel.self) private var model
     let task: DeskTask
     var size: CGFloat = 28
 
     var body: some View {
         HStack(spacing: 4) {
             EndSessionButton(task: task, size: size)
-
-            Button { model.complete(task) } label: {
-                Image(systemName: "checkmark")
-                    .font(.system(size: size * 0.4, weight: .bold))
-                    .frame(width: size, height: size)
-                    .background(Color.primary.opacity(0.1), in: Circle())
-                    .contentShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .help("Mark as done")
-
+            CompleteTaskButton(task: task, size: size)
             StartFocusControl(task: task, size: size)
         }
     }

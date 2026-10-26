@@ -21,8 +21,9 @@ struct EndSessionButton: View {
                     .background(DeskfocusTheme.danger.opacity(0.9), in: Circle())
                     .contentShape(Circle())
             }
-            .buttonStyle(.plain)
+            .buttonStyle(DeskfocusPressStyle())
             .help("End Session")
+            .transition(.scale(scale: 0.5).combined(with: .opacity))
         }
     }
 }

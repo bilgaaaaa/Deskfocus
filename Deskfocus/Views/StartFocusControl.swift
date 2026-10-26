@@ -30,7 +30,7 @@ struct StartFocusControl: View {
         } label: {
             PlayGlyph(size: size, isProminent: isProminent)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(DeskfocusPressStyle())
         .help(resumes ? String(localized: "Resume focus on this task") : String(localized: "Start focus on this task"))
         .contextMenu {
             Button("Choose length…") { isChoosingLength = true }

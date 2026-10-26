@@ -35,6 +35,25 @@ struct DeskTask: Codable, Identifiable, Hashable {
         guard isEvent, !isAllDay, let endDate else { return false }
         return endDate <= now
     }
+
+    /// True while a timed event is under way.
+    func isHappening(at now: Date) -> Bool {
+        guard isEvent, !isAllDay, let startDate, let endDate else { return false }
+        return startDate <= now && now < endDate
+    }
+
+    /// How much of a happening event has passed, from 0 to 1; nil when it is not under way.
+    func eventProgress(at now: Date) -> Double? {
+        guard isHappening(at: now), let startDate, let endDate else { return nil }
+        return now.timeIntervalSince(startDate) / endDate.timeIntervalSince(startDate)
+    }
+
+    /// True for a to-do due on an earlier day.
+    func isOverdue(at now: Date) -> Bool {
+        guard !isEvent, let dueDate else { return false }
+        let calendar = Calendar.current
+        return calendar.startOfDay(for: dueDate) < calendar.startOfDay(for: now)
+    }
 }
 
 extension Array where Element == DeskTask {

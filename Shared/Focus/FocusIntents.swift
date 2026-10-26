@@ -62,6 +62,17 @@ struct ResumeFocusIntent: AppIntent {
     }
 }
 
+/// Adds five minutes to the session, also once the time is up; used by the "+5 min" buttons.
+struct ExtendFocusIntent: AppIntent {
+    static let title: LocalizedStringResource = "Extend Focus"
+    static let description = IntentDescription("Adds five minutes to the focus timer.")
+
+    func perform() async throws -> some IntentResult {
+        FocusController.extend()
+        return .result()
+    }
+}
+
 /// Ends a session without completing the task; with no task ID it ends the current one.
 struct EndFocusIntent: AppIntent {
     static let title: LocalizedStringResource = "End Focus"

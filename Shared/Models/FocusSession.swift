@@ -19,7 +19,8 @@ struct FocusSession: Codable, Equatable, Identifiable {
     let taskId: String
     let taskTitle: String
     let startedAt: Date
-    let plannedDuration: TimeInterval
+    /// Grows when the user adds time with "+5 min".
+    var plannedDuration: TimeInterval
     var status: Status
 
     /// A running session whose end date has passed counts as finished even before the app records it.

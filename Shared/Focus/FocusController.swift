@@ -5,6 +5,8 @@ import WidgetKit
 enum FocusController {
     /// Sessions with less time left than this are not worth resuming later.
     private static let minimumResumableTime: TimeInterval = 30
+    /// Minutes added by the "+5 min" button.
+    static let extensionMinutes = 5
 
     /// Starts or resumes focus on a task; `minutes` overrides the task's own length and is remembered for it.
     /// Returns nil if the task is unknown.
@@ -74,6 +76,29 @@ enum FocusController {
             session.status = .running(endDate: now.addingTimeInterval(remaining))
             snapshot.focus = session
             Log.focus.info("Focus resumed")
+        }
+        notifyChange()
+    }
+
+    /// Adds time to the current session; a finished one runs again for just the added time.
+    static func extend(byMinutes minutes: Int = FocusController.extensionMinutes, now: Date = .now) {
+        let added = TimeInterval(minutes * 60)
+        SharedStore.shared.update { snapshot in
+            guard var session = snapshot.focus else {
+                Log.focus.debug("Extend ignored, no session")
+                return
+            }
+            switch session.phase(at: now) {
+            case .running(let endDate):
+                session.status = .running(endDate: endDate.addingTimeInterval(added))
+            case .paused(let remaining):
+                session.status = .paused(remaining: remaining + added)
+            case .finished:
+                session.status = .running(endDate: now.addingTimeInterval(added))
+            }
+            session.plannedDuration += added
+            snapshot.focus = session
+            Log.focus.info("Focus extended by \(minutes) min")
         }
         notifyChange()
     }

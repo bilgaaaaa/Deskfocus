@@ -5,10 +5,14 @@ struct DeskfocusEntry: TimelineEntry {
     let snapshot: DeskfocusSnapshot
 }
 
-/// Builds widget timelines from the shared state; adds an entry at the timer's end so it flips to "Time's up" on time.
+/// Builds widget timelines from the shared state: an entry every minute so "in 25 min" and the focus ring keep moving,
+/// plus one at the timer's end so it flips to "Time's up" on time.
 struct DeskfocusTimelineProvider: TimelineProvider {
     /// Upper bound between reloads so ended events drop off even when nothing else changes.
     private let maximumRefreshInterval: TimeInterval = 15 * 60
+    private let tickInterval: TimeInterval = 60
+    /// Cap on minute entries in one timeline; a longer session reloads where they run out.
+    private let maximumTicks = 120
 
     func placeholder(in context: Context) -> DeskfocusEntry {
         DeskfocusEntry(date: .now, snapshot: .preview)
@@ -24,23 +28,38 @@ struct DeskfocusTimelineProvider: TimelineProvider {
         let snapshot = SharedStore.shared.load()
         // The widget process restarts often, so a new language shows up shortly after it is chosen.
         LanguagePreference.apply(snapshot.settings.language)
-        var entries = [DeskfocusEntry(date: now, snapshot: snapshot)]
+        var dates: Set<Date> = [now]
         var nextRefresh = now.addingTimeInterval(maximumRefreshInterval)
 
         if case .running(let endDate) = snapshot.focus?.phase(at: now) {
-            entries.append(DeskfocusEntry(date: endDate, snapshot: snapshot))
+            dates.insert(endDate)
             nextRefresh = max(nextRefresh, endDate.addingTimeInterval(1))
         }
 
         // Re-render right after the next timed event ends so it leaves the list.
         if let nextEventEnd = snapshot.visibleTasks(at: now).compactMap({ $0.isEvent && !$0.isAllDay ? $0.endDate : nil }).min(),
            nextEventEnd < nextRefresh {
-            entries.append(DeskfocusEntry(date: nextEventEnd, snapshot: snapshot))
+            dates.insert(nextEventEnd)
         }
 
-        entries.sort { $0.date < $1.date }
+        let ticks = minuteTicks(after: now, until: nextRefresh)
+        dates.formUnion(ticks)
+        // The cap cut the ticks short of the refresh: reload when they run out so nothing freezes.
+        if ticks.count == maximumTicks, let lastTick = ticks.last {
+            nextRefresh = min(nextRefresh, lastTick)
+        }
+
+        let entries = dates.sorted().map { DeskfocusEntry(date: $0, snapshot: snapshot) }
         Log.widget.debug("Timeline with \(entries.count) entries")
         completion(Timeline(entries: entries, policy: .after(nextRefresh)))
+    }
+
+    /// Whole clock minutes after `start`, up to `end` and at most `maximumTicks` of them.
+    private func minuteTicks(after start: Date, until end: Date) -> [Date] {
+        let first = (start.timeIntervalSinceReferenceDate / tickInterval).rounded(.down) * tickInterval + tickInterval
+        let last = min(end.timeIntervalSinceReferenceDate, first + tickInterval * Double(maximumTicks - 1))
+        guard first <= last else { return [] }
+        return stride(from: first, through: last, by: tickInterval).map { Date(timeIntervalSinceReferenceDate: $0) }
     }
 }
 
