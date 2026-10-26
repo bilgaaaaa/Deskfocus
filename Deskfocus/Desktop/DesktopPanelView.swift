@@ -2,23 +2,46 @@ import AppIntents
 import SwiftUI
 
 /// Content of the glass desktop panel: the day or week agenda, or the focus session while one runs.
+/// Switching day and week morphs the glass card with a spring while the content cross-fades.
 struct DesktopPanelView: View {
     @Environment(AppModel.self) private var model
 
+    static let contentPadding: CGFloat = 20
+    static let morphAnimation = Animation.spring(response: 0.45, dampingFraction: 0.86)
+
     var body: some View {
+        let layout = model.snapshot.settings.panelLayout
+        let cardSize = DesktopPanelController.cardSize(for: layout)
+        let shape = RoundedRectangle(cornerRadius: DesktopGlassBackground.cornerRadius, style: .continuous)
+
         // Ticks every second while a timer runs so the ring moves; every half minute otherwise.
         TimelineView(.periodic(from: .distantPast, by: model.snapshot.focus == nil ? 30 : 1)) { context in
-            content(now: context.date)
-                .padding(20)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .modifier(DesktopGlassBackground())
-                .environment(\.colorScheme, .dark)
+            ZStack(alignment: .topLeading) {
+                // Each layout keeps its own final size, so the card reveals it instead of squeezing it.
+                content(layout: layout, now: context.date)
+                    .frame(
+                        width: cardSize.width - Self.contentPadding * 2,
+                        height: cardSize.height - Self.contentPadding * 2,
+                        alignment: .topLeading
+                    )
+                    .id(layout)
+                    .transition(.opacity)
+            }
+            .padding(Self.contentPadding)
+            .frame(width: cardSize.width, height: cardSize.height, alignment: .topLeading)
+            .clipShape(shape)
+            .modifier(DesktopGlassBackground())
+            .shadow(color: .black.opacity(0.28), radius: 18, y: 10)
+            .padding(DesktopPanelController.shadowInset)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+            .environment(\.colorScheme, .dark)
+            .animation(Self.morphAnimation, value: layout)
         }
     }
 
     @ViewBuilder
-    private func content(now: Date) -> some View {
-        switch model.snapshot.settings.panelLayout {
+    private func content(layout: PanelLayout, now: Date) -> some View {
+        switch layout {
         case .day:
             if let session = model.snapshot.focus {
                 FocusSessionView(session: session, now: now, settings: model.snapshot.settings)
