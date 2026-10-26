@@ -11,6 +11,7 @@ struct DeskfocusSettings: Codable, Equatable {
     var focusOffShortcutName: String = ""
     var includeUndatedTasks: Bool = true
     var enabledSources: Set<TaskSourceKind> = Set(TaskSourceKind.allCases)
+    var showDesktopPanel: Bool = true
 
     init() {}
 
@@ -23,6 +24,7 @@ struct DeskfocusSettings: Codable, Equatable {
         focusOffShortcutName = try container.decodeIfPresent(String.self, forKey: .focusOffShortcutName) ?? defaults.focusOffShortcutName
         includeUndatedTasks = try container.decodeIfPresent(Bool.self, forKey: .includeUndatedTasks) ?? defaults.includeUndatedTasks
         enabledSources = try container.decodeIfPresent(Set<TaskSourceKind>.self, forKey: .enabledSources) ?? defaults.enabledSources
+        showDesktopPanel = try container.decodeIfPresent(Bool.self, forKey: .showDesktopPanel) ?? defaults.showDesktopPanel
     }
 
     /// Focus length clamped to a sane range, in seconds.

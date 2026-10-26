@@ -18,6 +18,7 @@ final class AppModel {
 
     private static let refreshInterval: TimeInterval = 5 * 60
 
+    private let desktopPanel = DesktopPanelController()
     @ObservationIgnored private var stateObserver: DarwinObserver?
     @ObservationIgnored private var refreshTimer: Timer?
     @ObservationIgnored private var notificationTokens: [NSObjectProtocol] = []
@@ -41,6 +42,7 @@ final class AppModel {
         startObserving()
         FocusNotifier.requestAuthorization()
         focus.reconcile()
+        applyDesktopPanelSetting()
         Log.app.info("Deskfocus started")
         Task { await refresh() }
     }
@@ -110,7 +112,12 @@ final class AppModel {
     func updateSettings(_ mutate: (inout DeskfocusSettings) -> Void) {
         let saved = SharedStore.shared.update { mutate(&$0.settings) }
         snapshot = saved
+        applyDesktopPanelSetting()
         WidgetCenter.shared.reloadTimelines(ofKind: DeskfocusConstants.widgetKind)
+    }
+
+    private func applyDesktopPanelSetting() {
+        desktopPanel.setVisible(snapshot.settings.showDesktopPanel, model: self)
     }
 
     /// Two-way binding to one setting, saved to the shared state on every change.

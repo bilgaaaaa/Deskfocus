@@ -3,6 +3,7 @@
 A macOS menu bar app and desktop widget that puts **today's tasks and a focus timer in one place**.
 
 - Today's list merges **iCloud Calendar, iCloud Reminders, Google Calendar and Google Tasks**.
+- Shown as a **glass panel on the desktop** (Liquid Glass on macOS 26), as a WidgetKit widget, and in the menu bar; the panel and the widget share the same view.
 - Press ▶ on any task (in the widget or the menu bar) to start a focus timer for it.
 - While the timer runs, the apps you chose are hidden (and hidden again if you open them), and an optional macOS Focus mode silences their notifications.
 - When the time is up you get a notification; press **Done** and the task is completed in Reminders or Google Tasks.
@@ -17,7 +18,7 @@ Requirements: macOS 14 Sonoma or later, Xcode 16 or later.
 | `Deskfocus/` | The menu bar app: task sources, Google sign-in, focus coordinator, distraction guard, views |
 | `DeskfocusWidget/` | The combined desktop widget |
 | `Config/` | Build settings; your personal values go in `Secrets.xcconfig` |
-| `Design/` | `AppIcon.svg`, the source of the app icon in `Deskfocus/Assets.xcassets` |
+| `Design/` | `AppIcon.svg` and `MenuBarIcon.svg`, the sources of the icons in `Deskfocus/Assets.xcassets` |
 | `project.yml` | XcodeGen spec that generates `Deskfocus.xcodeproj` |
 
 ### How the pieces talk

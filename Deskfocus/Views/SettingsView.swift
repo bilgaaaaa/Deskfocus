@@ -119,10 +119,16 @@ private struct FocusSettingsView: View {
 }
 
 private struct GeneralSettingsView: View {
+    @Environment(AppModel.self) private var model
     @State private var launchAtLogin = LaunchAtLogin.isEnabled
 
     var body: some View {
         Form {
+            Toggle("Show glass panel on the desktop", isOn: model.binding(\.showDesktopPanel))
+            Text("Drag the panel to move it; it stays below your windows on every desktop.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+
             Toggle("Open Deskfocus at login", isOn: $launchAtLogin)
                 .onChange(of: launchAtLogin) { _, enabled in
                     LaunchAtLogin.setEnabled(enabled)

@@ -10,26 +10,14 @@ struct DeskfocusApp: App {
             MenuBarView()
                 .environment(model)
         } label: {
-            MenuBarLabel(session: model.snapshot.focus)
+            // Template version of the app icon; macOS tints it to match the menu bar.
+            Image("MenuBarIcon")
         }
         .menuBarExtraStyle(.window)
 
         Settings {
             SettingsView()
                 .environment(model)
-        }
-    }
-}
-
-/// Menu bar icon: a timer while focusing, a checklist otherwise.
-private struct MenuBarLabel: View {
-    let session: FocusSession?
-
-    var body: some View {
-        if let session, session.status != .finished {
-            Image(systemName: "timer")
-        } else {
-            Image(systemName: "checklist")
         }
     }
 }
