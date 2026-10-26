@@ -1,0 +1,16 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Tasks/TaskSource.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "(No title)",
+        "location": {
+          "startingColumn": 52,
+          "startingLine": 27
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,144 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/AddTask/AddTaskView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "What do you want to do?",
+        "location": {
+          "startingColumn": 63,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Title",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Starts",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Due date",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Due",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add to",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 86
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add to",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add to",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 93
+        }
+      },
+      {
+        "comment": "",
+        "key": "Length",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Focus time",
+        "location": {
+          "startingColumn": 44,
+          "startingLine": 55
+        }
+      },
+      {
+        "comment": "",
+        "key": "Adding…",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add",
+        "location": {
+          "startingColumn": 86,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "Cancel",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Allow Calendars or Reminders in Settings › Accounts first.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "Calendars",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 94
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reminders",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 95
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Tasks",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 96
+        }
+      }
+    ]
+  },
+  "version": 1
+}

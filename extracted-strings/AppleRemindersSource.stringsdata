@@ -1,0 +1,16 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Tasks/AppleRemindersSource.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "The reminder no longer exists.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 9
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,208 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Desktop/DesktopPanelView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Open Week",
+        "location": {
+          "startingColumn": 51,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "Close to Day",
+        "location": {
+          "startingColumn": 84,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "Color",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accent",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 76
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hide Widget",
+        "location": {
+          "startingColumn": 16,
+          "startingLine": 82
+        }
+      },
+      {
+        "comment": "",
+        "key": "WEEK",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 147
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open this day",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 206
+        }
+      },
+      {
+        "comment": "",
+        "key": "Free",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 219
+        }
+      },
+      {
+        "comment": "",
+        "key": "+%lld more",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 213
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ left · focusing",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 294
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ left · paused",
+        "location": {
+          "startingColumn": 63,
+          "startingLine": 295
+        }
+      },
+      {
+        "comment": "",
+        "key": "Time's up",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 296
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pause",
+        "location": {
+          "startingColumn": 60,
+          "startingLine": 305
+        }
+      },
+      {
+        "comment": "",
+        "key": "Resume",
+        "location": {
+          "startingColumn": 61,
+          "startingLine": 308
+        }
+      },
+      {
+        "comment": "",
+        "key": "Dismiss",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 311
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 80,
+          "startingLine": 314
+        }
+      },
+      {
+        "comment": "",
+        "key": "New task",
+        "location": {
+          "startingColumn": 39,
+          "startingLine": 332
+        }
+      },
+      {
+        "comment": "",
+        "key": "Today",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 335
+        }
+      },
+      {
+        "comment": "",
+        "key": "Previous day",
+        "location": {
+          "startingColumn": 64,
+          "startingLine": 341
+        }
+      },
+      {
+        "comment": "",
+        "key": "Previous week",
+        "location": {
+          "startingColumn": 81,
+          "startingLine": 341
+        }
+      },
+      {
+        "comment": "",
+        "key": "Next day",
+        "location": {
+          "startingColumn": 65,
+          "startingLine": 342
+        }
+      },
+      {
+        "comment": "",
+        "key": "Next week",
+        "location": {
+          "startingColumn": 78,
+          "startingLine": 342
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open week",
+        "location": {
+          "startingColumn": 41,
+          "startingLine": 345
+        }
+      },
+      {
+        "comment": "",
+        "key": "Close to day",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 345
+        }
+      },
+      {
+        "comment": "",
+        "key": "Mark as done",
+        "location": {
+          "startingColumn": 19,
+          "startingLine": 391
+        }
+      }
+    ]
+  },
+  "version": 1
+}

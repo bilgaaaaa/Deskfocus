@@ -1,0 +1,40 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Focus/FocusNotifier.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Focus time is up",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 17
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ — mark it done or start another round.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ is blocked while you focus",
+        "location": {
+          "startingColumn": 43,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "It will reopen when the session ends.",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 28
+        }
+      }
+    ]
+  },
+  "version": 1
+}

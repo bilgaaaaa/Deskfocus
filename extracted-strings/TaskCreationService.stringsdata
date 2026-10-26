@@ -1,0 +1,24 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Tasks/TaskCreationService.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "That calendar or list is no longer available.",
+        "location": {
+          "startingColumn": 62,
+          "startingLine": 48
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google did not confirm the new task. Please try again.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 49
+        }
+      }
+    ]
+  },
+  "version": 1
+}

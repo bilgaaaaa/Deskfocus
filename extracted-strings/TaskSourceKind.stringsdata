@@ -1,0 +1,40 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Shared/Models/TaskSourceKind.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Calendars",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 18
+        }
+      },
+      {
+        "comment": "",
+        "key": "Reminders",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 19
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Calendar (direct)",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 20
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Tasks",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 21
+        }
+      }
+    ]
+  },
+  "version": 1
+}

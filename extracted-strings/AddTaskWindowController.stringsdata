@@ -1,0 +1,16 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/AddTask/AddTaskWindowController.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "New Task",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 25
+        }
+      }
+    ]
+  },
+  "version": 1
+}

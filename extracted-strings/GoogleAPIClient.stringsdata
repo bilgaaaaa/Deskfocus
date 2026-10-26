@@ -1,0 +1,24 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Google/GoogleAPIClient.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Google API error %lld: %@",
+        "location": {
+          "startingColumn": 72,
+          "startingLine": 12
+        }
+      },
+      {
+        "comment": "",
+        "key": "Could not build the Google API URL.",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 13
+        }
+      }
+    ]
+  },
+  "version": 1
+}

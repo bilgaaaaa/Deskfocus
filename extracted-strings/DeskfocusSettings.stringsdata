@@ -1,0 +1,176 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Shared/Models/DeskfocusSettings.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Day",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 10
+        }
+      },
+      {
+        "comment": "",
+        "key": "Week",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 11
+        }
+      },
+      {
+        "comment": "",
+        "key": "Purple",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 30
+        }
+      },
+      {
+        "comment": "",
+        "key": "Indigo",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 31
+        }
+      },
+      {
+        "comment": "",
+        "key": "Blue",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 32
+        }
+      },
+      {
+        "comment": "",
+        "key": "Teal",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 33
+        }
+      },
+      {
+        "comment": "",
+        "key": "Green",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "Orange",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 35
+        }
+      },
+      {
+        "comment": "",
+        "key": "Rose",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 36
+        }
+      },
+      {
+        "comment": "",
+        "key": "Graphite",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "Clear glass",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 38
+        }
+      },
+      {
+        "comment": "",
+        "key": "Amber",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Coral",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pink",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Violet",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 59
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sky",
+        "location": {
+          "startingColumn": 45,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "Mint",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 61
+        }
+      },
+      {
+        "comment": "",
+        "key": "Lime",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 62
+        }
+      },
+      {
+        "comment": "",
+        "key": "White",
+        "location": {
+          "startingColumn": 47,
+          "startingLine": 63
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hide them",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 77
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quit them (strict)",
+        "location": {
+          "startingColumn": 46,
+          "startingLine": 78
+        }
+      }
+    ]
+  },
+  "version": 1
+}

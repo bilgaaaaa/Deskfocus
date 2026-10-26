@@ -1,0 +1,16 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Google/KeychainStore.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Keychain error %lld: %@",
+        "location": {
+          "startingColumn": 42,
+          "startingLine": 12
+        }
+      }
+    ]
+  },
+  "version": 1
+}

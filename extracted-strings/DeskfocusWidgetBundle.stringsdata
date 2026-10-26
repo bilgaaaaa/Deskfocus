@@ -1,0 +1,24 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/DeskfocusWidget/DeskfocusWidgetBundle.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Deskfocus",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "Today's tasks and your focus timer in one place.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 23
+        }
+      }
+    ]
+  },
+  "version": 1
+}

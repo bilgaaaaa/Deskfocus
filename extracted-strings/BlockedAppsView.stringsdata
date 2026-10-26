@@ -1,0 +1,16 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Views/BlockedAppsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Search apps",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 13
+        }
+      }
+    ]
+  },
+  "version": 1
+}

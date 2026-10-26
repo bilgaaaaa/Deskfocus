@@ -1,0 +1,104 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Shared/Focus/FocusIntents.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Start Focus",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 5
+        }
+      },
+      {
+        "comment": "",
+        "key": "Starts a focus timer for a task from today's list.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 6
+        }
+      },
+      {
+        "comment": "",
+        "key": "Task ID",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 9
+        }
+      },
+      {
+        "comment": "",
+        "key": "Complete Task",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 26
+        }
+      },
+      {
+        "comment": "",
+        "key": "Marks a task from today's list as done.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 27
+        }
+      },
+      {
+        "comment": "",
+        "key": "Task ID",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 30
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pause Focus",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 46
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pauses the running focus timer.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "Resume Focus",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "Resumes a paused focus timer.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Stop Focus",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 66
+        }
+      },
+      {
+        "comment": "",
+        "key": "Ends the focus session without completing the task.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 67
+        }
+      }
+    ]
+  },
+  "version": 1
+}

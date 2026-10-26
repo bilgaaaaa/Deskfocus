@@ -1,0 +1,56 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Views/StartFocusControl.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Resume focus on this task",
+        "location": {
+          "startingColumn": 80,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start focus on this task",
+        "location": {
+          "startingColumn": 129,
+          "startingLine": 28
+        }
+      },
+      {
+        "comment": "",
+        "key": "Focus for",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld min",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 58
+        }
+      },
+      {
+        "comment": "",
+        "key": "Start",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 70
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld min",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 66
+        }
+      }
+    ]
+  },
+  "version": 1
+}

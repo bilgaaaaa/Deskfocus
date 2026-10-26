@@ -1,0 +1,144 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Shared/Views/FocusSessionView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Focus mode on",
+        "location": {
+          "startingColumn": 30,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "1 app blocked",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld apps blocked",
+        "location": {
+          "startingColumn": 96,
+          "startingLine": 88
+        }
+      },
+      {
+        "comment": "",
+        "key": "1 app hidden",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld apps hidden",
+        "location": {
+          "startingColumn": 95,
+          "startingLine": 89
+        }
+      },
+      {
+        "comment": "",
+        "key": "FOCUSING",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "PAUSED",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 79
+        }
+      },
+      {
+        "comment": "",
+        "key": "TIME'S UP",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 80
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nice work",
+        "location": {
+          "startingColumn": 61,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "of %lld min",
+        "location": {
+          "startingColumn": 94,
+          "startingLine": 100
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done?",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 117
+        }
+      },
+      {
+        "comment": "",
+        "key": "Pause",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 132
+        }
+      },
+      {
+        "comment": "",
+        "key": "Resume",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 137
+        }
+      },
+      {
+        "comment": "",
+        "key": "Again",
+        "location": {
+          "startingColumn": 31,
+          "startingLine": 142
+        }
+      },
+      {
+        "comment": "",
+        "key": "Done",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 148
+        }
+      },
+      {
+        "comment": "",
+        "key": "Dismiss",
+        "location": {
+          "startingColumn": 65,
+          "startingLine": 155
+        }
+      },
+      {
+        "comment": "",
+        "key": "End session without finishing",
+        "location": {
+          "startingColumn": 96,
+          "startingLine": 155
+        }
+      }
+    ]
+  },
+  "version": 1
+}

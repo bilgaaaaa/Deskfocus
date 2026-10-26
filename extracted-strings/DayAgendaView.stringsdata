@@ -1,0 +1,48 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Shared/Views/DayAgendaView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%lld of %lld done",
+        "location": {
+          "startingColumn": 29,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld/%lld",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 34
+        }
+      },
+      {
+        "comment": "",
+        "key": "+%lld more",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "All clear",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 112
+        }
+      },
+      {
+        "comment": "",
+        "key": "Nothing planned for this day.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 114
+        }
+      }
+    ]
+  },
+  "version": 1
+}

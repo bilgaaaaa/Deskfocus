@@ -1,0 +1,112 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Shared/Support/DeskTaskFormatter.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "All day · %@",
+        "location": {
+          "startingColumn": 57,
+          "startingLine": 41
+        }
+      },
+      {
+        "comment": "",
+        "key": "Overdue · %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "To-do · %@",
+        "location": {
+          "startingColumn": 53,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Due %@ · %@",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "Happening now",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "Up next · in %lld min",
+        "location": {
+          "startingColumn": 56,
+          "startingLine": 67
+        }
+      },
+      {
+        "comment": "",
+        "key": "Up next · at %@",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 68
+        }
+      },
+      {
+        "comment": "",
+        "key": "Overdue",
+        "location": {
+          "startingColumn": 38,
+          "startingLine": 71
+        }
+      },
+      {
+        "comment": "",
+        "key": "Up next",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 73
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld min",
+        "location": {
+          "startingColumn": 50,
+          "startingLine": 101
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld h",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 102
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld h %lld min",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 103
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ left",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 108
+        }
+      }
+    ]
+  },
+  "version": 1
+}

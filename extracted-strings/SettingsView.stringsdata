@@ -1,0 +1,336 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Views/SettingsView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Accounts",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 9
+        }
+      },
+      {
+        "comment": "",
+        "key": "Focus",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 11
+        }
+      },
+      {
+        "comment": "",
+        "key": "General",
+        "location": {
+          "startingColumn": 34,
+          "startingLine": 13
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google Tasks",
+        "location": {
+          "startingColumn": 25,
+          "startingLine": 50
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show in your list",
+        "location": {
+          "startingColumn": 21,
+          "startingLine": 74
+        }
+      },
+      {
+        "comment": "",
+        "key": "Add Account…",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google, Outlook and more",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 39
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sign in once in System Settings; their calendars appear here automatically.",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 40
+        }
+      },
+      {
+        "comment": "",
+        "key": "Your accounts",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 43
+        }
+      },
+      {
+        "comment": "",
+        "key": "If access was denied before, allow Deskfocus in System Settings › Privacy & Security.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 45
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connecting…",
+        "location": {
+          "startingColumn": 71,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connect Google Tasks",
+        "location": {
+          "startingColumn": 108,
+          "startingLine": 57
+        }
+      },
+      {
+        "comment": "",
+        "key": "Connected",
+        "location": {
+          "startingColumn": 40,
+          "startingLine": 52
+        }
+      },
+      {
+        "comment": "",
+        "key": "Disconnect",
+        "location": {
+          "startingColumn": 32,
+          "startingLine": 53
+        }
+      },
+      {
+        "comment": "",
+        "key": "To-dos without a due date",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 78
+        }
+      },
+      {
+        "comment": "",
+        "key": "Allowed",
+        "location": {
+          "startingColumn": 23,
+          "startingLine": 96
+        }
+      },
+      {
+        "comment": "",
+        "key": "Allow Access",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 99
+        }
+      },
+      {
+        "comment": "",
+        "key": "On",
+        "location": {
+          "startingColumn": 57,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "Off",
+        "location": {
+          "startingColumn": 83,
+          "startingLine": 111
+        }
+      },
+      {
+        "comment": "",
+        "key": "On",
+        "location": {
+          "startingColumn": 72,
+          "startingLine": 129
+        }
+      },
+      {
+        "comment": "",
+        "key": "Off",
+        "location": {
+          "startingColumn": 98,
+          "startingLine": 129
+        }
+      },
+      {
+        "comment": "",
+        "key": "Default for to-dos",
+        "location": {
+          "startingColumn": 36,
+          "startingLine": 143
+        }
+      },
+      {
+        "comment": "",
+        "key": "Focus time",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 146
+        }
+      },
+      {
+        "comment": "",
+        "key": "Events focus for their own length. To-dos ask how long when you press ▶ and remember your choice; this default is used from the widget until you pick one.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 148
+        }
+      },
+      {
+        "comment": "",
+        "key": "During focus, blocked apps are",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 152
+        }
+      },
+      {
+        "comment": "",
+        "key": "Apps to block while focusing",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 159
+        }
+      },
+      {
+        "comment": "",
+        "key": "Strict: chosen apps are quit when a session starts, quit again if you open them, and reopened when it ends. Apps with unsaved work may ask before closing.",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 162
+        }
+      },
+      {
+        "comment": "",
+        "key": "Chosen apps are hidden when a session starts, hidden again if you switch to them, and shown again when it ends.",
+        "location": {
+          "startingColumn": 24,
+          "startingLine": 163
+        }
+      },
+      {
+        "comment": "",
+        "key": "Turn on (e.g. Deskfocus On)",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 167
+        }
+      },
+      {
+        "comment": "",
+        "key": "Turn off (e.g. Deskfocus Off)",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 168
+        }
+      },
+      {
+        "comment": "",
+        "key": "Silence notifications with a Focus mode",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 170
+        }
+      },
+      {
+        "comment": "",
+        "key": "Create two Shortcuts that turn your \"Deskfocus\" Focus mode on and off, then enter their names here. Choose which apps may notify you in System Settings › Focus.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 172
+        }
+      },
+      {
+        "comment": "",
+        "key": "Drag the widget to move it; it stays below your windows on every desktop. Open and close it, or change its colors, from the widget itself too (right-click).",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 208
+        }
+      },
+      {
+        "comment": "",
+        "key": "Keep this on so the timer and app hiding work even when you start focus from the widget.",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 217
+        }
+      },
+      {
+        "comment": "",
+        "key": "Show glass widget on the desktop",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 185
+        }
+      },
+      {
+        "comment": "",
+        "key": "Widget is",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 186
+        }
+      },
+      {
+        "comment": "",
+        "key": "Glass color",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 192
+        }
+      },
+      {
+        "comment": "",
+        "key": "Accent",
+        "location": {
+          "startingColumn": 28,
+          "startingLine": 200
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open Deskfocus at login",
+        "location": {
+          "startingColumn": 20,
+          "startingLine": 212
+        }
+      },
+      {
+        "comment": "",
+        "key": "Closed (Day)",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 187
+        }
+      },
+      {
+        "comment": "",
+        "key": "Open (Week)",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 188
+        }
+      }
+    ]
+  },
+  "version": 1
+}

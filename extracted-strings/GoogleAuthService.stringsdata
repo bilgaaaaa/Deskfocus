@@ -1,0 +1,56 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Google/GoogleAuthService.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Google client id is missing. Add it to Config/Secrets.xcconfig.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 22
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google account is not connected.",
+        "location": {
+          "startingColumn": 58,
+          "startingLine": 23
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sign-in was cancelled.",
+        "location": {
+          "startingColumn": 55,
+          "startingLine": 24
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google returned an invalid sign-in response.",
+        "location": {
+          "startingColumn": 61,
+          "startingLine": 25
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sign-in response did not match the request.",
+        "location": {
+          "startingColumn": 59,
+          "startingLine": 26
+        }
+      },
+      {
+        "comment": "",
+        "key": "Google did not return a refresh token. Remove Deskfocus from your Google account permissions and try again.",
+        "location": {
+          "startingColumn": 65,
+          "startingLine": 27
+        }
+      }
+    ]
+  },
+  "version": 1
+}

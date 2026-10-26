@@ -1,0 +1,16 @@
+{
+  "source": "/Users/runner/work/Deskfocus/Deskfocus/Deskfocus/Tasks/TaskRepository.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Could not update %@.",
+        "location": {
+          "startingColumn": 74,
+          "startingLine": 82
+        }
+      }
+    ]
+  },
+  "version": 1
+}
