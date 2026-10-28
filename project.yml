@@ -33,10 +33,15 @@ targets:
       - Shared
     dependencies:
       - target: DeskfocusWidget
+    # Shared "Deskfocus" scheme, so command-line builds (release script, CI) find it.
+    scheme: {}
     info:
       path: Deskfocus/Info.plist
       properties:
         CFBundleDisplayName: Deskfocus
+        # Version comes from MARKETING_VERSION / CURRENT_PROJECT_VERSION above, never hardcoded.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, it]
         LSApplicationCategoryType: public.app-category.productivity
@@ -70,6 +75,9 @@ targets:
       path: DeskfocusWidget/Info.plist
       properties:
         CFBundleDisplayName: Deskfocus
+        # Must match the app's version, or macOS warns about a mismatched embedded extension.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, it]
         DeskfocusAppGroupIdentifier: $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
