@@ -1,6 +1,6 @@
 import Foundation
 
-/// Events in the interval from every calendar the user shows in Google Calendar.
+/// Events in the interval from the calendars the user shows in Google Calendar and keeps on in Deskfocus.
 @MainActor
 final class GoogleCalendarSource: TaskSource {
     let kind: TaskSourceKind = .googleCalendar
@@ -15,11 +15,22 @@ final class GoogleCalendarSource: TaskSource {
 
     var isAvailable: Bool { auth.isConnected }
 
+    func containers() async throws -> [TaskContainer] {
+        let accountName = auth.connectedEmail ?? "Google"
+        return try await shownCalendars().map { calendar in
+            TaskContainer(
+                source: kind,
+                identifier: calendar.id,
+                title: Self.listName(of: calendar),
+                accountName: accountName,
+                colorHex: calendar.backgroundColor
+            )
+        }
+    }
+
     func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
-        let calendars = try await client.getAll(
-            baseURL.appendingPathComponent("users/me/calendarList"),
-            as: GoogleCalendarListEntry.self
-        ).filter { $0.selected != false && $0.hidden != true }
+        let calendars = try await shownCalendars()
+            .filter { settings.isContainerVisible(source: kind, containerIdentifier: $0.id) }
 
         let query = [
             URLQueryItem(name: "timeMin", value: GoogleDateParser.queryString(interval.start)),
@@ -33,7 +44,7 @@ final class GoogleCalendarSource: TaskSource {
         for calendar in calendars {
             let eventsURL = URL(string: "\(baseURL.absoluteString)/calendars/\(GoogleAPIClient.pathSegment(calendar.id))/events")!
             let events = try await client.getAll(eventsURL, query: query, as: GoogleEvent.self)
-            let listName = calendar.summaryOverride ?? calendar.summary ?? "Google Calendar"
+            let listName = Self.listName(of: calendar)
             tasks += events.compactMap { makeTask(from: $0, calendar: calendar, listName: listName) }
         }
         Log.sync.debug("Google Calendar returned \(tasks.count) events from \(calendars.count) calendars")
@@ -42,6 +53,18 @@ final class GoogleCalendarSource: TaskSource {
 
     /// Events have no remote done state; checking one off stays local.
     func complete(_ task: DeskTask) async throws {}
+
+    /// Calendars ticked in Google Calendar itself; unticked and hidden ones stay out of Deskfocus too.
+    private func shownCalendars() async throws -> [GoogleCalendarListEntry] {
+        try await client.getAll(
+            baseURL.appendingPathComponent("users/me/calendarList"),
+            as: GoogleCalendarListEntry.self
+        ).filter { $0.selected != false && $0.hidden != true }
+    }
+
+    private static func listName(of calendar: GoogleCalendarListEntry) -> String {
+        calendar.summaryOverride ?? calendar.summary ?? "Google Calendar"
+    }
 
     private func makeTask(from event: GoogleEvent, calendar: GoogleCalendarListEntry, listName: String) -> DeskTask? {
         guard event.status != "cancelled" else { return nil }

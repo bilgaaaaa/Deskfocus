@@ -6,7 +6,10 @@ protocol TaskSource: AnyObject {
     var kind: TaskSourceKind { get }
     /// False when the user has not granted access or connected the account yet.
     var isAvailable: Bool { get }
+    /// Every calendar or list the source offers, including the ones switched off in Settings.
+    func containers() async throws -> [TaskContainer]
     /// Events overlapping the interval and to-dos due in it; when it includes today, also overdue and undated to-dos.
+    /// Calendars and lists switched off in Settings are skipped.
     func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask]
     func complete(_ task: DeskTask) async throws
 }

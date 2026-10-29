@@ -87,7 +87,7 @@ struct AddTaskView: View {
             LabeledContent("Add to") { ProgressView().controlSize(.small) }
         } else if targets.isEmpty {
             LabeledContent("Add to") {
-                Text("Allow Calendars or Reminders in Settings › Accounts first.")
+                Text("Allow Calendars or Reminders in Settings › Calendars first.")
                     .foregroundStyle(.secondary)
             }
         } else {

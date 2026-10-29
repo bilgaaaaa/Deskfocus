@@ -171,22 +171,22 @@
         }
       }
     },
+    "A glass widget on your desktop, and Deskfocus in the menu bar.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un widget in vetro sulla scrivania e Deskfocus nella barra dei menu."
+          }
+        }
+      }
+    },
     "Accent": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "Colore accento"
-          }
-        }
-      }
-    },
-    "Accounts": {
-      "localizations": {
-        "it": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Account"
           }
         }
       }
@@ -291,12 +291,12 @@
         }
       }
     },
-    "Allow Calendars or Reminders in Settings › Accounts first.": {
+    "Allow Calendars or Reminders in Settings › Calendars first.": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prima consenti Calendari o Promemoria in Impostazioni › Account."
+            "value": "Prima consenti Calendari o Promemoria in Impostazioni › Calendari."
           }
         }
       }
@@ -307,6 +307,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Consentito"
+          }
+        }
+      }
+    },
+    "Always in sight": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sempre sotto gli occhi"
           }
         }
       }
@@ -337,6 +347,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "App da bloccare durante la concentrazione"
+          }
+        }
+      }
+    },
+    "Back": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Indietro"
           }
         }
       }
@@ -391,6 +411,26 @@
         }
       }
     },
+    "Change calendars, focus options and colors whenever you like.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia calendari, opzioni di concentrazione e colori quando vuoi."
+          }
+        }
+      }
+    },
+    "Change it": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personalizzalo"
+          }
+        }
+      }
+    },
     "Choose length…": {
       "localizations": {
         "it": {
@@ -417,6 +457,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vetro trasparente"
+          }
+        }
+      }
+    },
+    "Click + on the widget to add an event or a to-do.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai clic su + nel widget per aggiungere un evento o un'attività."
+          }
+        }
+      }
+    },
+    "Click ⚙︎ on the widget, or the Deskfocus icon in the menu bar and then ⚙︎.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai clic su ⚙︎ nel widget, oppure sull'icona di Deskfocus nella barra dei menu e poi su ⚙︎."
           }
         }
       }
@@ -481,6 +541,16 @@
         }
       }
     },
+    "Connect your calendars": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collega i tuoi calendari"
+          }
+        }
+      }
+    },
     "Connect your calendars in Settings to see your tasks.": {
       "localizations": {
         "it": {
@@ -507,6 +577,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Collegamento…"
+          }
+        }
+      }
+    },
+    "Continue": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continua"
           }
         }
       }
@@ -581,6 +661,36 @@
         }
       }
     },
+    "Deskfocus Settings": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni di Deskfocus"
+          }
+        }
+      }
+    },
+    "Deskfocus shows the calendars and reminders on this Mac. Pick which ones any time in Settings › Calendars.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus mostra i calendari e i promemoria di questo Mac. Scegli quali in qualsiasi momento in Impostazioni › Calendari."
+          }
+        }
+      }
+    },
+    "Desktop widget": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Widget sulla scrivania"
+          }
+        }
+      }
+    },
     "Disconnect": {
       "localizations": {
         "it": {
@@ -617,6 +727,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fatto?"
+          }
+        }
+      }
+    },
+    "Drag the widget anywhere, for example away from your other widgets.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trascina il widget dove vuoi, per esempio lontano dagli altri widget."
           }
         }
       }
@@ -701,6 +821,16 @@
         }
       }
     },
+    "Events and to-dos from Calendar, Reminders and Google.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eventi e attività da Calendario, Promemoria e Google."
+          }
+        }
+      }
+    },
     "Events focus for their own length. To-dos ask how long when you press ▶ and remember your choice; this default is used from the widget until you pick one.": {
       "localizations": {
         "it": {
@@ -747,6 +877,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Full immersion attiva"
+          }
+        }
+      }
+    },
+    "Focus on one thing": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Concentrati su una cosa"
           }
         }
       }
@@ -961,6 +1101,16 @@
         }
       }
     },
+    "Includes the accounts added in System Settings, such as Google or Outlook. Switch off the calendars you don't need.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Include gli account aggiunti in Impostazioni di Sistema, come Google o Outlook. Disattiva i calendari che non ti servono."
+          }
+        }
+      }
+    },
     "Indigo": {
       "localizations": {
         "it": {
@@ -1041,6 +1191,16 @@
         }
       }
     },
+    "Loading…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caricamento…"
+          }
+        }
+      }
+    },
     "Mark as done": {
       "localizations": {
         "it": {
@@ -1067,6 +1227,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Menta"
+          }
+        }
+      }
+    },
+    "Move it": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spostalo"
           }
         }
       }
@@ -1131,6 +1301,16 @@
         }
       }
     },
+    "Nothing to show yet": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ancora niente da mostrare"
+          }
+        }
+      }
+    },
     "of %lld min": {
       "localizations": {
         "it": {
@@ -1181,6 +1361,16 @@
         }
       }
     },
+    "Open Settings": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apri Impostazioni"
+          }
+        }
+      }
+    },
     "Open this day": {
       "localizations": {
         "it": {
@@ -1207,6 +1397,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Apri la settimana"
+          }
+        }
+      }
+    },
+    "Options": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opzioni"
           }
         }
       }
@@ -1291,6 +1491,46 @@
         }
       }
     },
+    "Place your widget": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posiziona il widget"
+          }
+        }
+      }
+    },
+    "Position": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posizione"
+          }
+        }
+      }
+    },
+    "Prefer a system widget?": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preferisci un widget di sistema?"
+          }
+        }
+      }
+    },
+    "Press ▶ on any task to start a timer and keep distracting apps away.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Premi ▶ su un'attività per avviare il timer e tenere lontane le app che distraggono."
+          }
+        }
+      }
+    },
     "Previous day": {
       "localizations": {
         "it": {
@@ -1361,6 +1601,26 @@
         }
       }
     },
+    "Reset Position": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina posizione"
+          }
+        }
+      }
+    },
+    "Reset Widget Position": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripristina posizione del widget"
+          }
+        }
+      }
+    },
     "Restart Deskfocus to switch language.": {
       "localizations": {
         "it": {
@@ -1421,6 +1681,26 @@
         }
       }
     },
+    "Right-click it to open the week, pick colors or reset its position.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai clic destro per aprire la settimana, scegliere i colori o ripristinarne la posizione."
+          }
+        }
+      }
+    },
+    "Right-click the desktop › Edit Widgets, search \"Deskfocus\" and pick medium or large.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fai clic destro sulla scrivania › Modifica widget, cerca \"Deskfocus\" e scegli medio o grande."
+          }
+        }
+      }
+    },
     "Rose": {
       "localizations": {
         "it": {
@@ -1461,6 +1741,26 @@
         }
       }
     },
+    "Settings…": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impostazioni…"
+          }
+        }
+      }
+    },
+    "Show Again": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostra di nuovo"
+          }
+        }
+      }
+    },
     "Show glass widget on the desktop": {
       "localizations": {
         "it": {
@@ -1471,12 +1771,12 @@
         }
       }
     },
-    "Show in your list": {
+    "Show in Deskfocus": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mostra nella tua lista"
+            "value": "Mostra in Deskfocus"
           }
         }
       }
@@ -1561,6 +1861,16 @@
         }
       }
     },
+    "Start Using Deskfocus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inizia a usare Deskfocus"
+          }
+        }
+      }
+    },
     "Starts": {
       "localizations": {
         "it": {
@@ -1577,6 +1887,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Avvia un timer di concentrazione per un'attività della lista di oggi."
+          }
+        }
+      }
+    },
+    "Startup": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avvio"
+          }
+        }
+      }
+    },
+    "Step %lld of %lld": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passo %1$lld di %2$lld"
           }
         }
       }
@@ -1617,6 +1947,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Quel calendario o quella lista non è più disponibile."
+          }
+        }
+      }
+    },
+    "The glass widget sits on your desktop, below your windows, on every desktop.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Il widget in vetro sta sulla scrivania, sotto le finestre, su ogni scrivania."
           }
         }
       }
@@ -1687,6 +2027,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Oggi"
+          }
+        }
+      }
+    },
+    "Today's tasks and a focus timer, right on your desktop.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le attività di oggi e un timer di concentrazione, direttamente sulla scrivania."
           }
         }
       }
@@ -1791,6 +2141,26 @@
         }
       }
     },
+    "Welcome guide": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guida di benvenuto"
+          }
+        }
+      }
+    },
+    "Welcome to Deskfocus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ti diamo il benvenuto in Deskfocus"
+          }
+        }
+      }
+    },
     "What do you want to do?": {
       "localizations": {
         "it": {
@@ -1831,12 +2201,32 @@
         }
       }
     },
+    "You're all set": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "È tutto pronto"
+          }
+        }
+      }
+    },
     "Your accounts": {
       "localizations": {
         "it": {
           "stringUnit": {
             "state": "translated",
             "value": "I tuoi account"
+          }
+        }
+      }
+    },
+    "Your day in one list": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La tua giornata in un'unica lista"
           }
         }
       }

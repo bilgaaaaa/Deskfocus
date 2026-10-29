@@ -1,6 +1,6 @@
 import EventKit
 
-/// Events in the interval from every calendar in macOS Calendar (iCloud and any accounts added in System Settings).
+/// Events in the interval from the calendars in macOS Calendar (iCloud and any accounts added in System Settings).
 @MainActor
 final class AppleCalendarSource: TaskSource {
     let kind: TaskSourceKind = .appleCalendar
@@ -12,8 +12,26 @@ final class AppleCalendarSource: TaskSource {
 
     var isAvailable: Bool { access.hasCalendarAccess }
 
+    func containers() async throws -> [TaskContainer] {
+        access.store.calendars(for: .event).map { calendar in
+            TaskContainer(
+                source: kind,
+                identifier: calendar.calendarIdentifier,
+                title: calendar.title,
+                accountName: calendar.source.title,
+                colorHex: calendar.color?.hexString
+            )
+        }
+    }
+
     func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
         let calendars = access.store.calendars(for: .event)
+            .filter { settings.isContainerVisible(source: kind, containerIdentifier: $0.calendarIdentifier) }
+        // An empty list would mean "all calendars" to EventKit, so stop here when every calendar is off.
+        guard !calendars.isEmpty else {
+            Log.sync.debug("Every Apple calendar is switched off")
+            return []
+        }
         let predicate = access.store.predicateForEvents(withStart: interval.start, end: interval.end, calendars: calendars)
         let events = access.store.events(matching: predicate).filter { $0.status != .canceled }
 
@@ -32,7 +50,7 @@ final class AppleCalendarSource: TaskSource {
                 colorHex: event.calendar.color?.hexString
             )
         }
-        Log.sync.debug("Apple Calendar returned \(tasks.count) events")
+        Log.sync.debug("Apple Calendar returned \(tasks.count) events from \(calendars.count) calendars")
         return tasks
     }
 

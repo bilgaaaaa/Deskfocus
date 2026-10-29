@@ -24,6 +24,8 @@ final class AppModel {
 
     private let desktopPanel = DesktopPanelController()
     private let addTaskWindow = AddTaskWindowController()
+    private let settingsWindow = SettingsWindowController()
+    private let onboardingWindow = OnboardingWindowController()
     @ObservationIgnored private var stateObserver: DarwinObserver?
     @ObservationIgnored private var refreshTimer: Timer?
     @ObservationIgnored private var notificationTokens: [NSObjectProtocol] = []
@@ -115,6 +117,39 @@ final class AppModel {
         addTaskWindow.show(model: self, day: agenda.selectedDay)
     }
 
+    /// Opens the Settings window from the menu bar, the desktop widget or the welcome guide.
+    func showSettings() {
+        settingsWindow.show(model: self)
+    }
+
+    /// Opens the welcome guide, e.g. again from Settings › General.
+    func showOnboarding() {
+        onboardingWindow.show(model: self)
+    }
+
+    /// First launch: the welcome guide explains where calendars, the widget and Settings are.
+    func showOnboardingIfNeeded() {
+        guard !snapshot.settings.hasCompletedOnboarding else { return }
+        Log.app.info("First launch, showing the welcome guide")
+        showOnboarding()
+    }
+
+    /// Called when the welcome guide closes, finished or not, so it never comes back on its own.
+    func completeOnboarding() {
+        guard !snapshot.settings.hasCompletedOnboarding else { return }
+        updateSettings { $0.hasCompletedOnboarding = true }
+        Log.app.info("Welcome guide completed")
+    }
+
+    /// Opening Deskfocus again from Finder or Spotlight shows a window, since the app has no Dock icon.
+    func handleReopen() {
+        if snapshot.settings.hasCompletedOnboarding {
+            showSettings()
+        } else {
+            showOnboarding()
+        }
+    }
+
     /// Creates the task in the chosen calendar or list and remembers its focus time and the list.
     /// The re-sync runs in the background so the window can close right away.
     func createTask(_ draft: NewTaskDraft) async throws {
@@ -130,6 +165,23 @@ final class AppModel {
     func showDay(_ day: Date) {
         agenda.select(day: day)
         setPanelLayout(.day)
+    }
+
+    /// Moves the desktop widget while the user drags it; `translation` is how far the pointer moved since the drag began.
+    func dragDesktopPanel(translation: CGSize) {
+        desktopPanel.drag(mouseLocation: NSEvent.mouseLocation, translation: translation)
+    }
+
+    func endDesktopPanelDrag() {
+        desktopPanel.endDrag()
+    }
+
+    /// Puts the desktop widget back in its first-launch spot, e.g. when it ended up behind other widgets.
+    func resetDesktopPanelPosition() {
+        if !snapshot.settings.showDesktopPanel {
+            updateSettings { $0.showDesktopPanel = true }
+        }
+        desktopPanel.resetPosition()
     }
 
     func setPanelLayout(_ layout: PanelLayout) {
@@ -195,6 +247,20 @@ final class AppModel {
                 self.updateSettings { settings in
                     if isOn { settings.enabledSources.insert(kind) } else { settings.enabledSources.remove(kind) }
                 }
+                Task { await self.refresh() }
+            }
+        )
+    }
+
+    /// Binding for one calendar or list switch; changing it re-syncs so the list matches right away.
+    func containerBinding(_ container: TaskContainer) -> Binding<Bool> {
+        Binding(
+            get: { !self.snapshot.settings.hiddenContainerKeys.contains(container.id) },
+            set: { isOn in
+                self.updateSettings { settings in
+                    if isOn { settings.hiddenContainerKeys.remove(container.id) } else { settings.hiddenContainerKeys.insert(container.id) }
+                }
+                Log.sync.info("\(container.source.rawValue, privacy: .public) calendar switched \(isOn ? "on" : "off", privacy: .public)")
                 Task { await self.refresh() }
             }
         )

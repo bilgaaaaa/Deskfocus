@@ -1,6 +1,6 @@
 import Foundation
 
-/// Open Google Tasks due in the interval (plus overdue and undated ones for today), across all task lists.
+/// Open Google Tasks due in the interval (plus overdue and undated ones for today), across the task lists kept on in Deskfocus.
 @MainActor
 final class GoogleTasksSource: TaskSource {
     let kind: TaskSourceKind = .googleTasks
@@ -17,8 +17,22 @@ final class GoogleTasksSource: TaskSource {
 
     var isAvailable: Bool { auth.isConnected }
 
+    func containers() async throws -> [TaskContainer] {
+        let accountName = auth.connectedEmail ?? "Google"
+        return try await taskLists().map { list in
+            TaskContainer(
+                source: kind,
+                identifier: list.id,
+                title: Self.listName(of: list),
+                accountName: accountName,
+                colorHex: listColorHex
+            )
+        }
+    }
+
     func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
-        let lists = try await client.getAll(baseURL.appendingPathComponent("users/@me/lists"), as: GoogleTaskList.self)
+        let lists = try await taskLists()
+            .filter { settings.isContainerVisible(source: kind, containerIdentifier: $0.id) }
         let query = [
             URLQueryItem(name: "showCompleted", value: "false"),
             URLQueryItem(name: "showHidden", value: "false"),
@@ -43,7 +57,7 @@ final class GoogleTasksSource: TaskSource {
                     endDate: nil,
                     dueDate: dueDate,
                     isAllDay: true,
-                    listName: list.title ?? "Google Tasks",
+                    listName: Self.listName(of: list),
                     colorHex: listColorHex
                 )
             }
@@ -56,5 +70,13 @@ final class GoogleTasksSource: TaskSource {
         let taskURL = URL(string: "\(baseURL.absoluteString)/lists/\(GoogleAPIClient.pathSegment(task.containerIdentifier))/tasks/\(GoogleAPIClient.pathSegment(task.sourceIdentifier))")!
         try await client.patch(taskURL, json: ["status": "completed"])
         Log.sync.info("Task completed in Google Tasks")
+    }
+
+    private func taskLists() async throws -> [GoogleTaskList] {
+        try await client.getAll(baseURL.appendingPathComponent("users/@me/lists"), as: GoogleTaskList.self)
+    }
+
+    private static func listName(of list: GoogleTaskList) -> String {
+        list.title ?? "Google Tasks"
     }
 }

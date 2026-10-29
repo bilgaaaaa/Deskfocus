@@ -39,6 +39,25 @@ final class TaskRepository {
         return FetchResult(tasks: Self.removingDuplicateEvents(merged).sortedForToday(), failedSources: failed)
     }
 
+    /// False until the user granted access or connected the account behind this source.
+    func isAvailable(_ kind: TaskSourceKind) -> Bool {
+        sources.first { $0.kind == kind }?.isAvailable ?? false
+    }
+
+    /// Calendars and lists of every connected source, for the switches in Settings; a failing source is left out.
+    func containers() async -> [TaskContainer] {
+        var containers: [TaskContainer] = []
+        for source in sources where source.isAvailable {
+            do {
+                containers += try await source.containers().sortedForDisplay()
+            } catch {
+                Log.sync.error("Could not list \(source.kind.rawValue, privacy: .public) calendars: \(error.localizedDescription, privacy: .public)")
+            }
+        }
+        Log.sync.debug("Found \(containers.count) calendars and lists")
+        return containers
+    }
+
     /// Reloads today's list; a failing source keeps its previous tasks so one outage never empties the list.
     func refresh(now: Date = .now) async {
         guard !isSyncing else {

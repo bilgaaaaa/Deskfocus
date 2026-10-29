@@ -35,6 +35,8 @@ struct DesktopPanelView: View {
             // Closed: strong color like the purple widget. Open: light tint so the glass shows.
             .modifier(DesktopGlassBackground(tint: settings.glassTint, intensity: layout == .day ? 0.9 : 0.3))
             .shadow(color: .black.opacity(0.28), radius: 18, y: 10)
+            // Drag anywhere that is not a button to move the widget, like a system widget in edit mode.
+            .modifier(PanelDragModifier())
             .contextMenu { PanelContextMenu() }
             .padding(DesktopPanelController.shadowInset)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -65,7 +67,25 @@ struct DesktopPanelView: View {
     }
 }
 
-/// Right-click menu on the widget: open or close, color, and hide.
+/// Moves the panel window with the pointer; the end is detected through `GestureState`, so a cancelled drag also ends it.
+private struct PanelDragModifier: ViewModifier {
+    @Environment(AppModel.self) private var model
+    @GestureState private var isDragging = false
+
+    func body(content: Content) -> some View {
+        content
+            .gesture(
+                DragGesture(minimumDistance: 3)
+                    .updating($isDragging) { _, state, _ in state = true }
+                    .onChanged { value in model.dragDesktopPanel(translation: value.translation) }
+            )
+            .onChange(of: isDragging) { _, dragging in
+                if !dragging { model.endDesktopPanelDrag() }
+            }
+    }
+}
+
+/// Right-click menu on the widget: open or close, color, position, Settings and hide.
 private struct PanelContextMenu: View {
     @Environment(AppModel.self) private var model
 
@@ -84,7 +104,9 @@ private struct PanelContextMenu: View {
                 Text(accent.displayName).tag(accent)
             }
         }
+        Button("Reset Position") { model.resetDesktopPanelPosition() }
         Divider()
+        Button("Settings…") { model.showSettings() }
         Button("Hide Widget") {
             model.updateSettings { $0.showDesktopPanel = false }
         }
@@ -510,7 +532,7 @@ struct TodayButton: View {
     }
 }
 
-/// New task, ‹ › and the open/close button, shared by both layouts; the arrows animate the move.
+/// New task, ‹ ›, the open/close button and Settings, shared by both layouts; the arrows animate the move.
 struct PanelNavigation: View {
     @Environment(AppModel.self) private var model
     let onPrevious: () -> Void
@@ -535,6 +557,8 @@ struct PanelNavigation: View {
                 model.setPanelLayout(layout == .day ? .week : .day)
             }
             .padding(.leading, 4)
+            PanelIconButton(systemName: "gearshape", label: "Settings") { model.showSettings() }
+                .padding(.leading, 4)
         }
         .fixedSize()
     }

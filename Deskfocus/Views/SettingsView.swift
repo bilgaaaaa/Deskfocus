@@ -1,23 +1,25 @@
 import AppKit
+import EventKit
 import SwiftUI
 
-/// Settings window: accounts, focus behaviour and general options.
+/// Settings window: calendars, focus behaviour and general options.
 struct SettingsView: View {
     var body: some View {
         TabView {
-            AccountsSettingsView()
-                .tabItem { Label("Accounts", systemImage: "person.crop.circle") }
+            CalendarsSettingsView()
+                .tabItem { Label("Calendars", systemImage: "calendar") }
             FocusSettingsView()
                 .tabItem { Label("Focus", systemImage: "scope") }
             GeneralSettingsView()
                 .tabItem { Label("General", systemImage: "gearshape") }
         }
-        .frame(width: 520, height: 460)
+        .frame(width: 540, height: 560)
     }
 }
 
-/// The user's accounts and which of them feed the list; no developer setup is ever shown here.
-private struct AccountsSettingsView: View {
+/// Access to Calendar and Reminders, other accounts and Google Tasks; shared by Settings and the welcome guide.
+/// No developer setup is ever shown here.
+struct CalendarAccountsSection: View {
     @Environment(AppModel.self) private var model
     @State private var isConnectingGoogle = false
 
@@ -25,56 +27,79 @@ private struct AccountsSettingsView: View {
     private static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
 
     var body: some View {
+        Section {
+            permissionRow(title: "Calendars", isGranted: model.eventKit.hasCalendarAccess) {
+                Task { await model.requestCalendarAccess() }
+            }
+            permissionRow(title: "Reminders", isGranted: model.eventKit.hasRemindersAccess) {
+                Task { await model.requestRemindersAccess() }
+            }
+            LabeledContent {
+                Button("Add Account…") { NSWorkspace.shared.open(Self.internetAccountsURL) }
+            } label: {
+                Text("Google, Outlook and more")
+                Text("Sign in once in System Settings; their calendars appear here automatically.")
+            }
+        } header: {
+            Text("Your accounts")
+        } footer: {
+            Text("If access was denied before, allow Deskfocus in System Settings › Privacy & Security.")
+        }
+
+        // Only offered when this build can sign in to Google directly.
+        if GoogleConfig.isConfigured || model.googleAuth.isConnected {
+            Section("Google Tasks") {
+                if model.googleAuth.isConnected {
+                    LabeledContent("Connected", value: model.googleAuth.connectedEmail ?? "Google account")
+                    Button("Disconnect", role: .destructive) {
+                        Task { await model.disconnectGoogle() }
+                    }
+                } else {
+                    Button(isConnectingGoogle ? String(localized: "Connecting…") : String(localized: "Connect Google Tasks")) {
+                        isConnectingGoogle = true
+                        Task {
+                            await model.connectGoogle()
+                            isConnectingGoogle = false
+                        }
+                    }
+                    .disabled(isConnectingGoogle)
+                }
+                if let message = model.googleErrorMessage {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundStyle(.red)
+                }
+            }
+        }
+    }
+
+    private func permissionRow(title: LocalizedStringKey, isGranted: Bool, request: @escaping () -> Void) -> some View {
+        LabeledContent(title) {
+            if isGranted {
+                Label("Allowed", systemImage: "checkmark.circle.fill")
+                    .foregroundStyle(.green)
+            } else {
+                Button("Allow Access", action: request)
+            }
+        }
+    }
+}
+
+/// Accounts first, then every connected source with a switch for each of its calendars or lists.
+private struct CalendarsSettingsView: View {
+    @Environment(AppModel.self) private var model
+    @State private var containers: [TaskContainer] = []
+    @State private var isLoadingContainers = true
+
+    var body: some View {
         Form {
-            Section {
-                permissionRow(title: "Calendars", isGranted: model.eventKit.hasCalendarAccess) {
-                    Task { await model.requestCalendarAccess() }
-                }
-                permissionRow(title: "Reminders", isGranted: model.eventKit.hasRemindersAccess) {
-                    Task { await model.requestRemindersAccess() }
-                }
-                LabeledContent {
-                    Button("Add Account…") { NSWorkspace.shared.open(Self.internetAccountsURL) }
-                } label: {
-                    Text("Google, Outlook and more")
-                    Text("Sign in once in System Settings; their calendars appear here automatically.")
-                }
-            } header: {
-                Text("Your accounts")
-            } footer: {
-                Text("If access was denied before, allow Deskfocus in System Settings › Privacy & Security.")
+            CalendarAccountsSection()
+
+            ForEach(availableSources, id: \.self) { kind in
+                sourceSection(kind)
             }
 
-            // Only offered when this build can sign in to Google directly.
-            if GoogleConfig.isConfigured || model.googleAuth.isConnected {
-                Section("Google Tasks") {
-                    if model.googleAuth.isConnected {
-                        LabeledContent("Connected", value: model.googleAuth.connectedEmail ?? "Google account")
-                        Button("Disconnect", role: .destructive) {
-                            Task { await model.disconnectGoogle() }
-                        }
-                    } else {
-                        Button(isConnectingGoogle ? String(localized: "Connecting…") : String(localized: "Connect Google Tasks")) {
-                            isConnectingGoogle = true
-                            Task {
-                                await model.connectGoogle()
-                                isConnectingGoogle = false
-                            }
-                        }
-                        .disabled(isConnectingGoogle)
-                    }
-                    if let message = model.googleErrorMessage {
-                        Text(message)
-                            .font(.caption)
-                            .foregroundStyle(.red)
-                    }
-                }
-            }
-
-            Section("Show in your list") {
-                ForEach(visibleSources, id: \.self) { kind in
-                    Toggle(kind.displayName, isOn: model.sourceBinding(kind))
-                }
+            Section("Options") {
                 Toggle("To-dos without a due date", isOn: model.binding(\.includeUndatedTasks))
                     .onChange(of: model.snapshot.settings.includeUndatedTasks) {
                         Task { await model.refresh() }
@@ -83,20 +108,73 @@ private struct AccountsSettingsView: View {
         }
         .formStyle(.grouped)
         .toggleStyle(ColorfulSwitchToggleStyle())
+        // Reloads when access is granted or a Google account is connected or removed.
+        .task(id: accessState) { await loadContainers() }
+        .onReceive(NotificationCenter.default.publisher(for: .EKEventStoreChanged)) { _ in
+            Task { await loadContainers() }
+        }
     }
 
-    /// Google's own sources only appear once a Google account is connected.
-    private var visibleSources: [TaskSourceKind] {
-        TaskSourceKind.allCases.filter { !$0.requiresGoogleSignIn || model.googleAuth.isConnected }
+    /// Sources the user can already read from; the others are set up in "Your accounts" above.
+    private var availableSources: [TaskSourceKind] {
+        TaskSourceKind.allCases.filter { model.repository.isAvailable($0) }
     }
 
-    private func permissionRow(title: String, isGranted: Bool, request: @escaping () -> Void) -> some View {
-        LabeledContent(title) {
-            if isGranted {
-                Label("Allowed", systemImage: "checkmark.circle.fill")
-                    .foregroundStyle(.green)
-            } else {
-                Button("Allow Access", action: request)
+    private var accessState: [Bool] {
+        [model.eventKit.hasCalendarAccess, model.eventKit.hasRemindersAccess, model.googleAuth.isConnected]
+    }
+
+    @ViewBuilder
+    private func sourceSection(_ kind: TaskSourceKind) -> some View {
+        let isSourceOn = model.snapshot.settings.enabledSources.contains(kind)
+        let items = containers.filter { $0.source == kind }
+
+        Section {
+            Toggle("Show in Deskfocus", isOn: model.sourceBinding(kind))
+            if isSourceOn {
+                if items.isEmpty && isLoadingContainers {
+                    LabeledContent("Loading…") { ProgressView().controlSize(.small) }
+                } else if items.isEmpty {
+                    Text("Nothing to show yet")
+                        .foregroundStyle(.secondary)
+                } else {
+                    ForEach(items) { container in
+                        Toggle(isOn: model.containerBinding(container)) {
+                            TaskContainerLabel(container: container)
+                        }
+                    }
+                }
+            }
+        } header: {
+            Text(kind.displayName)
+        } footer: {
+            if kind == .appleCalendar {
+                Text("Includes the accounts added in System Settings, such as Google or Outlook. Switch off the calendars you don't need.")
+            }
+        }
+    }
+
+    private func loadContainers() async {
+        isLoadingContainers = true
+        containers = await model.repository.containers()
+        isLoadingContainers = false
+    }
+}
+
+/// Calendar color, name and account, as macOS Calendar shows them.
+private struct TaskContainerLabel: View {
+    let container: TaskContainer
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Circle()
+                .fill(Color(hex: container.colorHex) ?? DeskfocusTheme.indigo)
+                .frame(width: 10, height: 10)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(verbatim: container.title)
+                Text(verbatim: container.accountName)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
             }
         }
     }
@@ -176,6 +254,7 @@ private struct FocusSettingsView: View {
     }
 }
 
+/// Language, the desktop widget's look and position, and startup.
 private struct GeneralSettingsView: View {
     @Environment(AppModel.self) private var model
     @State private var launchAtLogin = LaunchAtLogin.isEnabled
@@ -204,41 +283,53 @@ private struct GeneralSettingsView: View {
                 Text("Widgets added from the widget gallery switch within a few minutes.")
             }
 
-            Toggle("Show glass widget on the desktop", isOn: model.binding(\.showDesktopPanel))
-            Picker("Widget is", selection: model.binding(\.panelLayout)) {
-                Text("Closed (Day)").tag(PanelLayout.day)
-                Text("Open (Week)").tag(PanelLayout.week)
-            }
-            .pickerStyle(.segmented)
-            .disabled(!model.snapshot.settings.showDesktopPanel)
-            LabeledContent("Glass color") {
-                SwatchPicker(
-                    options: GlassTint.allCases,
-                    selection: model.binding(\.glassTint),
-                    color: \.swatch,
-                    name: \.displayName
-                )
-            }
-            LabeledContent("Accent") {
-                SwatchPicker(
-                    options: AccentChoice.allCases,
-                    selection: model.binding(\.accentColor),
-                    color: \.color,
-                    name: \.displayName
-                )
-            }
-            Text("Drag the widget to move it; it stays below your windows on every desktop. Open and close it, or change its colors, from the widget itself too (right-click).")
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            Toggle("Open Deskfocus at login", isOn: $launchAtLogin)
-                .onChange(of: launchAtLogin) { _, enabled in
-                    LaunchAtLogin.setEnabled(enabled)
-                    launchAtLogin = LaunchAtLogin.isEnabled
+            Section {
+                Toggle("Show glass widget on the desktop", isOn: model.binding(\.showDesktopPanel))
+                Picker("Widget is", selection: model.binding(\.panelLayout)) {
+                    Text("Closed (Day)").tag(PanelLayout.day)
+                    Text("Open (Week)").tag(PanelLayout.week)
                 }
-            Text("Keep this on so the timer and app hiding work even when you start focus from the widget.")
-                .font(.caption)
-                .foregroundStyle(.secondary)
+                .pickerStyle(.segmented)
+                .disabled(!model.snapshot.settings.showDesktopPanel)
+                LabeledContent("Glass color") {
+                    SwatchPicker(
+                        options: GlassTint.allCases,
+                        selection: model.binding(\.glassTint),
+                        color: \.swatch,
+                        name: \.displayName
+                    )
+                }
+                LabeledContent("Accent") {
+                    SwatchPicker(
+                        options: AccentChoice.allCases,
+                        selection: model.binding(\.accentColor),
+                        color: \.color,
+                        name: \.displayName
+                    )
+                }
+                LabeledContent("Position") {
+                    Button("Reset Widget Position") { model.resetDesktopPanelPosition() }
+                }
+            } header: {
+                Text("Desktop widget")
+            } footer: {
+                Text("Drag the widget to move it; it stays below your windows on every desktop. Open and close it, or change its colors, from the widget itself too (right-click).")
+            }
+
+            Section {
+                Toggle("Open Deskfocus at login", isOn: $launchAtLogin)
+                    .onChange(of: launchAtLogin) { _, enabled in
+                        LaunchAtLogin.setEnabled(enabled)
+                        launchAtLogin = LaunchAtLogin.isEnabled
+                    }
+                LabeledContent("Welcome guide") {
+                    Button("Show Again") { model.showOnboarding() }
+                }
+            } header: {
+                Text("Startup")
+            } footer: {
+                Text("Keep this on so the timer and app hiding work even when you start focus from the widget.")
+            }
         }
         .formStyle(.grouped)
         .toggleStyle(ColorfulSwitchToggleStyle())

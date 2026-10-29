@@ -18,9 +18,29 @@ final class AppleRemindersSource: TaskSource {
 
     var isAvailable: Bool { access.hasRemindersAccess }
 
+    func containers() async throws -> [TaskContainer] {
+        access.store.calendars(for: .reminder).map { list in
+            TaskContainer(
+                source: kind,
+                identifier: list.calendarIdentifier,
+                title: list.title,
+                accountName: list.source.title,
+                colorHex: list.color?.hexString
+            )
+        }
+    }
+
     func fetchTasks(in interval: DateInterval, settings: DeskfocusSettings) async throws -> [DeskTask] {
-        let predicate = access.store.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil, calendars: nil)
+        // Copied so the EventKit callback below never touches self.
         let kind = kind
+        let lists = access.store.calendars(for: .reminder)
+            .filter { settings.isContainerVisible(source: kind, containerIdentifier: $0.calendarIdentifier) }
+        // An empty list would mean "all lists" to EventKit, so stop here when every list is off.
+        guard !lists.isEmpty else {
+            Log.sync.debug("Every reminders list is switched off")
+            return []
+        }
+        let predicate = access.store.predicateForIncompleteReminders(withDueDateStarting: nil, ending: nil, calendars: lists)
         let includeUndated = settings.includeUndatedTasks
 
         // Map inside the callback so no EventKit objects cross threads.
@@ -47,7 +67,7 @@ final class AppleRemindersSource: TaskSource {
                 continuation.resume(returning: mapped)
             }
         }
-        Log.sync.debug("Apple Reminders returned \(tasks.count) reminders")
+        Log.sync.debug("Apple Reminders returned \(tasks.count) reminders from \(lists.count) lists")
         return tasks
     }
 
