@@ -2,7 +2,7 @@
 
 A macOS menu bar app and desktop widget, and an iPhone app made for **iPhone Duo**, that put **today's tasks and a focus timer in one place**.
 
-- Today's list merges **iCloud Calendar, iCloud Reminders, Google Calendar and Google Tasks**.
+- Today's list merges **iCloud Calendar, iCloud Reminders, Google Calendar and Google Tasks**; each calendar or list can be switched on or off in Settings.
 - Shown as a **glass panel on the desktop** (Liquid Glass on macOS 26), as a WidgetKit widget, and in the menu bar; the panel and the widget share the same view.
 - Browse **any day** with the ‹ › arrows, or switch the desktop panel to the wider **week view** with seven columns.
 - Press ▶ on any task, on any day, to start a focus timer for it.
@@ -99,10 +99,14 @@ For the iPhone, select the **DeskfocusiOS** scheme and an iPhone, an iPad or a s
 
 ### 5. First launch
 
-1. Menu bar icon › ⚙︎ › **Accounts**: allow Calendar and Reminders, and connect Google.
+A welcome guide opens on the first launch and walks through the steps below. Open it again from Settings › **General** › **Welcome guide**.
+
+1. Settings › **Calendars**: allow Calendar and Reminders, connect Google, and switch off any calendar or list you don't want to see.
 2. **Focus** tab: pick the apps to hide during focus and set the timer length.
 3. **General** tab: turn on **Open Deskfocus at login**, so widget buttons work even after a restart.
 4. Add the widget: right-click the desktop › **Edit Widgets** › search "Deskfocus" › choose medium or large.
+
+Settings open from the ⚙︎ on the desktop widget, from the menu bar icon, or by opening Deskfocus again from Finder or Spotlight. Drag the desktop widget anywhere to move it; right-click it › **Reset Position** brings it back to the top-left corner.
 
 On iPhone:
 

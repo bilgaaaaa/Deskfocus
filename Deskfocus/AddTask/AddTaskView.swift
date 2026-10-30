@@ -107,13 +107,22 @@ struct AddTaskView: View {
             .disabled(!canSave)
     }
 
+    /// Where to allow access: the Mac's Calendars tab, or the iPhone's Settings sheet, which has no such tab.
+    private var noAccessHint: LocalizedStringKey {
+        #if os(macOS)
+        "Allow Calendars or Reminders in Settings › Calendars first."
+        #else
+        "Allow Calendars or Reminders in Settings first."
+        #endif
+    }
+
     @ViewBuilder
     private var targetPicker: some View {
         if isLoadingTargets {
             LabeledContent("Add to") { ProgressView().controlSize(.small) }
         } else if targets.isEmpty {
             LabeledContent("Add to") {
-                Text("Allow Calendars or Reminders in Settings › Accounts first.")
+                Text(noAccessHint)
                     .foregroundStyle(.secondary)
             }
         } else {

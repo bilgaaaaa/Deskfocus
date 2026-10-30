@@ -124,6 +124,10 @@ struct DeskfocusSettings: Codable, Equatable {
     /// Calendar or list picked last on the "New task" window.
     var lastAddTargetId: String?
     var language: AppLanguage = .system
+    /// Calendars and lists switched off in Settings, by `DeskTask.containerKey`; new ones show up by default.
+    var hiddenContainerKeys: Set<String> = []
+    /// False until the welcome guide was finished or closed once.
+    var hasCompletedOnboarding: Bool = false
 
     init() {}
 
@@ -143,6 +147,13 @@ struct DeskfocusSettings: Codable, Equatable {
         accentColor = (try? container.decodeIfPresent(AccentChoice.self, forKey: .accentColor)) ?? defaults.accentColor
         lastAddTargetId = try container.decodeIfPresent(String.self, forKey: .lastAddTargetId)
         language = (try? container.decodeIfPresent(AppLanguage.self, forKey: .language)) ?? defaults.language
+        hiddenContainerKeys = try container.decodeIfPresent(Set<String>.self, forKey: .hiddenContainerKeys) ?? defaults.hiddenContainerKeys
+        hasCompletedOnboarding = try container.decodeIfPresent(Bool.self, forKey: .hasCompletedOnboarding) ?? defaults.hasCompletedOnboarding
+    }
+
+    /// True unless the user switched this calendar or list off in Settings.
+    func isContainerVisible(source: TaskSourceKind, containerIdentifier: String) -> Bool {
+        !hiddenContainerKeys.contains(DeskTask.containerKey(source: source, containerIdentifier: containerIdentifier))
     }
 
     /// Fallback focus length for to-dos without a chosen time, in seconds.

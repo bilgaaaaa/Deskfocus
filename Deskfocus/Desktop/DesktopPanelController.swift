@@ -2,6 +2,7 @@ import AppKit
 import SwiftUI
 
 /// Shows the agenda as a glass panel on the desktop, below normal windows, on every Space; drag it to move it.
+/// Dragging is done here rather than with `isMovableByWindowBackground`, which SwiftUI content does not reliably support.
 @MainActor
 final class DesktopPanelController {
     /// Transparent room around the glass card for its SwiftUI shadow.
@@ -15,6 +16,8 @@ final class DesktopPanelController {
     private var panel: DesktopPanel?
     private var layout: PanelLayout = .day
     private var pendingShrink: DispatchWorkItem?
+    /// Pointer and window positions when the current drag began, in screen coordinates.
+    private var dragStart: (mouse: NSPoint, origin: NSPoint)?
 
     /// Size of the glass card for each layout; the week layout is wide enough for seven columns.
     static func cardSize(for layout: PanelLayout) -> NSSize {
@@ -56,7 +59,7 @@ final class DesktopPanelController {
         // Just above the desktop icons, so it sits under every app window like a widget.
         panel.level = NSWindow.Level(rawValue: Int(CGWindowLevelForKey(.desktopIconWindow)) + 1)
         panel.collectionBehavior = [.canJoinAllSpaces, .stationary, .ignoresCycle, .fullScreenNone]
-        panel.isMovableByWindowBackground = true
+        panel.isMovableByWindowBackground = false
         panel.hidesOnDeactivate = false
         let hostingView = NSHostingView(rootView: DesktopPanelView().environment(model))
         // The window size is set here; SwiftUI animates the card inside it instead of resizing the window.
@@ -107,10 +110,47 @@ final class DesktopPanelController {
         panel.setFrame(Self.clamped(Self.frame(size: size, topLeft: topLeft), to: panel.screen ?? NSScreen.main), display: true)
     }
 
+    /// Follows the pointer; the start is worked out from the first translation, so the panel never jumps.
+    /// Screen coordinates are used because the view's own coordinates move along with the window.
+    func drag(mouseLocation: NSPoint, translation: CGSize) {
+        guard let panel else { return }
+        if dragStart == nil {
+            // SwiftUI's y grows downwards, the screen's upwards.
+            let startMouse = NSPoint(x: mouseLocation.x - translation.width, y: mouseLocation.y + translation.height)
+            dragStart = (mouse: startMouse, origin: panel.frame.origin)
+            Log.app.debug("Desktop panel drag started")
+        }
+        guard let dragStart else { return }
+        panel.setFrameOrigin(NSPoint(
+            x: dragStart.origin.x + mouseLocation.x - dragStart.mouse.x,
+            y: dragStart.origin.y + mouseLocation.y - dragStart.mouse.y
+        ))
+    }
+
+    /// Keeps the panel on screen after a drag and saves where it was dropped.
+    func endDrag() {
+        guard let panel, dragStart != nil else { return }
+        dragStart = nil
+        panel.setFrame(Self.clamped(panel.frame, to: panel.screen ?? NSScreen.main), display: true)
+        panel.saveFrame(usingName: Self.frameAutosaveName)
+        Log.app.info("Desktop panel moved")
+    }
+
+    /// Moves the panel back to the top-left corner of the main screen.
+    func resetPosition() {
+        guard let panel else { return }
+        dragStart = nil
+        let frame = Self.frame(size: panel.frame.size, topLeft: Self.defaultTopLeft())
+        panel.setFrame(Self.clamped(frame, to: NSScreen.main), display: true)
+        panel.saveFrame(usingName: Self.frameAutosaveName)
+        Log.app.info("Desktop panel position reset")
+    }
+
     private func hide() {
         guard let panel else { return }
         pendingShrink?.cancel()
         pendingShrink = nil
+        dragStart = nil
         panel.orderOut(nil)
         self.panel = nil
         Log.app.info("Desktop panel hidden")

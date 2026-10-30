@@ -21,9 +21,19 @@ struct DeskTask: Codable, Identifiable, Hashable {
     /// Date used to order the day's list; undated items sort last.
     var sortDate: Date? { startDate ?? dueDate }
 
+    /// Key of the calendar or list this item belongs to, unique across sources.
+    var containerKey: String {
+        Self.containerKey(source: source, containerIdentifier: containerIdentifier)
+    }
+
+    /// Same key for a calendar or list without an item, e.g. in Settings.
+    static func containerKey(source: TaskSourceKind, containerIdentifier: String) -> String {
+        "\(source.rawValue)|\(containerIdentifier)"
+    }
+
     /// Builds a stable id; events add the occurrence start so recurring events stay unique per day.
     static func makeId(source: TaskSourceKind, containerIdentifier: String, sourceIdentifier: String, occurrence: Date? = nil) -> String {
-        var id = "\(source.rawValue)|\(containerIdentifier)|\(sourceIdentifier)"
+        var id = "\(containerKey(source: source, containerIdentifier: containerIdentifier))|\(sourceIdentifier)"
         if let occurrence {
             id += "|\(Int(occurrence.timeIntervalSince1970))"
         }

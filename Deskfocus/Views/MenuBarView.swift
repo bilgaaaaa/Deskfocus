@@ -80,11 +80,20 @@ struct MenuBarView: View {
 
         return Group {
             if tasks.isEmpty {
-                Text(emptyMessage)
-                    .font(.system(size: 12))
-                    .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 20)
+                VStack(spacing: 10) {
+                    Text(hasCalendarAccess ? String(localized: "Nothing planned for this day.") : String(localized: "Connect your calendars in Settings to see your tasks."))
+                        .font(.system(size: 12))
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                    // Without any calendar the list stays empty, so lead straight to where that is fixed.
+                    if !hasCalendarAccess {
+                        Button("Open Settings") { model.showSettings() }
+                            .controlSize(.small)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 20)
             } else {
                 ScrollView {
                     VStack(spacing: 2) {
@@ -117,13 +126,9 @@ struct MenuBarView: View {
             }
             .disabled(model.repository.isSyncing)
 
-            SettingsLink {
-                Image(systemName: "gearshape")
-                    .frame(width: 26, height: 26)
+            footerButton("gearshape", help: "Settings") {
+                model.showSettings()
             }
-            .buttonStyle(.borderless)
-            .help("Settings")
-            .simultaneousGesture(TapGesture().onEnded { NSApp.activate() })
 
             footerButton("power", help: "Quit Deskfocus") {
                 NSApp.terminate(nil)
@@ -140,9 +145,9 @@ struct MenuBarView: View {
         .help(help)
     }
 
-    private var emptyMessage: String {
-        let hasAccess = model.eventKit.hasCalendarAccess || model.eventKit.hasRemindersAccess || model.googleAuth.isConnected
-        return hasAccess ? String(localized: "Nothing planned for this day.") : String(localized: "Connect your calendars in Settings to see your tasks.")
+    /// True once at least one calendar, reminders list or Google account can feed the list.
+    private var hasCalendarAccess: Bool {
+        model.eventKit.hasCalendarAccess || model.eventKit.hasRemindersAccess || model.googleAuth.isConnected
     }
 }
 

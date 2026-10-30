@@ -7,6 +7,8 @@ enum DashboardLayout {
     case expanded
 
     var maxRows: Int { self == .expanded ? 4 : 0 }
+
+    var density: AgendaDensity { self == .expanded ? .regular : .compact }
 }
 
 /// Today's list, or the focus session while one exists; the WidgetKit widget's content.
@@ -29,9 +31,9 @@ struct DeskfocusDashboardView: View {
         } else {
             let tasks = snapshot.visibleTasks(at: date)
             let done = snapshot.completedCount(on: date)
-            VStack(alignment: .leading, spacing: 10) {
-                DayHeaderView(date: date) {
-                    DayProgressRing(done: done, total: done + tasks.count)
+            VStack(alignment: .leading, spacing: layout == .expanded ? 10 : 8) {
+                DayHeaderView(date: date, density: layout.density) {
+                    DayProgressRing(done: done, total: done + tasks.count, density: layout.density)
                         .invalidatableContent()
                 }
                 DayAgendaView(
@@ -40,6 +42,7 @@ struct DeskfocusDashboardView: View {
                     maxRows: layout.maxRows,
                     showsUpNext: true,
                     savedProgress: snapshot.savedProgress,
+                    density: layout.density,
                     completeAction: { task in
                         Button(intent: CompleteTaskIntent(taskId: task.id)) { CheckGlyph() }
                             .buttonStyle(DeskfocusPressStyle())
@@ -50,7 +53,7 @@ struct DeskfocusDashboardView: View {
                             .buttonStyle(DeskfocusPressStyle())
                     },
                     upNextAction: { task in
-                        Button(intent: StartFocusIntent(taskId: task.id)) { PlayGlyph(size: 38, isProminent: true) }
+                        Button(intent: StartFocusIntent(taskId: task.id)) { PlayGlyph(size: layout == .expanded ? 38 : 32, isProminent: true) }
                             .buttonStyle(DeskfocusPressStyle())
                     }
                 )
