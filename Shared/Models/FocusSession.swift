@@ -1,7 +1,8 @@
 import Foundation
 
 /// What a focus session is doing at a given moment, derived from its stored status and the clock.
-enum FocusPhase: Equatable {
+/// Codable so the iPhone's Live Activity can carry it.
+enum FocusPhase: Codable, Hashable {
     case running(endDate: Date)
     case paused(remaining: TimeInterval)
     case finished

@@ -1,0 +1,41 @@
+name: Build iOS
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+
+jobs:
+  build-ios:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install XcodeGen
+        run: brew install xcodegen
+
+      - name: Generate Xcode project
+        run: xcodegen generate
+
+      # Newest Xcode on the runner, so the newest iOS SDK is compiled against.
+      - name: Select newest Xcode
+        run: |
+          latest=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$latest"
+          xcodebuild -version
+
+      # Unsigned build for any iPhone or iPad: checks that the app, the widget and the Live Activity compile.
+      - name: Build
+        run: |
+          xcodebuild build \
+            -project Deskfocus.xcodeproj \
+            -scheme DeskfocusiOS \
+            -configuration Debug \
+            -destination 'generic/platform=iOS' \
+            CODE_SIGNING_ALLOWED=NO \
+            CODE_SIGN_IDENTITY="" \
+            | tee build.log
+          status=${PIPESTATUS[0]}
+          # Compiler errors as annotations, so they show on the commit and pull request without opening the log.
+          grep -E ": error: " build.log | sort -u | head -20 | sed 's/^/::error::/' || true
+          exit $status

@@ -33,52 +33,78 @@ struct AddTaskView: View {
     }
 
     var body: some View {
+        #if os(macOS)
         VStack(spacing: 0) {
-            Form {
-                TextField("Title", text: $title, prompt: Text("What do you want to do?"))
-                    .focused($isTitleFocused)
-
-                targetPicker
-
-                if let target = selectedTarget {
-                    if target.createsEvent {
-                        DatePicker("Starts", selection: $date)
-                        Stepper(value: $eventMinutes, in: 15...480, step: 15) {
-                            LabeledContent("Length", value: DeskTaskFormatter.duration(minutes: eventMinutes))
-                        }
-                    } else {
-                        Toggle("Due date", isOn: $hasDueDate)
-                        if hasDueDate {
-                            DatePicker("Due", selection: $date, displayedComponents: .date)
-                        }
-                        Stepper(value: $focusMinutes, in: DeskfocusSettings.minimumFocusMinutes...DeskfocusSettings.maximumFocusMinutes, step: 5) {
-                            LabeledContent("Focus time", value: DeskTaskFormatter.duration(minutes: focusMinutes))
-                        }
-                    }
-                }
-
-                if let errorMessage {
-                    Text(errorMessage)
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
-            }
-            .formStyle(.grouped)
-            .toggleStyle(ColorfulSwitchToggleStyle())
+            form
 
             HStack {
                 Spacer()
                 Button("Cancel", role: .cancel, action: onClose)
                     .keyboardShortcut(.cancelAction)
-                Button(isSaving ? String(localized: "Adding…") : String(localized: "Add")) { save() }
+                saveButton
                     .keyboardShortcut(.defaultAction)
-                    .disabled(!canSave)
             }
             .padding([.horizontal, .bottom], 16)
         }
         // A grouped Form scrolls and has no natural height, so the window gets a fixed size.
         .frame(width: 440, height: 360)
         .task { await loadTargets() }
+        #else
+        // A sheet on iPhone: Cancel and Add sit in the bar, which iPhone Duo can move to its side strip.
+        NavigationStack {
+            form
+                .navigationTitle("New Task")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel", role: .cancel, action: onClose)
+                    }
+                    ToolbarItem(placement: .confirmationAction) {
+                        saveButton
+                    }
+                }
+        }
+        .task { await loadTargets() }
+        #endif
+    }
+
+    private var form: some View {
+        Form {
+            TextField("Title", text: $title, prompt: Text("What do you want to do?"))
+                .focused($isTitleFocused)
+
+            targetPicker
+
+            if let target = selectedTarget {
+                if target.createsEvent {
+                    DatePicker("Starts", selection: $date)
+                    Stepper(value: $eventMinutes, in: 15...480, step: 15) {
+                        LabeledContent("Length", value: DeskTaskFormatter.duration(minutes: eventMinutes))
+                    }
+                } else {
+                    Toggle("Due date", isOn: $hasDueDate)
+                    if hasDueDate {
+                        DatePicker("Due", selection: $date, displayedComponents: .date)
+                    }
+                    Stepper(value: $focusMinutes, in: DeskfocusSettings.minimumFocusMinutes...DeskfocusSettings.maximumFocusMinutes, step: 5) {
+                        LabeledContent("Focus time", value: DeskTaskFormatter.duration(minutes: focusMinutes))
+                    }
+                }
+            }
+
+            if let errorMessage {
+                Text(errorMessage)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+            }
+        }
+        .formStyle(.grouped)
+        .toggleStyle(ColorfulSwitchToggleStyle())
+    }
+
+    private var saveButton: some View {
+        Button(isSaving ? String(localized: "Adding…") : String(localized: "Add")) { save() }
+            .disabled(!canSave)
     }
 
     @ViewBuilder

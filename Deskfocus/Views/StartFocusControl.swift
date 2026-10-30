@@ -2,7 +2,7 @@ import SwiftUI
 
 /// The ▶ button for a task. Timed events, resumable and paused tasks start right away;
 /// other to-dos first ask how long to focus, and the choice is remembered for that task.
-/// Right-click offers "Choose length…" to start over with a new length.
+/// Right-click (a long press on iPhone) offers "Choose length…" to start over with a new length.
 struct StartFocusControl: View {
     @Environment(AppModel.self) private var model
     let task: DeskTask
@@ -40,6 +40,8 @@ struct StartFocusControl: View {
                 isChoosingLength = false
                 model.startFocus(on: task, minutes: minutes)
             }
+            // On iPhone too it stays a small popover by the ▶, instead of turning into a full sheet.
+            .presentationCompactAdaptation(.popover)
         }
     }
 }
@@ -62,11 +64,12 @@ private struct FocusLengthPicker: View {
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.secondary)
 
-            HStack(spacing: 6) {
-                ForEach(DeskfocusSettings.focusPresets, id: \.self) { minutes in
-                    Button("\(minutes) min") { onPick(minutes) }
-                        .buttonStyle(.bordered)
-                        .tint(minutes == remembered ? .accentColor : nil)
+            // One row on the Mac; two where touch buttons are wider than the popover.
+            ViewThatFits(in: .horizontal) {
+                presetRow(DeskfocusSettings.focusPresets)
+                VStack(alignment: .leading, spacing: 6) {
+                    presetRow(Array(DeskfocusSettings.focusPresets.prefix(3)))
+                    presetRow(Array(DeskfocusSettings.focusPresets.dropFirst(3)))
                 }
             }
 
@@ -82,5 +85,15 @@ private struct FocusLengthPicker: View {
         }
         .padding(14)
         .frame(width: 330)
+    }
+
+    private func presetRow(_ presets: [Int]) -> some View {
+        HStack(spacing: 6) {
+            ForEach(presets, id: \.self) { minutes in
+                Button("\(minutes) min") { onPick(minutes) }
+                    .buttonStyle(.bordered)
+                    .tint(minutes == remembered ? .accentColor : nil)
+            }
+        }
     }
 }

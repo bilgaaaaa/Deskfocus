@@ -1,4 +1,8 @@
+#if os(macOS)
 import AppKit
+#else
+import UIKit
+#endif
 import AuthenticationServices
 import CryptoKit
 import Foundation
@@ -167,7 +171,10 @@ final class GoogleAuthService {
             session.presentationContextProvider = presentationProvider
             session.prefersEphemeralWebBrowserSession = false
             authSession = session
+            #if os(macOS)
+            // A menu bar app is not frontmost by default; the sign-in sheet needs it to be.
             NSApp.activate()
+            #endif
             if !session.start() {
                 continuation.resume(throwing: AuthError.invalidCallback)
             }
@@ -251,9 +258,16 @@ final class GoogleAuthService {
 /// Supplies the window the Google sign-in sheet attaches to.
 private final class AuthPresentationProvider: NSObject, ASWebAuthenticationPresentationContextProviding {
     func presentationAnchor(for session: ASWebAuthenticationSession) -> ASPresentationAnchor {
-        // AuthenticationServices asks on the main thread; make that explicit for AppKit access.
+        // AuthenticationServices asks on the main thread; make that explicit for AppKit and UIKit access.
         MainActor.assumeIsolated {
-            NSApp.keyWindow ?? NSApp.windows.first(where: \.isVisible) ?? ASPresentationAnchor()
+            #if os(macOS)
+            return NSApp.keyWindow ?? NSApp.windows.first(where: \.isVisible) ?? ASPresentationAnchor()
+            #else
+            let scene = UIApplication.shared.connectedScenes
+                .compactMap { $0 as? UIWindowScene }
+                .first { $0.activationState == .foregroundActive }
+            return scene?.keyWindow ?? scene.map { ASPresentationAnchor(windowScene: $0) } ?? ASPresentationAnchor()
+            #endif
         }
     }
 }

@@ -6,6 +6,7 @@ options:
   developmentLanguage: en
   deploymentTarget:
     macOS: "14.0"
+    iOS: "17.0"
   createIntermediateGroups: true
 
 configFiles:
@@ -94,3 +95,106 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.bilgaaaaa.deskfocus.widget
         PRODUCT_NAME: DeskfocusWidget
         SKIP_INSTALL: YES
+
+  # iPhone and iPad app. Same bundle id as the Mac app, so one Google client id and, later, one App Store record serve both.
+  DeskfocusiOS:
+    type: application
+    platform: iOS
+    sources:
+      - DeskfocusiOS
+      - Shared
+      # The platform-neutral parts of the Mac app; everything else in Deskfocus/ is AppKit only.
+      - Deskfocus/AppModel.swift
+      - Deskfocus/Tasks
+      - Deskfocus/Google
+      - Deskfocus/Focus/FocusNotifier.swift
+      - Deskfocus/AddTask/AddTaskView.swift
+      - Deskfocus/Views/CompleteTaskButton.swift
+      - Deskfocus/Views/EndSessionButton.swift
+      - Deskfocus/Views/StartFocusControl.swift
+      - Deskfocus/InfoPlist.xcstrings
+    dependencies:
+      - target: DeskfocusiOSWidget
+    # Shared "DeskfocusiOS" scheme, so command-line builds (CI) find it.
+    scheme: {}
+    info:
+      path: DeskfocusiOS/Info.plist
+      properties:
+        CFBundleDisplayName: Deskfocus
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, it]
+        LSRequiresIPhoneOS: true
+        UILaunchScreen: {}
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: false
+        # The glass look is dark everywhere, sheets and keyboards included.
+        UIUserInterfaceStyle: Dark
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        NSSupportsLiveActivities: true
+        NSCalendarsUsageDescription: Deskfocus shows today's events so you can focus on them.
+        NSCalendarsFullAccessUsageDescription: Deskfocus shows today's events so you can focus on them.
+        NSRemindersUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
+        NSRemindersFullAccessUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
+        GoogleClientID: $(GOOGLE_CLIENT_ID)
+        # iOS App Group ids start with "group."; Xcode registers it on the first signed build.
+        DeskfocusAppGroupIdentifier: group.com.bilgaaaaa.deskfocus
+    entitlements:
+      path: DeskfocusiOS/DeskfocusiOS.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.bilgaaaaa.deskfocus
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bilgaaaaa.deskfocus
+        PRODUCT_NAME: Deskfocus
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Hardened Runtime is a macOS setting.
+        ENABLE_HARDENED_RUNTIME: NO
+
+  # Home Screen widget (the same view as the Mac widget) and the focus timer's Live Activity.
+  DeskfocusiOSWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - DeskfocusiOSWidget
+      - Shared
+      # The generated Info.plist and entitlements in DeskfocusWidget/ belong to the Mac extension.
+      - path: DeskfocusWidget
+        excludes:
+          - Info.plist
+          - "*.entitlements"
+    info:
+      path: DeskfocusiOSWidget/Info.plist
+      properties:
+        CFBundleDisplayName: Deskfocus
+        # Must match the app's version, or App Store Connect rejects the upload.
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleDevelopmentRegion: en
+        CFBundleLocalizations: [en, it]
+        DeskfocusAppGroupIdentifier: group.com.bilgaaaaa.deskfocus
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: DeskfocusiOSWidget/DeskfocusiOSWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.bilgaaaaa.deskfocus
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.bilgaaaaa.deskfocus.widget
+        PRODUCT_NAME: DeskfocusWidget
+        SKIP_INSTALL: YES
+        TARGETED_DEVICE_FAMILY: "1,2"
+        ENABLE_HARDENED_RUNTIME: NO

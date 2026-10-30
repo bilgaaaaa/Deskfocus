@@ -1,6 +1,6 @@
 # Deskfocus
 
-A macOS menu bar app and desktop widget that puts **today's tasks and a focus timer in one place**.
+A macOS menu bar app and desktop widget, and an iPhone app made for **iPhone Duo**, that put **today's tasks and a focus timer in one place**.
 
 - Today's list merges **iCloud Calendar, iCloud Reminders, Google Calendar and Google Tasks**.
 - Shown as a **glass panel on the desktop** (Liquid Glass on macOS 26), as a WidgetKit widget, and in the menu bar; the panel and the widget share the same view.
@@ -10,17 +10,32 @@ A macOS menu bar app and desktop widget that puts **today's tasks and a focus ti
 - Apple's Screen Time API (FamilyControls) only works on iOS and iPadOS, so blocking on the Mac is done by hiding or quitting apps.
 - When the time is up you get a notification; press **Done** and the task is completed in Reminders or Google Tasks.
 
-Requirements: macOS 14 Sonoma or later, Xcode 16 or later.
+Requirements: macOS 14 Sonoma or later, iOS 17 or later, Xcode 16 or later.
+
+## iPhone and iPhone Duo
+
+The iPhone app has the same list, timer, widget and colors as the Mac, laid out for the space it gets:
+
+- **Closed** (any iPhone, the closed iPhone Duo): one page that shows the day like the Mac widget and opens to the week from the bar.
+- **Open** (the open iPhone Duo, iPad): the day and the week as two facing pages. The spread splits at the middle of the window, which on the open iPhone Duo is the fold, so the gap between the pages sits on the crease and nothing you tap lands on it. Held so it is taller than wide, the pages stack instead.
+- Folding and unfolding only change the layout: the day you are on, the running session and the list stay as they are.
+- The bar's buttons are system toolbar items with titles, so iPhone Duo can move them to its side strip.
+- A running session is a **Live Activity** on the Lock Screen and in the Dynamic Island, with Pause, Resume, +5 min and Done.
+- The Home Screen widget is the Mac widget (medium and large).
+- "Time is up" is scheduled when a session starts, so it arrives on time even while iOS has the app suspended.
+- No app blocking on iPhone yet: Apple's Screen Time API needs the Family Controls entitlement, which Apple has to approve before a build can go to TestFlight or the App Store.
 
 ## Project layout
 
 | Folder | Contents |
 |---|---|
-| `Shared/` | Code compiled into both targets: models, the shared state file, `FocusController`, App Intents |
-| `Deskfocus/` | The menu bar app: task sources, Google sign-in, focus coordinator, distraction guard, views |
-| `DeskfocusWidget/` | The combined desktop widget |
+| `Shared/` | Code compiled into every target: models, the shared state file, `FocusController`, App Intents, shared views |
+| `Deskfocus/` | The menu bar app: task sources, Google sign-in, focus coordinator, distraction guard, views. `AppModel`, the task sources, Google sign-in and the task buttons are compiled into the iPhone app too |
+| `DeskfocusWidget/` | The combined widget, used by the Mac and iPhone widget extensions |
+| `DeskfocusiOS/` | The iPhone and iPad app: day and week pages, the two-page spread, Settings, and its own `FocusCoordinator` (alert and Live Activity) |
+| `DeskfocusiOSWidget/` | The focus timer's Live Activity, next to the shared widget |
 | `Config/` | Build settings; your personal values go in `Secrets.xcconfig` |
-| `Design/` | `AppIcon.svg` and `MenuBarIcon.svg`, the sources of the icons in `Deskfocus/Assets.xcassets` |
+| `Design/` | `AppIcon.svg`, `AppIcon-iOS.svg` and `MenuBarIcon.svg`, the sources of the app icons |
 | `project.yml` | XcodeGen spec that generates `Deskfocus.xcodeproj` |
 
 ### How the pieces talk
@@ -35,6 +50,8 @@ Widget button ──► App Intent ──► FocusController ──► shared JS
 ```
 
 The widget extension is sandboxed and cannot hide other apps or call Google, so every widget action only updates the shared state. The app, which runs at login, reacts to it.
+
+On iPhone the same intents are Live Activity intents, so iOS runs them in the app's process, waking it in the background if needed. Before a button's intent returns, the app schedules or withdraws the "time is up" alert and starts, updates or ends the Live Activity.
 
 ## Setup
 
@@ -52,7 +69,7 @@ cp Config/Secrets.xcconfig.example Config/Secrets.xcconfig
 
 Fill in:
 
-- `DESKFOCUS_TEAM_ID`: your Apple Developer Team ID (Xcode › Settings › Accounts, or developer.apple.com › Membership). It is needed so the app and the widget share data through the App Group.
+- `DESKFOCUS_TEAM_ID`: your Apple Developer Team ID (Xcode › Settings › Accounts, or developer.apple.com › Membership). It is needed so the app and the widget share data through the App Group. On iPhone the group is `group.com.bilgaaaaa.deskfocus`; with automatic signing Xcode registers it on the first build to a device.
 - `GOOGLE_CLIENT_ID`: see step 3. You can leave it empty at first; iCloud works without it.
 
 ### 3. Google Calendar and Tasks (optional)
@@ -65,7 +82,7 @@ Fill in:
    - Bundle ID: `com.bilgaaaaa.deskfocus`
 5. Copy the client ID (`….apps.googleusercontent.com`) into `GOOGLE_CLIENT_ID`.
 
-No client secret is needed: sign-in uses PKCE, and tokens are stored in your Keychain.
+No client secret is needed: sign-in uses PKCE, and tokens are stored in your Keychain. The iPhone app has the same bundle ID, so the same client ID works there too.
 
 > Before publishing to other people, Google requires an app verification review because the Calendar scope is "sensitive". Testing mode works for up to 100 test users.
 
@@ -78,12 +95,20 @@ open Deskfocus.xcodeproj
 
 Select the **Deskfocus** scheme and run. The app lives in the menu bar (checklist icon). Run `xcodegen generate` again whenever you add or remove files.
 
+For the iPhone, select the **DeskfocusiOS** scheme and an iPhone, an iPad or a simulator. With Xcode 27.1 or later, the iPhone Duo simulator can open, close and fold the device to try both layouts.
+
 ### 5. First launch
 
 1. Menu bar icon › ⚙︎ › **Accounts**: allow Calendar and Reminders, and connect Google.
 2. **Focus** tab: pick the apps to hide during focus and set the timer length.
 3. **General** tab: turn on **Open Deskfocus at login**, so widget buttons work even after a restart.
 4. Add the widget: right-click the desktop › **Edit Widgets** › search "Deskfocus" › choose medium or large.
+
+On iPhone:
+
+1. Tap **Calendars** and **Reminders** on the first card to allow access. Settings (gear in the bar) has the same buttons, Google, and the colors.
+2. Allow notifications when asked, so "time is up" reaches you while the phone is locked.
+3. Add the widget: touch and hold the Home Screen › **Edit** › **Add Widget** › Deskfocus.
 
 ### 6. Silence notifications with a Focus mode (optional)
 
@@ -128,4 +153,4 @@ Every module logs with `os.Logger` under the subsystem `com.bilgaaaaa.deskfocus`
 
 - Calendar events can't be "completed" in Calendar, so **Done** on an event only hides it for today. Done on a reminder or Google task completes it in its source; if that fails (offline), it retries on the next sync.
 - If your Google account is also added in System Settings › Internet Accounts, the same event arrives twice; Deskfocus removes the duplicate by title and start time.
-- Sync runs at launch, every 5 minutes, on wake, at midnight and whenever the macOS calendar database changes.
+- Sync runs at launch, every 5 minutes, on wake, at midnight and whenever the macOS calendar database changes. On iPhone it also runs whenever the app comes to the front, and when you pull a page down.

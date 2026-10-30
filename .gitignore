@@ -4,6 +4,10 @@ Deskfocus/Info.plist
 Deskfocus/Deskfocus.entitlements
 DeskfocusWidget/Info.plist
 DeskfocusWidget/DeskfocusWidget.entitlements
+DeskfocusiOS/Info.plist
+DeskfocusiOS/DeskfocusiOS.entitlements
+DeskfocusiOSWidget/Info.plist
+DeskfocusiOSWidget/DeskfocusiOSWidget.entitlements
 
 # Personal configuration
 Config/Secrets.xcconfig

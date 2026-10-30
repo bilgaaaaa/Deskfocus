@@ -221,6 +221,16 @@
         }
       }
     },
+    "Add them once in Settings › Apps › Calendar; their calendars appear here automatically.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiungili una volta in Impostazioni › App › Calendario; i loro calendari appariranno qui automaticamente."
+          }
+        }
+      }
+    },
     "Add to": {
       "localizations": {
         "it": {
@@ -481,6 +491,16 @@
         }
       }
     },
+    "Connect your calendars": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Collega i tuoi calendari"
+          }
+        }
+      }
+    },
     "Connect your calendars in Settings to see your tasks.": {
       "localizations": {
         "it": {
@@ -577,6 +597,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Deskfocus"
+          }
+        }
+      }
+    },
+    "Deskfocus shows today's events and reminders so you can focus on them.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus mostra gli eventi e i promemoria di oggi per aiutarti a concentrarti."
+          }
+        }
+      }
+    },
+    "Deskfocus uses the language you choose for it in the Settings app.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus usa la lingua che scegli per l'app in Impostazioni."
           }
         }
       }
@@ -947,6 +987,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nascondi widget"
+          }
+        }
+      }
+    },
+    "If access was denied before, allow Deskfocus in Settings › Privacy & Security.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se in passato hai negato l'accesso, consenti Deskfocus in Impostazioni › Privacy e sicurezza."
           }
         }
       }

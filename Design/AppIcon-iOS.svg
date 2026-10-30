@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- Deskfocus iPhone icon: the Mac icon's ring and checkmark on a full-bleed square, since iOS draws its own rounded shape.
+       Source for DeskfocusiOS/Assets.xcassets/AppIcon; export without transparency. -->
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5B50F0"/>
+      <stop offset="1" stop-color="#1C1747"/>
+    </linearGradient>
+    <linearGradient id="progress" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFC857"/>
+      <stop offset="1" stop-color="#FF6A3D"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <rect width="1024" height="1024" fill="url(#background)"/>
+
+  <!-- The Mac artwork scaled from its 824-point body to the full 1024 canvas, around the center. -->
+  <g transform="translate(512 512) scale(1.2427) translate(-512 -512)">
+    <circle cx="512" cy="512" r="300" fill="url(#glow)"/>
+
+    <!-- Timer track and progress arc (300 degrees, starting at 12 o'clock). -->
+    <circle cx="512" cy="512" r="250" fill="none" stroke="#FFFFFF" stroke-opacity="0.16" stroke-width="56"/>
+    <path d="M 512 262 A 250 250 0 1 1 295.5 387" fill="none" stroke="url(#progress)" stroke-width="56" stroke-linecap="round"/>
+    <circle cx="295.5" cy="387" r="20" fill="#FFFFFF"/>
+
+    <!-- Checkmark: the task is done. -->
+    <path d="M 412 522 L 486 596 L 626 446" fill="none" stroke="#FFFFFF" stroke-width="62" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+</svg>
