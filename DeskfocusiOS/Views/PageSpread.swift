@@ -12,42 +12,48 @@ struct PageSpread: View {
     private static let margin: CGFloat = 16
 
     var body: some View {
-        // Measured edge to edge, so the split follows the window's middle even when bars inset one side only.
-        GeometryReader { proxy in
-            let size = proxy.size
-            let insets = proxy.safeAreaInsets
-
-            if size.width >= size.height {
-                let fold = size.width / 2
-                HStack(spacing: Self.gutter) {
-                    DayPage(now: now)
-                        .modifier(SpreadPage())
-                        .frame(width: max(0, fold - Self.gutter / 2 - insets.leading - Self.margin))
-                    WeekPage(now: now)
-                        .modifier(SpreadPage())
-                        .frame(width: max(0, size.width - fold - Self.gutter / 2 - insets.trailing - Self.margin))
-                }
-                .padding(.leading, insets.leading + Self.margin)
-                .padding(.trailing, insets.trailing + Self.margin)
-                .padding(.top, insets.top)
-                .padding(.bottom, insets.bottom + Self.margin)
-            } else {
-                let fold = size.height / 2
-                VStack(spacing: Self.gutter) {
-                    DayPage(now: now)
-                        .modifier(SpreadPage())
-                        .frame(height: max(0, fold - Self.gutter / 2 - insets.top))
-                    WeekPage(now: now)
-                        .modifier(SpreadPage())
-                        .frame(height: max(0, size.height - fold - Self.gutter / 2 - insets.bottom - Self.margin))
-                }
-                .padding(.leading, insets.leading + Self.margin)
-                .padding(.trailing, insets.trailing + Self.margin)
-                .padding(.top, insets.top)
-                .padding(.bottom, insets.bottom + Self.margin)
+        // Insets come from a reader that respects the safe area (status and navigation bars included), because a reader
+        // that ignores it reports none; the split itself is measured edge to edge, so it follows the window's middle.
+        GeometryReader { safeArea in
+            let insets = safeArea.safeAreaInsets
+            GeometryReader { window in
+                spread(size: window.size, insets: insets)
             }
+            .ignoresSafeArea()
         }
-        .ignoresSafeArea()
+    }
+
+    @ViewBuilder
+    private func spread(size: CGSize, insets: EdgeInsets) -> some View {
+        if size.width >= size.height {
+            let fold = size.width / 2
+            HStack(spacing: Self.gutter) {
+                DayPage(now: now)
+                    .modifier(SpreadPage())
+                    .frame(width: max(0, fold - Self.gutter / 2 - insets.leading - Self.margin))
+                WeekPage(now: now)
+                    .modifier(SpreadPage())
+                    .frame(width: max(0, size.width - fold - Self.gutter / 2 - insets.trailing - Self.margin))
+            }
+            .padding(.leading, insets.leading + Self.margin)
+            .padding(.trailing, insets.trailing + Self.margin)
+            .padding(.top, insets.top)
+            .padding(.bottom, insets.bottom + Self.margin)
+        } else {
+            let fold = size.height / 2
+            VStack(spacing: Self.gutter) {
+                DayPage(now: now)
+                    .modifier(SpreadPage())
+                    .frame(height: max(0, fold - Self.gutter / 2 - insets.top))
+                WeekPage(now: now)
+                    .modifier(SpreadPage())
+                    .frame(height: max(0, size.height - fold - Self.gutter / 2 - insets.bottom - Self.margin))
+            }
+            .padding(.leading, insets.leading + Self.margin)
+            .padding(.trailing, insets.trailing + Self.margin)
+            .padding(.top, insets.top)
+            .padding(.bottom, insets.bottom + Self.margin)
+        }
     }
 }
 
