@@ -149,6 +149,33 @@ Needs the paid Apple Developer Program. The result is a signed, notarized `Deskf
    ```
 3. Send `build/Deskfocus-<version>.dmg`. The other person opens it and drags Deskfocus into Applications.
 
+## Share the iPhone app with TestFlight
+
+Testers install the iPhone app from Apple's TestFlight app and get each new build automatically. No cable needed, including for yourself.
+
+### One-time setup
+
+1. In Xcode › Settings › Accounts, sign in with the Apple ID of your paid team (the same one used for the Mac release).
+2. In [App Store Connect](https://appstoreconnect.apple.com) › **Business**, accept the latest agreements.
+3. App Store Connect › **Apps** › **+** › **New App**: platform **iOS**, name **Deskfocus**, bundle ID `com.bilgaaaaa.deskfocus`, any SKU (for example `deskfocus`). The Mac app shares this bundle ID, so the same record can later hold the Mac version too.
+
+### Each build
+
+1. Run:
+   ```bash
+   ./Scripts/testflight.sh
+   ```
+   It archives the **DeskfocusiOS** scheme, signs it for the App Store and uploads it. The build number is the current UTC time, so every upload is accepted.
+2. After 5-15 minutes of processing, the build appears in App Store Connect › your app › **TestFlight**.
+3. Add testers:
+   - **Internal testing:** people on your team in App Store Connect › Users and Access, up to 100. Builds are available right away.
+   - **External testing:** anyone, by email or a public link, up to 10,000. The first build of each version goes through a short Beta App Review.
+4. Testers install **TestFlight** from the App Store, open the invite, and tap **Install**.
+
+### Running from Xcode instead
+
+The first time, connect the iPhone to the Mac with a cable, tap **Trust**, and turn on Settings › Privacy & Security › **Developer Mode**. Then tick **Connect via network** in Xcode › Window › Devices and Simulators; from then on Xcode installs over Wi-Fi when both are on the same network.
+
 ## Logs
 
 Every module logs with `os.Logger` under the subsystem `com.bilgaaaaa.deskfocus` (categories: `store`, `sync`, `google`, `focus`, `distraction`, `widget`, `app`). In Console.app, filter by `subsystem:com.bilgaaaaa.deskfocus`.

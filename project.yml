@@ -126,6 +126,8 @@ targets:
         CFBundleDevelopmentRegion: en
         CFBundleLocalizations: [en, it]
         LSRequiresIPhoneOS: true
+        # Only standard HTTPS, so App Store Connect skips the export-compliance question for each build.
+        ITSAppUsesNonExemptEncryption: false
         UILaunchScreen: {}
         UIApplicationSceneManifest:
           UIApplicationSupportsMultipleScenes: false
