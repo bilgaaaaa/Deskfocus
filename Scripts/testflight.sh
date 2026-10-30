@@ -42,7 +42,8 @@ xcodebuild archive \
     -archivePath "$ARCHIVE_PATH" \
     -allowProvisioningUpdates \
     CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
-    -quiet
+    -quiet \
+    || fail "Archive failed. If it says your team has no devices, connect your iPhone to this Mac once and open Xcode › Window › Devices and Simulators so Xcode registers it."
 
 log "Signing for the App Store and uploading to App Store Connect"
 EXPORT_OPTIONS="$BUILD_DIR/ExportOptions.plist"

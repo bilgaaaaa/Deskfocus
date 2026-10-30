@@ -157,7 +157,8 @@ Testers install the iPhone app from Apple's TestFlight app and get each new buil
 
 1. In Xcode › Settings › Accounts, sign in with the Apple ID of your paid team (the same one used for the Mac release).
 2. In [App Store Connect](https://appstoreconnect.apple.com) › **Business**, accept the latest agreements.
-3. App Store Connect › **Apps** › **+** › **New App**: platform **iOS**, name **Deskfocus**, bundle ID `com.bilgaaaaa.deskfocus`, any SKU (for example `deskfocus`). The Mac app shares this bundle ID, so the same record can later hold the Mac version too.
+3. Register one iPhone with your team: connect it to this Mac with a cable once, tap **Trust**, and open Xcode › Window › **Devices and Simulators**. Xcode adds it to your team, which automatic signing needs before it can archive any iPhone build.
+4. App Store Connect › **Apps** › **+** › **New App**: platform **iOS**, name **Deskfocus**, bundle ID `com.bilgaaaaa.deskfocus`, any SKU (for example `deskfocus`). The Mac app shares this bundle ID, so the same record can later hold the Mac version too.
 
 ### Each build
 
