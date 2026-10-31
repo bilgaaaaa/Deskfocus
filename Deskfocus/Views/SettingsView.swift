@@ -330,8 +330,36 @@ private struct GeneralSettingsView: View {
             } footer: {
                 Text("Keep this on so the timer and app hiding work even when you start focus from the widget.")
             }
+
+            UpdatesSection(updater: model.updater)
         }
         .formStyle(.grouped)
         .toggleStyle(ColorfulSwitchToggleStyle())
+    }
+}
+
+/// Current version, automatic checks and "Check Now"; new versions install in place, keeping settings and tasks.
+private struct UpdatesSection: View {
+    @Bindable var updater: AppUpdater
+
+    var body: some View {
+        Section {
+            LabeledContent("Version") { Text(verbatim: updater.currentVersion) }
+            if updater.isAvailable {
+                Toggle("Check for updates automatically", isOn: $updater.automaticallyChecksForUpdates)
+                Toggle("Install updates automatically", isOn: $updater.automaticallyDownloadsUpdates)
+                    .disabled(!updater.automaticallyChecksForUpdates)
+                LabeledContent("New version") {
+                    Button("Check Now") { updater.checkForUpdates() }
+                        .disabled(!updater.canCheckForUpdates)
+                }
+            }
+        } header: {
+            Text("Updates")
+        } footer: {
+            Text(updater.isAvailable
+                 ? "Deskfocus looks for a new version once a day and updates itself in place. Your settings and tasks stay as they are."
+                 : "This build doesn't update itself. Builds made with the release script do.")
+        }
     }
 }
