@@ -139,15 +139,35 @@ Needs the paid Apple Developer Program. The result is a signed, notarized `Deskf
    xcrun notarytool store-credentials "deskfocus-notary" --apple-id YOUR_APPLE_ID_EMAIL --team-id YOUR_TEAM_ID
    ```
    Paste the app-specific password when asked. It is saved in your Keychain, never in the repo.
+4. Set up in-app updates once, as described in the next section.
 
 ### Each release
 
-1. Raise `MARKETING_VERSION` in `project.yml` (for example `0.2.0`).
+1. In `project.yml`, raise `MARKETING_VERSION` (for example `0.4.0`) **and** `CURRENT_PROJECT_VERSION` (for example `4`). Sparkle compares the build number, and the script stops if it is not higher than the published one.
 2. Run:
    ```bash
-   ./Scripts/release.sh
+   ./Scripts/release.sh --publish
    ```
-3. Send `build/Deskfocus-<version>.dmg`. The other person opens it and drags Deskfocus into Applications.
+   It builds, notarizes, signs the update feed and creates the GitHub release `v<version>` with `Deskfocus-<version>.dmg` and `appcast.xml` attached. Without `--publish` it stops before uploading and shows both files, to attach by hand.
+3. Installed copies offer the new version within a day, or right away from Settings › General › **Check Now**. New users download the DMG from the release page and drag Deskfocus into Applications.
+
+## In-app updates
+
+Deskfocus updates itself with [Sparkle](https://sparkle-project.org): once a day it reads `appcast.xml` from the newest GitHub release and, when there is a newer build, downloads, installs and relaunches it in place. Settings, tasks and Google sign-in stay as they are.
+
+Every update is signed with a private key that only lives in your Keychain, and the app accepts only updates signed with it.
+
+### One-time setup
+
+1. Run:
+   ```bash
+   ./Scripts/update-keys.sh
+   ```
+   It creates the signing key in your Keychain (or finds the existing one) and writes its public half to `SUPublicEDKey` in `project.yml`. Commit that change; the public key is meant to be shared.
+2. Back up the private key, for example in your password manager, with the command the script prints. If it is lost, installed copies can never be updated again and everyone has to download a new DMG by hand.
+3. Install the GitHub CLI for `--publish`: `brew install gh && gh auth login`.
+
+Copies older than 0.3.0 have no updater yet, so install 0.3.0 once from its DMG; every version after that arrives in the app. Debug builds from Xcode never update themselves.
 
 ## Share the iPhone app with TestFlight
 

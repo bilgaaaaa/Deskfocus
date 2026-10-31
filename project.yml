@@ -9,6 +9,12 @@ options:
     iOS: "17.0"
   createIntermediateGroups: true
 
+# Sparkle gives the Mac app in-app updates; the iPhone app is updated by TestFlight and the App Store.
+packages:
+  Sparkle:
+    url: https://github.com/sparkle-project/Sparkle
+    from: "2.6.4"
+
 configFiles:
   Debug: Config/Deskfocus.xcconfig
   Release: Config/Deskfocus.xcconfig
@@ -16,8 +22,9 @@ configFiles:
 settings:
   base:
     SWIFT_VERSION: "5.0"
-    MARKETING_VERSION: "0.2.0"
-    CURRENT_PROJECT_VERSION: "2"
+    MARKETING_VERSION: "0.3.0"
+    # Sparkle compares this build number, so raise it with every release.
+    CURRENT_PROJECT_VERSION: "3"
     DEVELOPMENT_TEAM: $(DESKFOCUS_TEAM_ID)
     CODE_SIGN_STYLE: Automatic
     ENABLE_HARDENED_RUNTIME: YES
@@ -34,6 +41,7 @@ targets:
       - Shared
     dependencies:
       - target: DeskfocusWidget
+      - package: Sparkle
     # Shared "Deskfocus" scheme, so command-line builds (release script, CI) find it.
     scheme: {}
     info:
@@ -53,6 +61,12 @@ targets:
         NSRemindersFullAccessUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
         GoogleClientID: $(GOOGLE_CLIENT_ID)
         DeskfocusAppGroupIdentifier: $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
+        # Update feed: release.sh attaches appcast.xml to each GitHub release, and "latest" always points to the newest.
+        SUFeedURL: https://github.com/bilgaaaaa/deskfocus/releases/latest/download/appcast.xml
+        # Public half of the update signing key, written by Scripts/update-keys.sh; empty means the build never updates itself.
+        SUPublicEDKey: ""
+        SUEnableAutomaticChecks: true
+        SUScheduledCheckInterval: 86400
     entitlements:
       path: Deskfocus/Deskfocus.entitlements
       properties:

@@ -2290,6 +2290,86 @@
           }
         }
       }
+    },
+    "Check Now": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controlla ora"
+          }
+        }
+      }
+    },
+    "Check for updates automatically": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca aggiornamenti automaticamente"
+          }
+        }
+      }
+    },
+    "Deskfocus looks for a new version once a day and updates itself in place. Your settings and tasks stay as they are.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deskfocus cerca una nuova versione una volta al giorno e si aggiorna da sola. Impostazioni e attività restano come sono."
+          }
+        }
+      }
+    },
+    "Install updates automatically": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installa aggiornamenti automaticamente"
+          }
+        }
+      }
+    },
+    "New version": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuova versione"
+          }
+        }
+      }
+    },
+    "This build doesn't update itself. Builds made with the release script do.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Questa build non si aggiorna da sola. Le build create con lo script di rilascio sì."
+          }
+        }
+      }
+    },
+    "Updates": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aggiornamenti"
+          }
+        }
+      }
+    },
+    "Version": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versione"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

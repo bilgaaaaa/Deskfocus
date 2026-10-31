@@ -28,6 +28,8 @@ final class AppModel {
     private static let refreshInterval: TimeInterval = 5 * 60
 
     #if os(macOS)
+    /// In-app updates; the iPhone app is updated by TestFlight and the App Store instead.
+    let updater = AppUpdater()
     private let desktopPanel = DesktopPanelController()
     private let addTaskWindow = AddTaskWindowController()
     private let settingsWindow = SettingsWindowController()
