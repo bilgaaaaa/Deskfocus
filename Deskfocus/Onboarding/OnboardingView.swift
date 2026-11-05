@@ -79,6 +79,7 @@ private struct WelcomePage: View {
                 .accessibilityHidden(true)
             OnboardingHeader(
                 title: "Welcome to Deskfocus",
+                tagline: "Tasks & Focus",
                 subtitle: "Today's tasks and a focus timer, right on your desktop."
             )
             VStack(alignment: .leading, spacing: 16) {
@@ -175,15 +176,22 @@ private struct ReadyPage: View {
     }
 }
 
-/// Big title with a short explanation under it.
+/// Big title, an optional tagline in the accent color, and a short explanation under it.
 private struct OnboardingHeader: View {
+    @Environment(\.deskfocusAccent) private var accent
     let title: LocalizedStringKey
+    var tagline: LocalizedStringKey? = nil
     let subtitle: LocalizedStringKey
 
     var body: some View {
         VStack(spacing: 6) {
             Text(title)
                 .font(.system(size: 24, weight: .bold))
+            if let tagline {
+                Text(tagline)
+                    .font(.system(size: 15, weight: .semibold))
+                    .foregroundStyle(accent.colors.deep)
+            }
             Text(subtitle)
                 .font(.system(size: 13))
                 .foregroundStyle(.secondary)

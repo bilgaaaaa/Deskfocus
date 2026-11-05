@@ -2290,6 +2290,16 @@
           }
         }
       }
+    },
+    "Tasks & Focus": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Attività e Focus"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

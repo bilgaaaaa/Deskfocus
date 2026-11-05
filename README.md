@@ -1,4 +1,4 @@
-# Deskfocus
+# Deskfocus: Tasks & Focus
 
 A macOS menu bar app and desktop widget, and an iPhone app made for **iPhone Duo**, that put **today's tasks and a focus timer in one place**.
 
