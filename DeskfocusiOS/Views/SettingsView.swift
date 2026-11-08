@@ -30,7 +30,6 @@ struct SettingsView: View {
 private struct AccountsSection: View {
     @Environment(AppModel.self) private var model
     @Environment(\.openURL) private var openURL
-    @State private var isConnectingGoogle = false
 
     var body: some View {
         Section {
@@ -52,31 +51,7 @@ private struct AccountsSection: View {
             Text("If access was denied before, allow Deskfocus in Settings › Privacy & Security.")
         }
 
-        // Only offered when this build can sign in to Google directly.
-        if GoogleConfig.isConfigured || model.googleAuth.isConnected {
-            Section("Google Tasks") {
-                if model.googleAuth.isConnected {
-                    LabeledContent("Connected", value: model.googleAuth.connectedEmail ?? "Google account")
-                    Button("Disconnect", role: .destructive) {
-                        Task { await model.disconnectGoogle() }
-                    }
-                } else {
-                    Button(isConnectingGoogle ? String(localized: "Connecting…") : String(localized: "Connect Google Tasks")) {
-                        isConnectingGoogle = true
-                        Task {
-                            await model.connectGoogle()
-                            isConnectingGoogle = false
-                        }
-                    }
-                    .disabled(isConnectingGoogle)
-                }
-                if let message = model.googleErrorMessage {
-                    Text(message)
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
-            }
-        }
+        GoogleAccountSection()
     }
 
     /// After a "Don't Allow" iOS no longer asks, so the button opens Deskfocus' page in Settings instead.

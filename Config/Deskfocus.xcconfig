@@ -6,4 +6,9 @@ DESKFOCUS_TEAM_ID =
 // Google OAuth client id of type "iOS" (e.g. 1234-abcd.apps.googleusercontent.com).
 GOOGLE_CLIENT_ID =
 
+// Google blocks everyone but its test users until it verifies the app, so public (Release) builds show
+// "Coming soon" instead of Connect. Debug builds keep it on; set YES here once Google has approved Deskfocus.
+GOOGLE_SYNC_ENABLED = NO
+GOOGLE_SYNC_ENABLED[config=Debug] = YES
+
 #include? "Secrets.xcconfig"

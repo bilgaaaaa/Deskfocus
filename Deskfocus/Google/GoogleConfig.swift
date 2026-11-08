@@ -1,8 +1,9 @@
 import Foundation
 
-/// OAuth settings for Google; the client id comes from Config/Secrets.xcconfig through Info.plist.
+/// OAuth settings for Google; the client id and the sync switch come from the xcconfig files through Info.plist.
 enum GoogleConfig {
     static let clientIdInfoKey = "GoogleClientID"
+    static let syncEnabledInfoKey = "GoogleSyncEnabled"
     static let scopes = [
         "email",
         "https://www.googleapis.com/auth/calendar.readonly",
@@ -22,6 +23,13 @@ enum GoogleConfig {
     /// True once a real iOS-type client id ("….apps.googleusercontent.com") is configured.
     static var isConfigured: Bool {
         clientId.hasSuffix(".apps.googleusercontent.com")
+    }
+
+    /// False in public builds until Google verifies the app, because Google blocks everyone but the test users until then.
+    static var isSyncEnabled: Bool {
+        guard isConfigured else { return false }
+        let value = (Bundle.main.object(forInfoDictionaryKey: syncEnabledInfoKey) as? String)?.uppercased()
+        return value == "YES" || value == "1" || value == "TRUE"
     }
 
     /// Reversed client id, the custom URL scheme Google allows for this client type.

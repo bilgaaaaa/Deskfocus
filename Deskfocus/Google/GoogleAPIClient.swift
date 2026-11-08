@@ -46,25 +46,19 @@ final class GoogleAPIClient {
     }
 
     func get<Response: Decodable>(_ baseURL: URL, query: [URLQueryItem] = []) async throws -> Response {
-        let request = try await authorisedRequest(url: Self.url(baseURL, query: query), method: "GET")
-        let data = try await send(request)
+        let url = try Self.url(baseURL, query: query)
+        let data = try await send(url: url, method: "GET", body: nil)
         return try decoder.decode(Response.self, from: data)
     }
 
     /// Sends a JSON body and decodes the created resource.
     func post<Response: Decodable>(_ url: URL, json: [String: Any]) async throws -> Response {
-        var request = try await authorisedRequest(url: url, method: "POST")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: json)
-        let data = try await send(request)
+        let data = try await send(url: url, method: "POST", body: try JSONSerialization.data(withJSONObject: json))
         return try decoder.decode(Response.self, from: data)
     }
 
     func patch(_ url: URL, json: [String: Any]) async throws {
-        var request = try await authorisedRequest(url: url, method: "PATCH")
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.httpBody = try JSONSerialization.data(withJSONObject: json)
-        _ = try await send(request)
+        _ = try await send(url: url, method: "PATCH", body: try JSONSerialization.data(withJSONObject: json))
     }
 
     /// Encodes one path segment such as a calendar id ("abc@group.calendar.google.com", "…#holiday…").
@@ -81,21 +75,33 @@ final class GoogleAPIClient {
         return url
     }
 
-    private func authorisedRequest(url: URL, method: String) async throws -> URLRequest {
+    /// Sends an authorised request; when Google rejects the access token (401) it refreshes once and retries,
+    /// and a refresh Google refuses ends the session in GoogleAuthService rather than looping here.
+    private func send(url: URL, method: String, body: Data?) async throws -> Data {
+        do {
+            return try await sendOnce(url: url, method: method, body: body)
+        } catch APIError.http(let status, _) where status == 401 {
+            auth.invalidateAccessToken()
+            return try await sendOnce(url: url, method: method, body: body)
+        }
+    }
+
+    private func sendOnce(url: URL, method: String, body: Data?) async throws -> Data {
         let token = try await auth.validAccessToken()
         var request = URLRequest(url: url)
         request.httpMethod = method
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
-        return request
-    }
+        if let body {
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            request.httpBody = body
+        }
 
-    private func send(_ request: URLRequest) async throws -> Data {
         let (data, response) = try await URLSession.shared.data(for: request)
         let status = (response as? HTTPURLResponse)?.statusCode ?? 0
         guard (200..<300).contains(status) else {
-            let body = String(data: data, encoding: .utf8) ?? ""
-            Log.google.error("\(request.httpMethod ?? "", privacy: .public) \(request.url?.path ?? "", privacy: .public) failed with \(status)")
-            throw APIError.http(status: status, body: body)
+            let responseBody = String(data: data, encoding: .utf8) ?? ""
+            Log.google.error("\(method, privacy: .public) \(url.path, privacy: .public) failed with \(status)")
+            throw APIError.http(status: status, body: responseBody)
         }
         return data
     }

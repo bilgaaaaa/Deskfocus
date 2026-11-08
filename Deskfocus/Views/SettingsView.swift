@@ -21,7 +21,6 @@ struct SettingsView: View {
 /// No developer setup is ever shown here.
 struct CalendarAccountsSection: View {
     @Environment(AppModel.self) private var model
-    @State private var isConnectingGoogle = false
 
     /// macOS Internet Accounts, where people add Google, Outlook, Exchange or Yahoo with Apple's own sign-in.
     private static let internetAccountsURL = URL(string: "x-apple.systempreferences:com.apple.Internet-Accounts-Settings.extension")!
@@ -46,31 +45,7 @@ struct CalendarAccountsSection: View {
             Text("If access was denied before, allow Deskfocus in System Settings › Privacy & Security.")
         }
 
-        // Only offered when this build can sign in to Google directly.
-        if GoogleConfig.isConfigured || model.googleAuth.isConnected {
-            Section("Google Tasks") {
-                if model.googleAuth.isConnected {
-                    LabeledContent("Connected", value: model.googleAuth.connectedEmail ?? "Google account")
-                    Button("Disconnect", role: .destructive) {
-                        Task { await model.disconnectGoogle() }
-                    }
-                } else {
-                    Button(isConnectingGoogle ? String(localized: "Connecting…") : String(localized: "Connect Google Tasks")) {
-                        isConnectingGoogle = true
-                        Task {
-                            await model.connectGoogle()
-                            isConnectingGoogle = false
-                        }
-                    }
-                    .disabled(isConnectingGoogle)
-                }
-                if let message = model.googleErrorMessage {
-                    Text(message)
-                        .font(.caption)
-                        .foregroundStyle(.red)
-                }
-            }
-        }
+        GoogleAccountSection()
     }
 
     private func permissionRow(title: LocalizedStringKey, isGranted: Bool, request: @escaping () -> Void) -> some View {

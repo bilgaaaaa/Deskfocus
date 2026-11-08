@@ -2290,6 +2290,46 @@
           }
         }
       }
+    },
+    "Coming soon": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Presto disponibile"
+          }
+        }
+      }
+    },
+    "Reconnect Google Tasks": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ricollega Google Tasks"
+          }
+        }
+      }
+    },
+    "Your Google connection has ended. Connect again to keep seeing your Google tasks and events.": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La connessione a Google è terminata. Ricollegati per continuare a vedere le tue attività e i tuoi eventi Google."
+          }
+        }
+      }
+    },
+    "Google account": {
+      "localizations": {
+        "it": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Account Google"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -52,6 +52,7 @@ targets:
         NSRemindersUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
         NSRemindersFullAccessUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
         GoogleClientID: $(GOOGLE_CLIENT_ID)
+        GoogleSyncEnabled: $(GOOGLE_SYNC_ENABLED)
         DeskfocusAppGroupIdentifier: $(TeamIdentifierPrefix)com.bilgaaaaa.deskfocus
     entitlements:
       path: Deskfocus/Deskfocus.entitlements
@@ -148,6 +149,7 @@ targets:
         NSRemindersUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
         NSRemindersFullAccessUsageDescription: Deskfocus shows today's reminders and marks them done when you finish.
         GoogleClientID: $(GOOGLE_CLIENT_ID)
+        GoogleSyncEnabled: $(GOOGLE_SYNC_ENABLED)
         # iOS App Group ids start with "group."; Xcode registers it on the first signed build.
         DeskfocusAppGroupIdentifier: group.com.bilgaaaaa.deskfocus
     entitlements:
