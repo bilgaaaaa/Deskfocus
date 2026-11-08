@@ -35,9 +35,14 @@ final class GoogleAuthService {
     }
 
     private static let keychainAccount = "google-tokens"
+    private static let sessionExpiredKey = "googleSessionExpired"
 
     private(set) var connectedEmail: String?
     private(set) var isConnected = false
+    /// True after Google ended the session (revoked, or the 7-day limit of an unverified app), until the user reconnects or disconnects.
+    private(set) var sessionExpired = UserDefaults.standard.bool(forKey: GoogleAuthService.sessionExpiredKey) {
+        didSet { UserDefaults.standard.set(sessionExpired, forKey: Self.sessionExpiredKey) }
+    }
 
     private var tokens: GoogleTokens?
     private var refreshTask: Task<String, Error>?
@@ -78,17 +83,14 @@ final class GoogleAuthService {
         )
         newTokens.email = await fetchEmail(accessToken: newTokens.accessToken)
         try persist(newTokens)
+        sessionExpired = false
         Log.google.info("Google account connected")
     }
 
     func signOut() async {
         let tokenToRevoke = tokens?.refreshToken
-        refreshTask?.cancel()
-        refreshTask = nil
-        tokens = nil
-        connectedEmail = nil
-        isConnected = false
-        KeychainStore.delete(account: Self.keychainAccount)
+        clearSession()
+        sessionExpired = false
         Log.google.info("Google account disconnected")
 
         // Revoking is best effort; local sign-out already happened.
@@ -105,7 +107,30 @@ final class GoogleAuthService {
         }
     }
 
+    /// Drops the local session without contacting Google, which has already ended it, and asks the user to reconnect.
+    private func expireSession() {
+        clearSession()
+        sessionExpired = true
+        Log.google.error("Google ended the session, asking to reconnect")
+    }
+
+    private func clearSession() {
+        refreshTask?.cancel()
+        refreshTask = nil
+        tokens = nil
+        connectedEmail = nil
+        isConnected = false
+        KeychainStore.delete(account: Self.keychainAccount)
+    }
+
     // MARK: Access token
+
+    /// Forgets the access token Google just rejected, so the next request refreshes it once instead of failing again.
+    func invalidateAccessToken() {
+        guard tokens != nil else { return }
+        tokens?.expiresAt = .distantPast
+        Log.google.debug("Access token rejected, will refresh")
+    }
 
     /// Returns a valid access token, refreshing once even when several requests ask at the same time.
     func validAccessToken() async throws -> String {
@@ -134,9 +159,8 @@ final class GoogleAuthService {
             Log.google.debug("Access token refreshed")
             return updated.accessToken
         } catch AuthError.server(let message) where message.contains("invalid_grant") {
-            // The user revoked access from their Google account; drop the dead session.
-            Log.google.error("Refresh token rejected, signing out")
-            await signOut()
+            // Revoked in the Google account, or expired after 7 days while the app is unverified: sources stop at once.
+            expireSession()
             throw AuthError.notConnected
         }
     }
